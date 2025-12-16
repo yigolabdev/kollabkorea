@@ -1,7 +1,11 @@
 import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
-export const Pricing: React.FC = () => {
+interface PricingProps {
+  onApplyClick: () => void;
+}
+
+export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
   const packages = [
     {
       name: "BASIC ZONE",
@@ -117,11 +121,15 @@ export const Pricing: React.FC = () => {
 
               {/* CTA */}
               <div className="p-6 md:p-7 border-t border-zinc-200">
-                <button className={`w-full py-3 font-black text-sm uppercase tracking-widest transition-all duration-300 ${
-                  pkg.highlight 
-                    ? 'bg-kollab-red text-white hover:bg-black' 
-                    : 'bg-black text-white hover:bg-kollab-red'
-                }`}>
+                <button 
+                  onClick={onApplyClick}
+                  className={`w-full py-3 font-black text-sm uppercase tracking-widest transition-all duration-300 ${
+                    pkg.highlight 
+                      ? 'bg-kollab-red text-white hover:bg-black' 
+                      : 'bg-black text-white hover:bg-kollab-red'
+                  }`}
+                  aria-label={`${pkg.name} 입점 문의하기`}
+                >
                   문의하기
                 </button>
               </div>

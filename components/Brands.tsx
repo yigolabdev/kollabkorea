@@ -1,11 +1,15 @@
 import React from 'react';
 
-export const Brands: React.FC = () => {
+interface BrandsProps {
+  onApplyClick: () => void;
+}
+
+export const Brands: React.FC<BrandsProps> = ({ onApplyClick }) => {
   const brands = [
     {
       name: "Premium Skincare",
       category: "Skincare",
-      image: "https://images.unsplash.com/photo-1556229010-aa1e77a40f34?q=80&w=600&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=600&auto=format&fit=crop",
       zone: "Premium"
     },
     {
@@ -100,10 +104,14 @@ export const Brands: React.FC = () => {
           <p className="text-zinc-400 text-sm md:text-base mb-4">
             당신의 브랜드도 이곳에서 만나보세요
           </p>
-          <div className="inline-flex items-center gap-2 text-kollab-red font-bold text-xs md:text-sm uppercase tracking-widest hover:gap-4 transition-all">
+          <button 
+            onClick={onApplyClick}
+            className="inline-flex items-center gap-2 text-kollab-red font-bold text-xs md:text-sm uppercase tracking-widest hover:gap-4 transition-all cursor-pointer bg-transparent border-none"
+            aria-label="입점 신청하기"
+          >
             <span>Apply Now</span>
             <span>→</span>
-          </div>
+          </button>
         </div>
 
       </div>

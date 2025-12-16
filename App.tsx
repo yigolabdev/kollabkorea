@@ -40,13 +40,13 @@ function App() {
       <Zones />
       
       {/* 6. Brands: Who's Joining - Brand Showcase */}
-      <Brands />
+      <Brands onApplyClick={openModal} />
       
       {/* 7. MoodBoard: What It Looks Like - K-Beauty Aesthetic */}
       <MoodBoard />
       
       {/* 8. Pricing: How Much - Package Information */}
-      <Pricing />
+      <Pricing onApplyClick={openModal} />
       
       {/* 9. FAQ: Common Questions - Frequently Asked */}
       <FAQ />

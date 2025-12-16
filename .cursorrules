@@ -1,0 +1,56 @@
+# KOLLAB KOREA 프로젝트 개발 규칙
+
+## 프로젝트 개요
+- **프로젝트**: KOLLAB KOREA 브랜드 입점 신청 랜딩페이지
+- **기술 스택**: React 18 + TypeScript + Vite + Tailwind CSS
+- **목적**: Seoul × LA 콘셉트의 K-브랜드 입점 신청 페이지
+
+## 코드 스타일
+1. **TypeScript**를 엄격하게 사용 (strict mode)
+2. **함수형 컴포넌트** + **React Hooks** 사용
+3. **Props 타입**은 항상 interface로 명시
+4. **파일명**: PascalCase for components (예: `Hero.tsx`)
+5. **상수**: UPPER_SNAKE_CASE (예: `NAVIGATION_LINKS`)
+
+## 컴포넌트 구조
+- **각 컴포넌트는 단일 책임**: 하나의 섹션 = 하나의 컴포넌트
+- **재사용 가능한 로직은 hooks로 분리**
+- **타입 정의는 `types.ts`에 중앙 관리**
+- **상수는 `constants.ts`에 중앙 관리**
+
+## 스타일링 가이드
+1. **Tailwind CSS 우선 사용**
+2. **KOLLAB 브랜드 컬러 사용**:
+   - `kollab-red`: #dc0000
+   - `kollab-beige`: #e4e0db
+   - `kollab-silver`: #c0c0c0
+   - `kollab-black`: #000000
+   - `kollab-dark`: #111111
+3. **모바일 우선 반응형 디자인** (Tailwind 브레이크포인트 사용)
+4. **애니메이션은 성능 고려하여 최소화**
+
+## 네이밍 규칙
+- **컴포넌트**: PascalCase (예: `ApplyModal`)
+- **함수/변수**: camelCase (예: `onApplyClick`)
+- **타입/인터페이스**: PascalCase (예: `BrandApplication`)
+- **CSS 클래스**: Tailwind utility classes
+
+## Git 커밋 메시지
+- **feat**: 새로운 기능
+- **fix**: 버그 수정
+- **style**: 스타일링 변경
+- **refactor**: 리팩토링
+- **docs**: 문서 수정
+- **chore**: 빌드/설정 변경
+
+## 개발 워크플로우
+1. `npm run dev` - 개발 서버 실행 (포트 5173)
+2. `npm run build` - 프로덕션 빌드
+3. `npm run preview` - 빌드 결과 미리보기
+
+## 주의사항
+- **한글 텍스트는 `break-keep` 클래스 사용** (단어 단위 줄바꿈)
+- **접근성 고려**: 버튼과 링크는 명확한 레이블 제공
+- **성능 최적화**: lazy loading 및 이미지 최적화 고려
+- **SEO**: 메타 태그 및 시맨틱 HTML 사용
+

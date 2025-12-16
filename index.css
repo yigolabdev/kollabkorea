@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   KOLLAB KOREA - Custom Styles
+   ============================================ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-black text-white antialiased;
+  }
+
+  /* 포커스 표시 개선 (접근성) */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-kollab-red;
+  }
+}
+
+@layer components {
+  /* 재사용 가능한 컴포넌트 스타일 */
+  .section-container {
+    @apply container mx-auto px-6;
+  }
+
+  .text-gradient-red {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-kollab-red to-white;
+  }
+}
+
+@layer utilities {
+  /* 텍스트 유틸리티 */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .break-keep {
+    word-break: keep-all;
+  }
+
+  /* 스크롤바 스타일링 */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-zinc-900;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-zinc-700 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-kollab-red;
+  }
+
+  /* 애니메이션 유틸리티 */
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+}
+

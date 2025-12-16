@@ -93,17 +93,16 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
       <div className="container mx-auto relative z-10">
         
         {/* Header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black uppercase tracking-tighter leading-none mb-6">
-            Choose Your
-            <br />
-            <span className="text-kollab-red">Perfect Zone</span>
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-10 h-[2px] bg-kollab-red"></div>
+            <span className="text-kollab-red font-bold tracking-widest text-xs uppercase">Zone Packages</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black uppercase tracking-tight leading-none mb-4">
+            Choose Your <span className="text-kollab-red">Perfect Zone</span>
           </h2>
-          
-          <p className="text-base md:text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed">
-            당신의 브랜드가 빛날 수 있는 최적의 공간을 선택하세요
-            <br className="hidden md:block" />
-            <span className="text-black font-semibold">Seoul에서 LA까지, 글로벌 여정의 시작</span>
+          <p className="text-sm md:text-base text-zinc-600 max-w-2xl">
+            브랜드의 성장 단계에 맞는 최적의 공간을 선택하세요
           </p>
         </div>
 

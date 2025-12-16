@@ -128,7 +128,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ isOpen, onClose }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  const validateStep = (step: number): boolean => {
+  const validateStep = useCallback((step: number): boolean => {
     switch (step) {
       case 1:
         if (!formData.brandName.trim()) {
@@ -160,17 +160,17 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ isOpen, onClose }) => {
       default:
         return true;
     }
-  };
+  }, [formData]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (validateStep(currentStep)) {
       setCurrentStep(prev => Math.min(prev + 1, 3));
     }
-  };
+  }, [currentStep, validateStep]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
+  }, []);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -256,7 +256,7 @@ ${formData.message || '(내용 없음)'}
     setCurrentStep(1);
   }, [formData, currentStep, onClose]);
 
-  const renderStepContent = () => {
+  const renderStepContent = useCallback(() => {
     switch (currentStep) {
       case 1:
         return (
@@ -455,7 +455,7 @@ ${formData.message || '(내용 없음)'}
       default:
         return null;
     }
-  };
+  }, [currentStep, formData, handleChange]);
 
   // Hook 규칙 준수: 모든 Hook 호출 후 조건부 렌더링
   if (!isOpen) return null;

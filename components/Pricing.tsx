@@ -365,41 +365,117 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
 
         </div>
 
-        {/* Bottom Info - Elegant */}
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/60 backdrop-blur-sm border border-zinc-200 rounded-2xl p-8 md:p-10">
-            <div className="text-center mb-6">
-              <h4 className="text-lg font-black text-black uppercase tracking-tight mb-2">
+        {/* Bottom Info - Sophisticated */}
+        <div className="max-w-5xl mx-auto">
+          {/* Title Section */}
+          <div className="text-center mb-10">
+            <div className="inline-block">
+              <h4 className="text-2xl md:text-3xl font-black text-black uppercase tracking-tight mb-2">
                 All Packages Include
               </h4>
-              <div className="w-16 h-[2px] bg-kollab-red mx-auto"></div>
+              <div className="h-1 bg-gradient-to-r from-transparent via-kollab-red to-transparent"></div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="text-2xl mb-2">🎯</div>
-                <div className="text-sm font-bold text-black mb-1">매장 운영 지원</div>
-                <div className="text-xs text-zinc-600">전문 운영팀의 체계적 관리</div>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {/* 매장 운영 지원 */}
+            <div className="group relative bg-white border border-zinc-200 hover:border-kollab-red transition-all duration-300 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-kollab-red/0 to-kollab-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-6">
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 bg-black group-hover:bg-kollab-red transition-colors duration-300 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-base font-black text-black uppercase tracking-tight mb-2 group-hover:text-kollab-red transition-colors">
+                      매장 운영 지원
+                    </h5>
+                    <p className="text-xs text-zinc-600 leading-relaxed">
+                      전문 운영팀의 체계적 관리<br/>
+                      재고 관리 및 디스플레이 최적화
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <div className="text-2xl mb-2">📊</div>
-                <div className="text-sm font-bold text-black mb-1">판매 데이터 리포트</div>
-                <div className="text-xs text-zinc-600">실시간 분석 및 인사이트</div>
-              </div>
-              <div>
-                <div className="text-2xl mb-2">🌏</div>
-                <div className="text-sm font-bold text-black mb-1">글로벌 확장 기회</div>
-                <div className="text-xs text-zinc-600">LA 진출 우선 검토</div>
-              </div>
+              <div className="h-1 bg-gradient-to-r from-transparent via-zinc-300 to-transparent group-hover:via-kollab-red transition-colors duration-300"></div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-zinc-200 text-center">
-              <p className="text-xs text-zinc-500 mb-2">
-                * 정확한 가격 및 상세 조건은 입점 문의 시 안내해드립니다
-              </p>
-              <p className="text-xs text-zinc-500">
-                * 브랜드 심사 후 최종 승인 여부가 결정됩니다
-              </p>
+            {/* 판매 데이터 리포트 */}
+            <div className="group relative bg-white border border-zinc-200 hover:border-kollab-red transition-all duration-300 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-kollab-red/0 to-kollab-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-6">
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 bg-black group-hover:bg-kollab-red transition-colors duration-300 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-base font-black text-black uppercase tracking-tight mb-2 group-hover:text-kollab-red transition-colors">
+                      판매 데이터 리포트
+                    </h5>
+                    <p className="text-xs text-zinc-600 leading-relaxed">
+                      실시간 분석 및 인사이트<br/>
+                      주간/월간 성과 리포트 제공
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="h-1 bg-gradient-to-r from-transparent via-zinc-300 to-transparent group-hover:via-kollab-red transition-colors duration-300"></div>
+            </div>
+
+            {/* 글로벌 확장 기회 */}
+            <div className="group relative bg-white border border-zinc-200 hover:border-kollab-red transition-all duration-300 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-kollab-red/0 to-kollab-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-6">
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 bg-black group-hover:bg-kollab-red transition-colors duration-300 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-base font-black text-black uppercase tracking-tight mb-2 group-hover:text-kollab-red transition-colors">
+                      글로벌 확장 기회
+                    </h5>
+                    <p className="text-xs text-zinc-600 leading-relaxed">
+                      LA 진출 우선 검토<br/>
+                      해외 바이어 네트워킹 지원
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="h-1 bg-gradient-to-r from-transparent via-zinc-300 to-transparent group-hover:via-kollab-red transition-colors duration-300"></div>
+            </div>
+          </div>
+
+          {/* Additional Notes */}
+          <div className="bg-zinc-50 border border-zinc-200 p-6">
+            <div className="flex items-start gap-3">
+              <div className="shrink-0 mt-0.5">
+                <div className="w-5 h-5 rounded-full bg-kollab-red flex items-center justify-center">
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-zinc-700 leading-relaxed mb-2">
+                  정확한 가격 및 상세 조건은 입점 문의 시 안내해드립니다
+                </p>
+                <p className="text-xs text-zinc-700 leading-relaxed">
+                  브랜드 심사 후 최종 승인 여부가 결정됩니다
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -94,12 +94,6 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
         
         {/* Header */}
         <div className="text-center mb-16 md:mb-20">
-          <div className="inline-flex items-center gap-3 mb-4 px-4 py-2 bg-white/50 backdrop-blur-sm border border-zinc-200 rounded-full">
-            <Star size={16} className="text-kollab-red" />
-            <span className="text-kollab-red font-bold tracking-[0.2em] text-xs uppercase">Premium Packages</span>
-            <Star size={16} className="text-kollab-red" />
-          </div>
-          
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-black uppercase tracking-tighter leading-none mb-6">
             Choose Your
             <br />
@@ -114,7 +108,7 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
         </div>
 
         {/* Zones - Asymmetric Beauty Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 max-w-7xl mx-auto mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 max-w-7xl mx-auto mb-16 mt-8">
           
           {/* Basic Zone - Compact */}
           <div 
@@ -200,20 +194,20 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
 
           {/* Premium Zone - Featured Large */}
           <div 
-            className="lg:col-span-5 group relative"
+            className="lg:col-span-5 group relative pt-4"
             onMouseEnter={() => setHoveredZone(3)}
             onMouseLeave={() => setHoveredZone(null)}
           >
-            <div className={`relative h-full bg-gradient-to-br ${zones[2].gradient} border-2 border-kollab-red overflow-hidden transition-all duration-500 ${hoveredZone === 3 ? 'shadow-2xl shadow-kollab-red/20 scale-[1.02] border-kollab-red' : 'shadow-xl'}`}>
-              
-              {/* Featured Badge */}
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
-                <div className="bg-kollab-red text-white px-6 py-1 text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-2">
-                  <Sparkles size={12} />
-                  <span>Most Popular</span>
-                  <Sparkles size={12} />
-                </div>
+            {/* Featured Badge - Outside Card */}
+            <div className="absolute -top-0 left-1/2 transform -translate-x-1/2 z-20">
+              <div className="bg-kollab-red text-white px-6 py-1.5 text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-2">
+                <Sparkles size={12} />
+                <span>Most Popular</span>
+                <Sparkles size={12} />
               </div>
+            </div>
+
+            <div className={`relative h-full bg-gradient-to-br ${zones[2].gradient} border-2 border-kollab-red overflow-hidden transition-all duration-500 ${hoveredZone === 3 ? 'shadow-2xl shadow-kollab-red/20 scale-[1.02] border-kollab-red' : 'shadow-xl'}`}>
 
               {/* Background Image with Overlay */}
               <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500">

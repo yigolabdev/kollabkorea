@@ -217,12 +217,20 @@ ${formData.message || '(내용 없음)'}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     `.trim();
 
-    // mailto 링크로 이메일 클라이언트 실행
-    window.location.href = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // mailto 링크로 이메일 클라이언트 실행 (새 창으로 열어서 페이지 유지)
+    const mailtoLink = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // <a> 태그를 동적으로 생성하여 클릭 (가장 안전한 방법)
+    const link = document.createElement('a');
+    link.href = mailtoLink;
+    link.target = '_self';
+    link.click();
 
     // 사용자 피드백
-    alert('이메일 클라이언트가 실행됩니다.\n내용을 확인하신 후 전송 버튼을 눌러주세요.\n\n영업일 기준 3-5일 이내 회신 예정입니다.');
-    onClose();
+    setTimeout(() => {
+      alert('이메일 클라이언트가 실행됩니다.\n내용을 확인하신 후 전송 버튼을 눌러주세요.\n\n영업일 기준 3-5일 이내 회신 예정입니다.');
+      onClose();
+    }, 100);
     
     // 폼 초기화
     setFormData({

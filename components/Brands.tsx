@@ -35,7 +35,7 @@ export const Brands: React.FC = () => {
     {
       name: "Urban Beauty",
       category: "Lifestyle",
-      image: "https://images.unsplash.com/photo-1571380401583-72ca84994796?q=80&w=600&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=600&auto=format&fit=crop",
       zone: "Basic"
     }
   ];

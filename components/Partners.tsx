@@ -95,8 +95,8 @@ export const Partners: React.FC = () => {
           <div className="group relative border-zinc-800 hover:bg-zinc-900 transition-all duration-300 flex flex-col">
              <div className="aspect-[3/2] w-full overflow-hidden border-b border-zinc-800 relative">
               <img 
-                src="https://images.unsplash.com/photo-1571380401583-72ca84994796?q=80&w=800&auto=format&fit=crop" 
-                alt="Global K-Beauty Market" 
+                src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=800&auto=format&fit=crop" 
+                alt="Global K-Beauty Expansion Vision" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
               />
                <div className="absolute top-3 left-4 text-4xl font-black text-white/10 group-hover:text-kollab-red/20 transition-colors z-10">03</div>

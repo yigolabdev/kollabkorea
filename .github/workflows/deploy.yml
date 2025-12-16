@@ -68,12 +68,12 @@ jobs:
           aws s3 ls s3://${{ secrets.S3_BUCKET }}/ --recursive | head -20
           echo "✅ Deployment verified"
 
-      - name: Invalidate CloudFront (Optional)
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-        run: |
-          echo "🔄 Invalidating CloudFront cache..."
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
-          echo "✅ CloudFront cache invalidated"
+      # - name: Invalidate CloudFront (Optional)
+      #   if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+      #   run: |
+      #     echo "🔄 Invalidating CloudFront cache..."
+      #     aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      #     echo "✅ CloudFront cache invalidated"
 
       - name: Deployment complete
         run: |

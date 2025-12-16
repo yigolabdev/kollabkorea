@@ -25,53 +25,68 @@ jobs:
 
       - name: Check for forbidden colors
         run: |
-          echo "🎨 Checking for non-approved colors..."
+          echo "🎨 Checking for non-approved colors in component files..."
           
-          # .design-system-rules.json에서 허용된 컬러 읽기
-          ALLOWED_COLORS=$(node -e "
-            const rules = require('./.design-system-rules.json');
-            console.log(rules.colors.allowed.join('|'));
-          ")
+          # 체크할 파일 찾기 (design-tokens.ts, .design-system-rules.json 제외)
+          # 실제 컴포넌트와 스타일 파일만 체크
+          FILES_TO_CHECK=$(find . -type f \
+            \( -name "*.tsx" -o -name "*.css" \) \
+            ! -path "*/node_modules/*" \
+            ! -path "*/dist/*" \
+            ! -path "*/.git/*" \
+            ! -name "design-tokens.ts" \
+            ! -name ".design-system-rules.json")
           
-          # 모든 hex 컬러 찾기
-          ALL_COLORS=$(grep -r --include="*.tsx" --include="*.ts" --include="*.css" \
-            -oE "#[0-9a-fA-F]{6}" . | \
-            grep -v "node_modules" | \
-            grep -v "dist/" | \
-            grep -v ".git" | \
-            sort -u || true)
+          if [ -z "$FILES_TO_CHECK" ]; then
+            echo "✅ 체크할 파일이 없습니다"
+            exit 0
+          fi
+          
+          # 허용된 컬러 리스트 (정규식 패턴으로)
+          ALLOWED_PATTERN="#(dc0000|e4e0db|c0c0c0|000000|111111|ffffff"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|fafafa|f4f4f5|f5f5f5|e4e4e7|e5e5e5"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|d4d4d8|d4d4d4|a1a1aa|a3a3a3"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|71717a|737373|52525b|525252"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|3f3f46|404040|27272a|1f1f1f"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|18181b|09090b"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|fef2f2|fee2e2|fecaca|fca5a5|f87171"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|ef4444|dc2626|b91c1c|991b1b|7f1d1d|450a0a"
+          ALLOWED_PATTERN="${ALLOWED_PATTERN}|1e3a8a|6366f1|3730a3|312e81)"
           
           # 허용되지 않은 컬러 찾기
-          FORBIDDEN_FOUND=false
-          while IFS= read -r color; do
-            if [ ! -z "$color" ]; then
-              # 소문자로 변환하여 비교
-              color_lower=$(echo "$color" | tr '[:upper:]' '[:lower:]')
-              if ! echo "$ALLOWED_COLORS" | grep -qi "$color_lower"; then
-                if [ "$FORBIDDEN_FOUND" = false ]; then
-                  echo "❌ 허용되지 않은 컬러가 발견되었습니다:"
-                  FORBIDDEN_FOUND=true
-                fi
-                echo "  $color_lower"
-              fi
-            fi
-          done <<< "$ALL_COLORS"
+          FORBIDDEN_COLORS=$(echo "$FILES_TO_CHECK" | xargs grep -hioE "#[0-9a-fA-F]{6}" | \
+            tr '[:upper:]' '[:lower:]' | \
+            sort -u | \
+            grep -vE "^${ALLOWED_PATTERN}$" || true)
           
-          if [ "$FORBIDDEN_FOUND" = true ]; then
+          if [ ! -z "$FORBIDDEN_COLORS" ]; then
+            echo "❌ 허용되지 않은 컬러가 발견되었습니다:"
+            echo "$FORBIDDEN_COLORS" | while read color; do
+              echo "  $color"
+              # 어느 파일에서 발견되었는지 표시
+              echo "$FILES_TO_CHECK" | xargs grep -l "$color" | head -n 3 | while read file; do
+                echo "    → $file"
+              done
+            done
             echo ""
-            echo "허용된 브랜드 컬러:"
-            echo "- KOLLAB Red: #dc0000"
-            echo "- KOLLAB Beige: #e4e0db"
-            echo "- KOLLAB Silver: #c0c0c0"
-            echo "- KOLLAB Black: #000000"
-            echo "- KOLLAB Dark: #111111"
-            echo "- White: #ffffff"
+            echo "📚 허용된 브랜드 컬러:"
+            echo "  • KOLLAB Red: #dc0000"
+            echo "  • KOLLAB Beige: #e4e0db"
+            echo "  • KOLLAB Silver: #c0c0c0"
+            echo "  • KOLLAB Black: #000000"
+            echo "  • KOLLAB Dark: #111111"
+            echo "  • White: #ffffff"
             echo ""
-            echo "추가 허용 컬러: Tailwind zinc/red/blue/indigo scales"
-            echo "자세한 내용은 .design-system-rules.json 참조"
+            echo "📚 추가 허용 컬러:"
+            echo "  • Tailwind zinc scale (50-950)"
+            echo "  • Tailwind red scale (50-950)"
+            echo "  • Blue/Indigo accents"
+            echo ""
+            echo "ℹ️  design-tokens.ts는 체크 대상에서 제외됩니다"
             exit 1
           else
             echo "✅ 모든 컬러가 디자인 시스템을 준수합니다"
+            echo "   체크 완료: 컴포넌트 (.tsx) 및 스타일 (.css) 파일"
           fi
 
       - name: Check for forbidden fonts

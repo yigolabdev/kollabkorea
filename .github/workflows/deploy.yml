@@ -29,6 +29,12 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Verify build output
+        run: |
+          echo "📦 Checking build output..."
+          ls -la dist/
+          echo "✅ Build files ready for deployment"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -36,18 +42,51 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Verify AWS credentials
+        run: |
+          echo "🔐 Verifying AWS credentials..."
+          aws sts get-caller-identity
+          echo "✅ AWS credentials verified"
+
+      - name: Check S3 bucket access
+        run: |
+          echo "🪣 Checking S3 bucket: ${{ secrets.S3_BUCKET }}"
+          aws s3 ls s3://${{ secrets.S3_BUCKET }} || echo "Bucket is empty or newly created"
+          echo "✅ S3 bucket accessible"
+
       - name: Deploy to S3
         run: |
+          echo "🚀 Starting deployment to S3..."
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET }} --delete --cache-control max-age=31536000,public
+          echo "📝 Updating index.html cache settings..."
           aws s3 cp s3://${{ secrets.S3_BUCKET }}/index.html s3://${{ secrets.S3_BUCKET }}/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
+          echo "✅ Deployment to S3 completed"
+
+      - name: Verify deployment
+        run: |
+          echo "🔍 Verifying deployed files..."
+          aws s3 ls s3://${{ secrets.S3_BUCKET }}/ --recursive | head -20
+          echo "✅ Deployment verified"
 
       - name: Invalidate CloudFront (Optional)
         if: secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
         run: |
+          echo "🔄 Invalidating CloudFront cache..."
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+          echo "✅ CloudFront cache invalidated"
 
       - name: Deployment complete
         run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "✅ Deployment completed successfully!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
           echo "🌐 Site URL: http://${{ secrets.S3_BUCKET }}.s3-website-${{ secrets.AWS_REGION }}.amazonaws.com"
+          echo ""
+          echo "📊 Deployment Summary:"
+          echo "  • Region: ${{ secrets.AWS_REGION }}"
+          echo "  • Bucket: ${{ secrets.S3_BUCKET }}"
+          echo "  • Build: dist/"
+          echo ""
+          echo "🎉 Your site is now live!"
 

@@ -93,17 +93,18 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
       <div className="container mx-auto relative z-10">
         
         {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-10 h-[2px] bg-kollab-red"></div>
-            <span className="text-kollab-red font-bold tracking-widest text-xs uppercase">Zone Packages</span>
+        <div className="mb-8 border-b border-zinc-300 pb-6 shrink-0 flex flex-col md:flex-row justify-between items-end">
+          <div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black uppercase tracking-tight leading-none">
+              Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-black">Perfect Zone</span>
+            </h2>
+            <p className="mt-3 text-xs md:text-sm font-medium text-zinc-600 tracking-wide max-w-xl">
+              브랜드의 성장 단계에 맞는 최적의 공간을 선택하세요
+            </p>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-black uppercase tracking-tight leading-none mb-4">
-            Choose Your <span className="text-kollab-red">Perfect Zone</span>
-          </h2>
-          <p className="text-sm md:text-base text-zinc-600 max-w-2xl">
-            브랜드의 성장 단계에 맞는 최적의 공간을 선택하세요
-          </p>
+          <div className="text-right hidden md:block mt-3 md:mt-0">
+            <span className="text-[10px] text-zinc-500 border border-zinc-400 px-2 py-1 uppercase tracking-widest">Zone Packages</span>
+          </div>
         </div>
 
         {/* Zones - Asymmetric Beauty Layout */}

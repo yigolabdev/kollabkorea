@@ -27,30 +27,48 @@ jobs:
         run: |
           echo "🎨 Checking for non-approved colors..."
           
-          # 허용되지 않은 컬러 패턴 검사
-          FORBIDDEN_COLORS=$(grep -r --include="*.tsx" --include="*.ts" --include="*.css" \
-            -E "#[0-9a-fA-F]{6}" . | \
-            grep -v "#dc0000" | \
-            grep -v "#e4e0db" | \
-            grep -v "#c0c0c0" | \
-            grep -v "#000000" | \
-            grep -v "#111111" | \
-            grep -v "#ffffff" | \
+          # .design-system-rules.json에서 허용된 컬러 읽기
+          ALLOWED_COLORS=$(node -e "
+            const rules = require('./.design-system-rules.json');
+            console.log(rules.colors.allowed.join('|'));
+          ")
+          
+          # 모든 hex 컬러 찾기
+          ALL_COLORS=$(grep -r --include="*.tsx" --include="*.ts" --include="*.css" \
+            -oE "#[0-9a-fA-F]{6}" . | \
             grep -v "node_modules" | \
             grep -v "dist/" | \
-            grep -v ".git" || true)
+            grep -v ".git" | \
+            sort -u || true)
           
-          if [ ! -z "$FORBIDDEN_COLORS" ]; then
-            echo "❌ 허용되지 않은 컬러가 발견되었습니다:"
-            echo "$FORBIDDEN_COLORS"
+          # 허용되지 않은 컬러 찾기
+          FORBIDDEN_FOUND=false
+          while IFS= read -r color; do
+            if [ ! -z "$color" ]; then
+              # 소문자로 변환하여 비교
+              color_lower=$(echo "$color" | tr '[:upper:]' '[:lower:]')
+              if ! echo "$ALLOWED_COLORS" | grep -qi "$color_lower"; then
+                if [ "$FORBIDDEN_FOUND" = false ]; then
+                  echo "❌ 허용되지 않은 컬러가 발견되었습니다:"
+                  FORBIDDEN_FOUND=true
+                fi
+                echo "  $color_lower"
+              fi
+            fi
+          done <<< "$ALL_COLORS"
+          
+          if [ "$FORBIDDEN_FOUND" = true ]; then
             echo ""
-            echo "허용된 컬러만 사용하세요:"
+            echo "허용된 브랜드 컬러:"
             echo "- KOLLAB Red: #dc0000"
             echo "- KOLLAB Beige: #e4e0db"
             echo "- KOLLAB Silver: #c0c0c0"
             echo "- KOLLAB Black: #000000"
             echo "- KOLLAB Dark: #111111"
             echo "- White: #ffffff"
+            echo ""
+            echo "추가 허용 컬러: Tailwind zinc/red/blue/indigo scales"
+            echo "자세한 내용은 .design-system-rules.json 참조"
             exit 1
           else
             echo "✅ 모든 컬러가 디자인 시스템을 준수합니다"

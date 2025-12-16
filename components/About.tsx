@@ -39,8 +39,8 @@ export const About: React.FC = () => {
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                src="https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?q=80&w=1200&auto=format&fit=crop" 
-                alt="Seoul Sophisticated Urban Landscape" 
+                src="https://images.unsplash.com/photo-1538641139447-6249c394d1c6?q=80&w=1200&auto=format&fit=crop" 
+                alt="Seoul Seongsu-dong Sophisticated Street" 
                 className="w-full h-full object-cover grayscale opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
               />
             </div>
@@ -74,8 +74,8 @@ export const About: React.FC = () => {
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                  src="https://images.unsplash.com/photo-1444723121867-7a241cacace9?q=80&w=1000&auto=format&fit=crop" 
-                  alt="Los Angeles Downtown Skyline" 
+                  src="https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?q=80&w=1200&auto=format&fit=crop" 
+                  alt="Los Angeles Iconic Cityscape with Palm Trees" 
                   className="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
                 />
             </div>

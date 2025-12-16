@@ -89,8 +89,13 @@
 
 ```
 kollab-korea/
-├── components/           # React 컴포넌트
-│   ├── ui/              # 재사용 가능한 UI 컴포넌트
+├── .github/
+│   └── workflows/       # GitHub Actions
+│       ├── deploy.yml   # S3 자동 배포
+│       ├── preview.yml  # PR 빌드 체크
+│       └── design-check.yml  # 디자인 시스템 검증
+├── components/          # React 컴포넌트
+│   ├── ui/             # 재사용 가능한 UI 컴포넌트
 │   │   ├── Button.tsx
 │   │   ├── FormField.tsx
 │   │   └── SectionHeader.tsx
@@ -104,19 +109,22 @@ kollab-korea/
 │   ├── ApplyCTA.tsx
 │   ├── ApplyModal.tsx
 │   └── Footer.tsx
-├── hooks/               # 커스텀 훅
+├── hooks/              # 커스텀 훅
 │   ├── useScrollPosition.ts
 │   ├── useClickOutside.ts
 │   ├── useMousePosition.ts
 │   └── index.ts
-├── constants.ts         # 상수 정의
-├── types.ts            # TypeScript 타입 정의
-├── App.tsx             # 메인 앱 컴포넌트
-├── index.tsx           # 엔트리 포인트
-├── index.css           # 글로벌 스타일
-├── tailwind.config.js  # Tailwind 설정
-├── vite.config.ts      # Vite 설정
-└── tsconfig.json       # TypeScript 설정
+├── constants.ts        # 상수 정의
+├── types.ts           # TypeScript 타입 정의
+├── design-tokens.ts   # 디자인 시스템 토큰
+├── App.tsx            # 메인 앱 컴포넌트
+├── index.tsx          # 엔트리 포인트
+├── index.css          # 글로벌 스타일
+├── tailwind.config.js # Tailwind 설정
+├── vite.config.ts     # Vite 설정
+├── tsconfig.json      # TypeScript 설정
+├── DESIGN_SYSTEM.md   # 디자인 시스템 가이드
+└── .design-system-rules.json  # 디자인 규칙
 ```
 
 ---
@@ -243,28 +251,104 @@ const mousePos = useMousePosition(true); // -1 ~ 1 범위
 
 ## 🎨 디자인 시스템
 
+**완전한 문서**: [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) | **빠른 참조**: [`DESIGN_SYSTEM_QUICK_REFERENCE.md`](DESIGN_SYSTEM_QUICK_REFERENCE.md)
+
 ### 컬러 팔레트
 
-```css
---kollab-red:    #dc0000  /* 메인 브랜드 컬러 */
---kollab-beige:  #e4e0db  /* 서브 배경 */
---kollab-silver: #c0c0c0  /* 강조 */
---kollab-black:  #000000  /* 기본 배경 */
---kollab-dark:   #111111  /* 오프 블랙 */
-```
+| 이름 | HEX | RGB | CMYK | 사용처 |
+|------|-----|-----|------|--------|
+| **KOLLAB Red** | `#dc0000` | 220, 0, 0 | 4,100,100,0 | CTA, 강조, Hover |
+| **KOLLAB Beige** | `#e4e0db` | 228, 224, 218 | 13,13,14,0 | 서브 배경, About 섹션 |
+| **KOLLAB Silver** | `#c0c0c0` | 192, 192, 192 | 0,0,0,25 | Benefits 배경, 구조 요소 |
+| **KOLLAB Black** | `#000000` | 0, 0, 0 | 0,0,0,100 | 메인 배경, 텍스트 |
+| **WHITE** | `#ffffff` | 255, 255, 255 | 0,0,0,0 | 텍스트, 카드 배경 |
+
+**사용 규칙**: 60-30-10 (블랙 60% | 베이지/실버 30% | 레드 10%)
 
 ### 타이포그래피
 
-- **Font Family**: Inter (Google Fonts)
-- **Weights**: 300, 400, 600, 700, 900
+```typescript
+// Font Family
+font-family: 'Inter', sans-serif
 
-### 브레이크포인트 (Tailwind 기본)
+// Weights
+Light:     300
+Regular:   400
+Semi Bold: 600
+Bold:      700
+Black:     900  // 제목, CTA
 
-- `sm`: 640px
-- `md`: 768px
-- `lg`: 1024px
-- `xl`: 1280px
-- `2xl`: 1536px
+// Type Scale (모바일 → 태블릿 → 데스크톱)
+H1: 48px → 72px → 96px → 128px
+H2: 40px → 60px → 72px → 96px
+H3: 32px → 36px → 48px → 60px
+Body: 16px → 18px
+```
+
+**규칙**:
+- 제목: Inter Black (900) + uppercase + tracking-tighter
+- 본문: Inter Medium (600) + leading-relaxed
+- CTA: Inter Black (900) + uppercase + tracking-widest
+- 한글: break-keep 필수
+
+### 스페이싱 & 레이아웃
+
+```typescript
+// Base Unit: 4px
+Section Padding: 80px → 128px → 160px (모바일 → 태블릿 → 데스크톱)
+Container: max-w-[1280px] mx-auto px-6
+Card Padding: 32px → 40px
+Button Padding: 48px × 20px
+```
+
+### 애니메이션
+
+```typescript
+Duration:
+  FAST:      300ms  // 버튼, 호버
+  MEDIUM:    500ms  // 카드, 전환
+  SLOW:      700ms  // 이미지
+  VERY_SLOW: 1000ms // 페이드인
+
+Easing: ease-out (기본)
+```
+
+### 브레이크포인트
+
+```typescript
+sm:  640px   // 모바일 가로
+md:  768px   // 태블릿
+lg:  1024px  // 데스크톱
+xl:  1280px  // 대형 데스크톱
+2xl: 1536px  // XL 데스크톱
+```
+
+### 디자인 토큰
+
+```tsx
+import { colors, typography, spacing } from './design-tokens';
+
+// 컬러 사용
+<div style={{ backgroundColor: colors.kollab.red }} />
+
+// 타이포그래피
+<h1 style={{ 
+  fontSize: typography.fontSize.h1.desktop,
+  fontWeight: typography.fontWeight.black 
+}} />
+```
+
+### 자동 검증
+
+```bash
+# GitHub Actions에서 자동으로 체크
+- ✅ 브랜드 컬러 준수
+- ✅ 폰트 사용 규칙
+- ✅ 한글 텍스트 처리
+- ✅ 디자인 문서 존재
+```
+
+**디자인 시스템 변경 시**: `DESIGN_SYSTEM.md` 문서도 함께 업데이트
 
 ---
 

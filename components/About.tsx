@@ -39,8 +39,8 @@ export const About: React.FC = () => {
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                src="https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=1000&auto=format&fit=crop" 
-                alt="Seoul Seongsu-dong Industrial Area" 
+                src="https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?q=80&w=1200&auto=format&fit=crop" 
+                alt="Seoul Sophisticated Urban Landscape" 
                 className="w-full h-full object-cover grayscale opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
               />
             </div>

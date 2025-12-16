@@ -36,8 +36,8 @@ export const About: React.FC = () => {
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                src="https://images.unsplash.com/photo-1629198688000-71f23e745b6e?q=80&w=800&auto=format&fit=crop" 
-                alt="Seongsu Interior" 
+                src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1000&auto=format&fit=crop" 
+                alt="Seongsu Industrial Chic Interior" 
                 className="w-full h-full object-cover grayscale opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
               />
             </div>
@@ -68,8 +68,8 @@ export const About: React.FC = () => {
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                  src="https://images.unsplash.com/photo-1560362614-89027598847b?q=80&w=800&auto=format&fit=crop" 
-                  alt="LA Interior" 
+                  src="https://images.unsplash.com/photo-1534190239940-9ba8944ea261?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Los Angeles Downtown Skyline" 
                   className="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
                 />
             </div>

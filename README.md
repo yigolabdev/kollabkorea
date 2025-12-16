@@ -51,7 +51,12 @@
 - 접근성 개선 (ARIA, 키보드 네비게이션)
 - mailto 연동으로 즉시 문의 가능
 
-### 3. **3가지 Zone 소개**
+### 3. **브랜드 아이덴티티**
+- 🎨 SVG 파비콘 (멀티 플랫폼 지원)
+- 📱 PWA 지원 (iOS, Android)
+- 🎯 SEO 최적화 메타 태그
+
+### 4. **3가지 Zone 소개**
 - Premium Zone (4개 브랜드)
 - Standard Zone (6개 브랜드)
 - Basic Zone (20개 브랜드)

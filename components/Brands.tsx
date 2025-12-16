@@ -63,21 +63,21 @@ export const Brands: React.FC<BrandsProps> = ({ onApplyClick }) => {
         </div>
 
         {/* Brands Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
           {brands.map((brand, index) => (
             <div 
               key={index}
               className="group relative bg-black border border-zinc-800 hover:border-kollab-red transition-all duration-300 overflow-hidden"
             >
               {/* Image */}
-              <div className="aspect-square overflow-hidden relative">
+              <div className="aspect-[4/3] overflow-hidden relative">
                 <img 
                   src={brand.image}
                   alt={brand.name}
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110"
                 />
                 {/* Zone Badge */}
-                <div className={`absolute top-3 right-3 px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                <div className={`absolute top-2 right-2 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
                   brand.zone === 'Premium' ? 'bg-kollab-red text-white' :
                   brand.zone === 'Standard' ? 'bg-zinc-700 text-white' :
                   'bg-zinc-800 text-zinc-400'
@@ -87,13 +87,13 @@ export const Brands: React.FC<BrandsProps> = ({ onApplyClick }) => {
               </div>
               
               {/* Info */}
-              <div className="p-4 md:p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-base md:text-lg font-black text-white group-hover:text-kollab-red transition-colors">
+              <div className="p-3 md:p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="text-sm md:text-base font-black text-white group-hover:text-kollab-red transition-colors">
                     {brand.name}
                   </h3>
                 </div>
-                <p className="text-xs md:text-sm text-zinc-500 uppercase tracking-wider">{brand.category}</p>
+                <p className="text-[10px] md:text-xs text-zinc-500 uppercase tracking-wider">{brand.category}</p>
               </div>
             </div>
           ))}

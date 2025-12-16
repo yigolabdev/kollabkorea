@@ -619,14 +619,26 @@ xl:  1280px  // 데스크톱
 
 ## 📚 참고 자료
 
+### 브랜드 가이드
+- 📘 **브랜드 가이드라인**: [`BRAND_GUIDELINES.md`](BRAND_GUIDELINES.md)
+- 🎨 **로고 에셋**: [`public/assets/logos/`](public/assets/logos/)
+- 🎯 **디자인 토큰**: [`design-tokens.ts`](design-tokens.ts)
+
+### 로고 사용
+```tsx
+// Navbar (화이트 로고)
+<img src="/assets/logos/kollab-white.svg" alt="KOLLAB" className="h-8" />
+
+// Hero (두 줄, 화이트)
+<img src="/assets/logos/kollab-stacked-white.svg" alt="KOLLAB" className="h-32" />
+
+// About (블랙 로고)
+<img src="/assets/logos/kollab-black.svg" alt="KOLLAB" className="h-10" />
+```
+
 ### Figma 디자인
 - 메인 디자인 파일: [링크 필요]
 - 컴포넌트 라이브러리: [링크 필요]
-
-### 브랜드 가이드
-- 로고 사용 가이드
-- 컬러 사용 규정
-- 타이포그래피 규칙
 
 ### 코드 저장소
 - GitHub: https://github.com/yigolabdev/kollabkorea

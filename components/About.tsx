@@ -29,15 +29,18 @@ export const About: React.FC = () => {
           {/* Seoul Card */}
           <div className="group relative bg-white border-b lg:border-b-0 lg:border-r border-black p-6 md:p-10 hover:bg-zinc-50 transition-colors duration-500 flex flex-col justify-between overflow-hidden min-h-[280px]">
             <div className="flex justify-between items-start z-10 relative mb-12">
-                <h3 className="text-3xl md:text-4xl font-black text-black tracking-tighter">SEOUL</h3>
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-black text-black tracking-tighter">SEOUL</h3>
+                  <p className="text-sm md:text-base font-bold text-zinc-600 mt-1">SEONGSU-DONG</p>
+                </div>
                 <span className="bg-kollab-red text-white text-xs font-bold px-3 py-1 uppercase">Current</span>
             </div>
             
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1000&auto=format&fit=crop" 
-                alt="Seongsu Industrial Chic Interior" 
+                src="https://images.unsplash.com/photo-1604616617973-f2de10b5df0e?q=80&w=1000&auto=format&fit=crop" 
+                alt="Seoul Seongsu-dong Street View" 
                 className="w-full h-full object-cover grayscale opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
               />
             </div>
@@ -61,15 +64,18 @@ export const About: React.FC = () => {
           {/* LA Card */}
           <div className="group relative bg-kollab-black text-white p-6 md:p-10 hover:bg-zinc-900 transition-colors duration-500 flex flex-col justify-between overflow-hidden min-h-[280px]">
              <div className="flex justify-between items-start z-10 relative mb-12">
-                <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter">LA</h3>
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter">LOS ANGELES</h3>
+                  <p className="text-sm md:text-base font-bold text-zinc-400 mt-1">DOWNTOWN LA</p>
+                </div>
                 <span className="bg-white text-black text-xs font-bold px-3 py-1 uppercase">Coming Soon</span>
             </div>
             
             {/* Background Image Absolute */}
             <div className="absolute inset-0 z-0">
                <img 
-                  src="https://images.unsplash.com/photo-1534190239940-9ba8944ea261?q=80&w=1000&auto=format&fit=crop" 
-                  alt="Los Angeles Downtown Skyline" 
+                  src="https://images.unsplash.com/photo-1542396601-dca920ea2807?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Los Angeles Downtown Street View" 
                   className="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
                 />
             </div>

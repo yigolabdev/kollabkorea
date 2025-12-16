@@ -25,7 +25,7 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
         { title: "매장 운영 지원", detail: "기본 운영 가이드" },
         { title: "판매 데이터", detail: "주간 리포트 제공" }
       ],
-      visual: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=400&auto=format&fit=crop",
+      visual: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600&auto=format&fit=crop",
       gradient: "from-zinc-100 to-zinc-50",
       accentColor: "zinc",
       textColor: "text-zinc-900",
@@ -48,7 +48,7 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
         { title: "LA 진출 우선", detail: "글로벌 확장 기회" },
         { title: "마케팅 지원", detail: "맞춤형 전략 수립" }
       ],
-      visual: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?q=80&w=400&auto=format&fit=crop",
+      visual: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?q=80&w=600&auto=format&fit=crop",
       gradient: "from-white to-zinc-50",
       accentColor: "red",
       textColor: "text-black",
@@ -72,7 +72,7 @@ export const Pricing: React.FC<PricingProps> = ({ onApplyClick }) => {
         { title: "전담 매니저", detail: "1:1 브랜드 관리" },
         { title: "VIP 이벤트", detail: "독점 네트워킹" }
       ],
-      visual: "https://images.unsplash.com/photo-1612442443556-09b5b309e637?q=80&w=400&auto=format&fit=crop",
+      visual: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=600&auto=format&fit=crop",
       gradient: "from-black via-zinc-900 to-black",
       accentColor: "gold",
       textColor: "text-white",

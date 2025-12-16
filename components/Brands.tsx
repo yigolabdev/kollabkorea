@@ -41,6 +41,18 @@ export const Brands: React.FC<BrandsProps> = ({ onApplyClick }) => {
       category: "Lifestyle",
       image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?q=80&w=600&auto=format&fit=crop",
       zone: "Basic"
+    },
+    {
+      name: "Glow Lab",
+      category: "Skincare",
+      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=600&auto=format&fit=crop",
+      zone: "Standard"
+    },
+    {
+      name: "Seoul Glow",
+      category: "Makeup",
+      image: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?q=80&w=600&auto=format&fit=crop",
+      zone: "Premium"
     }
   ];
 

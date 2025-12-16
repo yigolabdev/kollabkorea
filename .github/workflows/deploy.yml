@@ -69,7 +69,7 @@ jobs:
           echo "✅ Deployment verified"
 
       - name: Invalidate CloudFront (Optional)
-        if: secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
+        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
         run: |
           echo "🔄 Invalidating CloudFront cache..."
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"

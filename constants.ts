@@ -6,10 +6,12 @@ import { Globe, Camera, TrendingUp, Users, BarChart3, ShoppingBag } from 'lucide
 // ============================================
 export const NAVIGATION_LINKS: NavigationLink[] = [
   { name: 'ABOUT', href: '#about' },
+  { name: 'CRITERIA', href: '#partners' },
   { name: 'BENEFITS', href: '#benefits' },
   { name: 'ZONES', href: '#zones' },
-  { name: 'MOOD', href: '#mood' },
-  { name: 'CRITERIA', href: '#partners' },
+  { name: 'BRANDS', href: '#brands' },
+  { name: 'PRICING', href: '#pricing' },
+  { name: 'FAQ', href: '#faq' },
   { name: 'CONTACT', href: '#contact' },
 ];
 

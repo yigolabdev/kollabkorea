@@ -29,11 +29,11 @@ export const Partners: React.FC = () => {
           
           {/* Card 1 */}
           <div className="group relative border-r border-b md:border-b-0 border-zinc-800 hover:bg-zinc-900 transition-all duration-300 flex flex-col">
-            {/* Image Area - Reduced aspect ratio */}
+            {/* Image Area - K-Beauty Brand Identity */}
             <div className="aspect-[3/2] w-full overflow-hidden border-b border-zinc-800 relative">
               <img 
-                src="https://images.unsplash.com/photo-1618331835717-801e976710b2?q=80&w=800&auto=format&fit=crop" 
-                alt="Brand Identity Styling" 
+                src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop" 
+                alt="K-Beauty Brand Packaging Design" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
               />
               <div className="absolute top-3 left-4 text-4xl font-black text-white/10 group-hover:text-kollab-red/20 transition-colors z-10">01</div>
@@ -64,8 +64,8 @@ export const Partners: React.FC = () => {
           <div className="group relative border-r border-b md:border-b-0 border-zinc-800 hover:bg-zinc-900 transition-all duration-300 flex flex-col">
              <div className="aspect-[3/2] w-full overflow-hidden border-b border-zinc-800 relative">
               <img 
-                src="https://images.unsplash.com/photo-1556228578-f6605f0d8688?q=80&w=800&auto=format&fit=crop" 
-                alt="Product Quality Texture" 
+                src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop" 
+                alt="K-Beauty Product Ingredients" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
               />
                <div className="absolute top-3 left-4 text-4xl font-black text-white/10 group-hover:text-kollab-red/20 transition-colors z-10">02</div>
@@ -95,8 +95,8 @@ export const Partners: React.FC = () => {
           <div className="group relative border-zinc-800 hover:bg-zinc-900 transition-all duration-300 flex flex-col">
              <div className="aspect-[3/2] w-full overflow-hidden border-b border-zinc-800 relative">
               <img 
-                src="https://images.unsplash.com/photo-1444723121867-c61e74e36b1d?q=80&w=800&auto=format&fit=crop" 
-                alt="Global Vision City" 
+                src="https://images.unsplash.com/photo-1571380401583-72ca84994796?q=80&w=800&auto=format&fit=crop" 
+                alt="Global K-Beauty Market" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
               />
                <div className="absolute top-3 left-4 text-4xl font-black text-white/10 group-hover:text-kollab-red/20 transition-colors z-10">03</div>

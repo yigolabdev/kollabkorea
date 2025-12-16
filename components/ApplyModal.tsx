@@ -122,8 +122,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
+  // Hook 규칙: 모든 Hook은 return null 이전에 호출되어야 함
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -457,6 +456,9 @@ ${formData.message || '(내용 없음)'}
         return null;
     }
   };
+
+  // Hook 규칙 준수: 모든 Hook 호출 후 조건부 렌더링
+  if (!isOpen) return null;
 
   return (
     <div 

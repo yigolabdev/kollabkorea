@@ -16,8 +16,14 @@ import { ApplyModal } from './components/ApplyModal';
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => {
+    console.log('🔥 openModal called! Setting isModalOpen to true');
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    console.log('🔥 closeModal called! Setting isModalOpen to false');
+    setIsModalOpen(false);
+  };
 
   return (
     // Optimized page flow with logical progression

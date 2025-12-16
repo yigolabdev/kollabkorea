@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "KOLLAB KOREA Design System Rules",
+  "description": "디자인 시스템 준수 규칙 및 검증",
+  "version": "1.0.0",
+  
+  "colors": {
+    "allowed": [
+      "#dc0000",
+      "#e4e0db",
+      "#c0c0c0",
+      "#000000",
+      "#111111",
+      "#ffffff",
+      "#fafafa",
+      "#f5f5f5",
+      "#e5e5e5",
+      "#d4d4d4",
+      "#a3a3a3",
+      "#737373",
+      "#525252",
+      "#404040",
+      "#1f1f1f"
+    ],
+    "primary": "#dc0000",
+    "usage": {
+      "#dc0000": [
+        "CTA buttons",
+        "Brand emphasis",
+        "Hover states",
+        "Icons (accent)"
+      ],
+      "#000000": [
+        "Main backgrounds",
+        "Text on light backgrounds",
+        "Headers",
+        "Footers"
+      ],
+      "#e4e0db": [
+        "Section backgrounds",
+        "Alternative backgrounds",
+        "Cards"
+      ],
+      "#c0c0c0": [
+        "Structural elements",
+        "Borders",
+        "Metallic effects"
+      ]
+    }
+  },
+  
+  "typography": {
+    "fontFamily": {
+      "primary": "Inter",
+      "fallback": "sans-serif",
+      "allowed": ["Inter"]
+    },
+    "fontWeights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700,
+      "black": 900
+    },
+    "minimumSize": "14px",
+    "rules": {
+      "headings": {
+        "fontWeight": [700, 900],
+        "textTransform": "uppercase",
+        "letterSpacing": "tighter"
+      },
+      "body": {
+        "fontWeight": [400, 500, 600],
+        "lineHeight": "relaxed"
+      },
+      "cta": {
+        "fontWeight": 900,
+        "textTransform": "uppercase",
+        "letterSpacing": "widest"
+      },
+      "korean": {
+        "wordBreak": "keep-all"
+      }
+    }
+  },
+  
+  "spacing": {
+    "baseUnit": 4,
+    "scale": [0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, 128, 160, 192, 224, 256],
+    "sections": {
+      "mobile": {
+        "paddingY": "80px"
+      },
+      "tablet": {
+        "paddingY": "128px"
+      },
+      "desktop": {
+        "paddingY": "160px"
+      }
+    }
+  },
+  
+  "breakpoints": {
+    "sm": "640px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1280px",
+    "2xl": "1536px"
+  },
+  
+  "animation": {
+    "duration": {
+      "fast": "300ms",
+      "medium": "500ms",
+      "slow": "700ms",
+      "verySlow": "1000ms"
+    },
+    "rules": {
+      "minimum": "200ms",
+      "maximum": "1000ms",
+      "hover": "300ms",
+      "preferred": "ease-out"
+    }
+  },
+  
+  "components": {
+    "button": {
+      "variants": ["primary", "secondary", "outline", "ghost"],
+      "sizes": ["sm", "md", "lg", "xl"],
+      "required": {
+        "fontWeight": 900,
+        "textTransform": "uppercase",
+        "letterSpacing": "widest"
+      }
+    },
+    "card": {
+      "background": "#ffffff",
+      "border": "#d4d4d4",
+      "hoverBorder": "#dc0000",
+      "transition": "300ms"
+    },
+    "input": {
+      "background": "#000000",
+      "border": "#404040",
+      "focusBorder": "#dc0000",
+      "borderRadius": "0"
+    }
+  },
+  
+  "accessibility": {
+    "contrast": {
+      "minimum": "4.5:1",
+      "large": "3:1"
+    },
+    "required": [
+      "aria-label",
+      "alt text for images",
+      "keyboard navigation",
+      "focus states"
+    ]
+  },
+  
+  "restrictions": {
+    "forbidden": {
+      "colors": [
+        "Use of colors not in the allowed list",
+        "Gradients (unless approved)",
+        "Low contrast combinations"
+      ],
+      "typography": [
+        "Fonts other than Inter",
+        "Font size below 14px",
+        "More than 3 font weights per page"
+      ],
+      "spacing": [
+        "Fixed pixel widths (use responsive units)",
+        "Inconsistent spacing patterns"
+      ],
+      "animation": [
+        "Animations faster than 200ms",
+        "Animations slower than 1s",
+        "More than 3 simultaneous animations"
+      ]
+    }
+  },
+  
+  "bestPractices": {
+    "layout": [
+      "Use container for content wrapping",
+      "Mobile-first responsive design",
+      "Consistent grid system"
+    ],
+    "performance": [
+      "Optimize images",
+      "Minimize animations",
+      "Use efficient CSS"
+    ],
+    "maintainability": [
+      "Use design tokens",
+      "Follow component structure",
+      "Document custom variations"
+    ]
+  }
+}
+

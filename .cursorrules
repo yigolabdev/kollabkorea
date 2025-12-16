@@ -18,39 +18,144 @@
 - **타입 정의는 `types.ts`에 중앙 관리**
 - **상수는 `constants.ts`에 중앙 관리**
 
+## 🎨 디자인 시스템 (필수 준수)
+
+### 컬러 시스템
+**반드시 정의된 브랜드 컬러만 사용:**
+- `kollab-red`: #dc0000 (RGB 220,0,0 / CMYK 4,100,100,0)
+- `kollab-beige`: #e4e0db (RGB 228,224,218 / CMYK 13,13,14,0)
+- `kollab-silver`: #c0c0c0 (RGB 192,192,192 / CMYK 0,0,0,25)
+- `kollab-black`: #000000 (RGB 0,0,0 / CMYK 0,0,0,100)
+- `kollab-dark`: #111111
+- `white`: #ffffff
+- Zinc scale: 50-900 (중립 컬러)
+
+**사용 규칙:**
+- KOLLAB Red는 CTA, 강조, Hover에만 사용
+- 60-30-10 규칙: 블랙 60%, 베이지/실버 30%, 레드 10%
+- 충분한 대비 비율 유지 (WCAG AA 준수)
+- 정의되지 않은 커스텀 컬러 사용 금지
+
+### 타이포그래피
+**폰트:**
+- Primary: Inter (유일한 허용 폰트)
+- Weights: 300 (Light), 400 (Regular), 600 (Semi Bold), 700 (Bold), 900 (Black)
+
+**규칙:**
+- 제목: Inter Black (900) + uppercase + tracking-tighter
+- 본문: Inter Medium (600) + leading-relaxed
+- CTA/버튼: Inter Black (900) + uppercase + tracking-widest
+- 최소 폰트 사이즈: 14px
+- 한글 텍스트: break-keep 클래스 필수
+
+**타입 스케일:**
+```
+H1: text-7xl md:text-8xl lg:text-9xl (72px/96px/128px)
+H2: text-6xl md:text-7xl lg:text-8xl (60px/72px/96px)
+H3: text-4xl md:text-5xl lg:text-6xl (36px/48px/60px)
+Body: text-base md:text-lg (16px/18px)
+```
+
+### 스페이싱
+**기본 단위: 4px**
+- Section padding: py-20 md:py-32 lg:py-40
+- Container: container mx-auto px-6
+- Card padding: p-8 md:p-10
+- Button padding: px-12 py-5
+- 일관된 그리드 시스템 사용
+
+### 애니메이션
+**Duration:**
+- FAST: 300ms (버튼, 호버)
+- MEDIUM: 500ms (카드, 전환)
+- SLOW: 700ms (이미지)
+- VERY_SLOW: 1000ms (페이드인)
+
+**규칙:**
+- 200ms 이하 금지 (너무 빠름)
+- 1000ms 이상 금지 (너무 느림)
+- Easing: ease-out (기본)
+- 동시 애니메이션 3개 이하
+
+### 컴포넌트 표준
+**Button:**
+- Variants: primary, secondary, outline, ghost
+- Sizes: sm, md, lg, xl
+- 필수: font-black + uppercase + tracking-widest
+
+**Card:**
+- 배경: white, 보더: zinc-300
+- Hover: border-kollab-red, shadow-xl
+- Transition: 300ms
+
+**Input:**
+- 배경: black, 보더: zinc-700
+- Focus: border-red-600 + ring-red-600
+- Border-radius: 0 (sharp edges)
+
 ## 스타일링 가이드
 1. **Tailwind CSS 우선 사용**
-2. **KOLLAB 브랜드 컬러 사용**:
-   - `kollab-red`: #dc0000
-   - `kollab-beige`: #e4e0db
-   - `kollab-silver`: #c0c0c0
-   - `kollab-black`: #000000
-   - `kollab-dark`: #111111
-3. **모바일 우선 반응형 디자인** (Tailwind 브레이크포인트 사용)
-4. **애니메이션은 성능 고려하여 최소화**
+2. **디자인 토큰 활용** (`design-tokens.ts` 참조)
+3. **모바일 우선 반응형 디자인**
+4. **디자인 시스템 문서 준수** (`DESIGN_SYSTEM.md` 참조)
 
 ## 네이밍 규칙
 - **컴포넌트**: PascalCase (예: `ApplyModal`)
 - **함수/변수**: camelCase (예: `onApplyClick`)
 - **타입/인터페이스**: PascalCase (예: `BrandApplication`)
 - **CSS 클래스**: Tailwind utility classes
+- **Design Tokens**: camelCase (예: `colors.kollab.red`)
 
 ## Git 커밋 메시지
 - **feat**: 새로운 기능
 - **fix**: 버그 수정
 - **style**: 스타일링 변경
+- **design**: 디자인 시스템 변경
 - **refactor**: 리팩토링
 - **docs**: 문서 수정
 - **chore**: 빌드/설정 변경
 
 ## 개발 워크플로우
-1. `npm run dev` - 개발 서버 실행 (포트 5173)
+1. `npm run dev` - 개발 서버 실행
 2. `npm run build` - 프로덕션 빌드
 3. `npm run preview` - 빌드 결과 미리보기
+4. 디자인 시스템 체크: `DESIGN_SYSTEM.md` 확인
+
+## 품질 체크리스트
+
+### 코드 작성 전
+- [ ] 디자인 시스템 컬러 확인
+- [ ] 타이포그래피 규칙 확인
+- [ ] 컴포넌트 재사용 가능성 검토
+- [ ] 접근성 요구사항 확인
+
+### 코드 작성 후
+- [ ] 린트 에러 0개
+- [ ] 타입 에러 0개
+- [ ] 모든 브레이크포인트 테스트
+- [ ] 접근성 속성 추가 (ARIA)
+- [ ] 한글 텍스트 break-keep 적용
+- [ ] 디자인 토큰 사용 확인
+
+### 배포 전
+- [ ] 빌드 성공
+- [ ] 디자인 시스템 준수 확인
+- [ ] 성능 테스트 (Lighthouse)
+- [ ] 브라우저 호환성 테스트
+- [ ] 모바일/태블릿/데스크톱 테스트
 
 ## 주의사항
-- **한글 텍스트는 `break-keep` 클래스 사용** (단어 단위 줄바꿈)
-- **접근성 고려**: 버튼과 링크는 명확한 레이블 제공
-- **성능 최적화**: lazy loading 및 이미지 최적화 고려
+- **디자인 시스템 필수 준수**: 모든 컬러, 폰트, 스페이싱은 정의된 토큰 사용
+- **한글 텍스트는 `break-keep` 클래스 필수**
+- **접근성 고려**: ARIA 레이블, 키보드 네비게이션
+- **성능 최적화**: 불필요한 애니메이션 제거
 - **SEO**: 메타 태그 및 시맨틱 HTML 사용
+- **디자인 변경 시**: `DESIGN_SYSTEM.md` 문서 업데이트
+
+## 참고 문서
+- 📘 **디자인 시스템**: `DESIGN_SYSTEM.md`
+- 🎨 **디자인 토큰**: `design-tokens.ts`
+- 📋 **디자인 규칙**: `.design-system-rules.json`
+- 🚀 **배포 가이드**: `DEPLOYMENT.md`
+- 🔐 **Secrets 설정**: `GITHUB_SECRETS_SETUP.md`
 

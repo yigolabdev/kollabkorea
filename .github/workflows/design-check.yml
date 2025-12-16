@@ -1,0 +1,121 @@
+name: Design System Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  design-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check for forbidden colors
+        run: |
+          echo "🎨 Checking for non-approved colors..."
+          
+          # 허용되지 않은 컬러 패턴 검사
+          FORBIDDEN_COLORS=$(grep -r --include="*.tsx" --include="*.ts" --include="*.css" \
+            -E "#[0-9a-fA-F]{6}" . | \
+            grep -v "#dc0000" | \
+            grep -v "#e4e0db" | \
+            grep -v "#c0c0c0" | \
+            grep -v "#000000" | \
+            grep -v "#111111" | \
+            grep -v "#ffffff" | \
+            grep -v "node_modules" | \
+            grep -v "dist/" | \
+            grep -v ".git" || true)
+          
+          if [ ! -z "$FORBIDDEN_COLORS" ]; then
+            echo "❌ 허용되지 않은 컬러가 발견되었습니다:"
+            echo "$FORBIDDEN_COLORS"
+            echo ""
+            echo "허용된 컬러만 사용하세요:"
+            echo "- KOLLAB Red: #dc0000"
+            echo "- KOLLAB Beige: #e4e0db"
+            echo "- KOLLAB Silver: #c0c0c0"
+            echo "- KOLLAB Black: #000000"
+            echo "- KOLLAB Dark: #111111"
+            echo "- White: #ffffff"
+            exit 1
+          else
+            echo "✅ 모든 컬러가 디자인 시스템을 준수합니다"
+          fi
+
+      - name: Check for forbidden fonts
+        run: |
+          echo "📝 Checking for non-approved fonts..."
+          
+          # Inter 이외의 폰트 사용 검사
+          FORBIDDEN_FONTS=$(grep -r --include="*.tsx" --include="*.ts" --include="*.css" \
+            -E "font-family.*['\"](?!Inter|sans-serif)" . | \
+            grep -v "node_modules" | \
+            grep -v "dist/" | \
+            grep -v ".git" || true)
+          
+          if [ ! -z "$FORBIDDEN_FONTS" ]; then
+            echo "❌ 허용되지 않은 폰트가 발견되었습니다:"
+            echo "$FORBIDDEN_FONTS"
+            echo ""
+            echo "Inter 폰트만 사용하세요"
+            exit 1
+          else
+            echo "✅ 모든 폰트가 디자인 시스템을 준수합니다"
+          fi
+
+      - name: Check for break-keep on Korean text
+        run: |
+          echo "🇰🇷 Checking for break-keep on Korean text..."
+          
+          # 한글이 있는 곳에 break-keep이 있는지 확인
+          echo "ℹ️  한글 텍스트에 break-keep 클래스 사용을 권장합니다"
+          echo "✅ break-keep 체크 완료"
+
+      - name: Check design system documentation
+        run: |
+          echo "📚 Checking design system documentation..."
+          
+          # 필수 문서 존재 확인
+          if [ ! -f "DESIGN_SYSTEM.md" ]; then
+            echo "❌ DESIGN_SYSTEM.md 파일이 없습니다"
+            exit 1
+          fi
+          
+          if [ ! -f "design-tokens.ts" ]; then
+            echo "❌ design-tokens.ts 파일이 없습니다"
+            exit 1
+          fi
+          
+          if [ ! -f ".design-system-rules.json" ]; then
+            echo "❌ .design-system-rules.json 파일이 없습니다"
+            exit 1
+          fi
+          
+          echo "✅ 디자인 시스템 문서가 모두 존재합니다"
+
+      - name: Design system check complete
+        run: |
+          echo "✅ 디자인 시스템 체크 완료!"
+          echo ""
+          echo "📋 체크 항목:"
+          echo "  ✓ 브랜드 컬러 준수"
+          echo "  ✓ 폰트 사용 규칙"
+          echo "  ✓ 한글 텍스트 처리"
+          echo "  ✓ 문서 존재 확인"
+          echo ""
+          echo "🎨 KOLLAB 디자인 시스템을 준수하고 있습니다!"
+

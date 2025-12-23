@@ -1,0 +1,23 @@
+# KOLLAB KOREA - Robots.txt
+# 모든 검색 엔진 크롤러 허용
+
+User-agent: *
+Allow: /
+
+# 특정 검색 엔진 최적화
+User-agent: Googlebot
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap 위치
+Sitemap: https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/sitemap.xml
+
+# 크롤링 속도 조절 (선택사항)
+Crawl-delay: 1
+
+

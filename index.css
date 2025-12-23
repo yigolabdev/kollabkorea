@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* KOLLAB 브랜드 컬러 시스템 */
+:root {
+  --kollab-red: #dc0000;
+  --kollab-beige: #e4e0db;
+  --kollab-silver: #c0c0c0;
+  --kollab-black: #000000;
+  --kollab-white: #ffffff;
+}
+
 /* 기본 스타일 */
 * {
   margin: 0;
@@ -15,16 +24,68 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--kollab-white);
+  color: var(--kollab-black);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+/* KOLLAB 브랜드 타이포그래피 */
+.logo-font {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.08em;
+}
+
+.slogan-font {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+}
+
+/* KOLLAB 브랜드 컬러 유틸리티 */
+.kollab-red {
+  color: var(--kollab-red);
+}
+
+.bg-kollab-red {
+  background-color: var(--kollab-red);
+}
+
+.border-kollab-red {
+  border-color: var(--kollab-red);
+}
+
+.bg-kollab-beige {
+  background-color: var(--kollab-beige);
+}
+
+.bg-kollab-silver {
+  background-color: var(--kollab-silver);
+}
+
+.bg-kollab-black {
+  background-color: var(--kollab-black);
+}
+
+.text-kollab-white {
+  color: var(--kollab-white);
+}
+
 /* 한글 텍스트 줄바꿈 */
 .break-keep {
   word-break: keep-all;
+}
+
+/* 고대비 텍스트 보장 */
+.text-high-contrast-light {
+  color: var(--kollab-white);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.text-high-contrast-dark {
+  color: var(--kollab-black);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 

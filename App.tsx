@@ -6,14 +6,18 @@ import Features from './components/Features';
 import About from './components/About';
 import Platform from './components/Platform';
 import Brands from './components/Brands';
-import Closing from './components/Closing';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FAQ from './components/FAQ';
+import ApplyModal from './components/ApplyModal';
 import { LanguageProvider } from './LanguageContext';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,42 +39,48 @@ const App: React.FC = () => {
   return (
     <LanguageProvider>
       <div className="relative overflow-x-hidden selection:bg-red-600 selection:text-white bg-[#e4e0db]">
-        <Navbar activeSection={activeSection} />
+        <Navbar activeSection={activeSection} onApplyClick={openModal} />
         
         <main>
           <section id="home">
-            <Hero />
+            <Hero onApplyClick={openModal} />
           </section>
 
-          {/* Increased padding for better visibility height (py-32 to py-48) */}
-          <section id="features" className="py-32 md:py-48 px-6 md:px-12 bg-white">
+          {/* Features - Why Choose KOLLAB */}
+          <section id="features" className="py-20 md:py-32 px-6 md:px-12 bg-white">
             <Features />
           </section>
           
-          <section id="about" className="py-32 md:py-48 px-6 md:px-12 bg-zinc-50 border-y border-black/5">
+          {/* About - Company Overview */}
+          <section id="about" className="py-20 md:py-32 px-6 md:px-12 bg-zinc-50 border-y border-black/5">
             <About />
           </section>
-          
-          <section id="platform" className="py-32 md:py-48 px-6 md:px-12 bg-[#e4e0db] industrial-mesh">
-            <Platform />
-          </section>
 
-          <section id="brands" className="py-32 md:py-48 px-6 md:px-12 bg-black text-white">
+          {/* Brands - Who Can Join */}
+          <section id="brands" className="py-20 md:py-32 px-6 md:px-12 bg-black text-white">
             <Brands />
           </section>
-
-          <Closing />
           
-          <section id="faq" className="py-32 md:py-48 px-6 md:px-12 bg-white border-t border-black/5">
+          {/* Platform - Zone Selection (moved after Brands) */}
+          <section id="platform" className="py-20 md:py-32 px-6 md:px-12 bg-[#e4e0db] industrial-mesh">
+            <Platform />
+          </section>
+          
+          {/* FAQ - Frequently Asked Questions */}
+          <section id="faq" className="py-20 md:py-32 px-6 md:px-12 bg-white border-t border-black/5">
             <FAQ />
           </section>
 
-          <section id="contact" className="py-32 md:py-48 px-6 md:px-12 bg-[#e4e0db]">
-            <Contact />
+          {/* Contact - Get in Touch */}
+          <section id="contact" className="py-20 md:py-32 px-6 md:px-12 bg-[#e4e0db]">
+            <Contact onApplyClick={openModal} />
           </section>
         </main>
 
         <Footer />
+
+        {/* Apply Modal */}
+        <ApplyModal isOpen={isModalOpen} onClose={closeModal} />
       </div>
     </LanguageProvider>
   );

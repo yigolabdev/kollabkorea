@@ -1,106 +1,158 @@
-
-import React from 'react';
-import { Zap, Star, Info, ArrowUpRight } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Zap, Star, Check } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 const Platform: React.FC = () => {
   const { t } = useLanguage();
   const tiers = t('platform.tiers') || [];
   const allInclude = t('platform.allInclude') || [];
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header - Strictly aligned with BX hierarchical typography */}
-      <div className="flex flex-col md:flex-row items-baseline justify-between gap-6 mb-24 border-b border-black pb-12">
-        <div className="max-w-2xl">
-          <h2 className="logo-font text-5xl md:text-8xl leading-[0.85] tracking-tighter mb-6">
-            CHOOSE YOUR <span className="kollab-red">ZONE.</span>
+    <div ref={sectionRef} className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className={`mb-16 flex items-start justify-between transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div>
+          <h2 className="logo-font text-5xl md:text-7xl leading-[0.9] tracking-tighter text-black mb-3">
+            CHOOSE YOUR <span className="text-[#dc0000]">PERFECT ZONE</span>
           </h2>
-          <p className="text-xl md:text-2xl font-bold tracking-tight text-black/60 uppercase">
+          <p className="text-base md:text-lg font-bold tracking-tight text-black/60 uppercase">
             {t('platform.subtitle')}
           </p>
         </div>
         <div className="hidden md:block">
-          <span className="text-[10px] font-black tracking-[0.5em] uppercase opacity-40">
-            {t('platform.selective')}
-          </span>
+          <div className="px-4 py-2 border-2 border-black text-black text-[10px] font-black tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all cursor-pointer">
+            ZONE PACKAGES
+          </div>
         </div>
       </div>
 
-      {/* Grid - Simplified card design following minimal aesthetic */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        {tiers.map((tier: any) => (
+      {/* Zone Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {tiers.map((tier: any, idx: number) => (
           <div 
             key={tier.id} 
-            className="group relative flex flex-col h-full bg-white transition-all duration-700 hover:-translate-y-2 border border-black/5"
+            className={`relative flex flex-col bg-white text-black border-2 border-black/10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            style={{ transitionDelay: `${idx * 150}ms` }}
           >
-            {/* Subtle Metallic Silver touch for hover */}
-            <div className="absolute inset-0 bg-[#c0c0c0] opacity-0 group-hover:opacity-[0.05] transition-opacity duration-700"></div>
-            
-            <div className="p-10 md:p-14 flex flex-col h-full relative z-10">
-              {/* Header */}
-              <div className="flex justify-between items-start mb-16">
-                <div>
-                  <span className={`text-[10px] font-black tracking-[0.3em] uppercase mb-3 block ${tier.popular ? 'text-kollab-red' : 'opacity-30'}`}>
-                    {tier.type}
-                  </span>
-                  <h3 className="logo-font text-3xl md:text-4xl tracking-tighter uppercase leading-none">{tier.name}</h3>
-                </div>
-                <div className={`transition-all duration-700 ${tier.popular ? 'text-kollab-red' : 'text-black/10'}`}>
-                   {tier.id === 'premium' ? <Star size={28} fill="currentColor" /> : <Zap size={28} />}
+            {/* Popular Badge */}
+            {tier.popular && (
+              <div className="absolute -top-0 left-0 right-0 z-20">
+                <div className="bg-[#dc0000] text-white text-[10px] font-black tracking-[0.3em] uppercase py-2 text-center flex items-center justify-center space-x-2">
+                  <span>%</span>
+                  <span>MOST POPULAR</span>
+                  <span>%</span>
                 </div>
               </div>
+            )}
+            
+            <div className={`p-8 flex flex-col h-full ${tier.popular ? 'pt-14' : ''}`}>
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center mb-6">
+                {tier.id === 'premium' ? (
+                  <Star size={24} fill="white" className="text-white" />
+                ) : tier.id === 'standard' ? (
+                  <Zap size={24} className="text-white" />
+                ) : (
+                  <Zap size={24} className="text-white" />
+                )}
+              </div>
+
+              {/* Type Label */}
+              <span className={`text-[10px] font-black tracking-[0.3em] uppercase mb-2 ${
+                tier.popular ? 'text-[#dc0000]' : 'text-black/50'
+              }`}>
+                {tier.type}
+              </span>
+
+              {/* Zone Name */}
+              <h3 className="logo-font text-3xl tracking-tighter uppercase leading-none mb-3 text-black">
+                {tier.name}
+              </h3>
 
               {/* Description */}
-              <p className="text-xs font-black uppercase tracking-widest text-black/40 mb-10 pb-10 border-b border-black/5 leading-relaxed">
+              <p className="text-xs font-bold mb-6 text-black/60">
                 {tier.sub}
               </p>
 
-              {/* Features - Clean & Spaced */}
-              <div className="flex-grow space-y-6 mb-8">
+              {/* Capacity & Duration */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <span className="text-[9px] font-black tracking-wider uppercase block mb-1 text-black/40">
+                    {tier.id === 'premium' ? 'Exclusive' : 'Capacity'}
+                  </span>
+                  <span className="text-lg font-black text-black">
+                    {tier.id === 'basic' ? '20 Brands' : tier.id === 'premium' ? '4 Brands Only' : '6 Brands'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[9px] font-black tracking-wider uppercase block mb-1 text-black/40">
+                    {tier.id === 'premium' ? 'Contract' : 'Duration'}
+                  </span>
+                  <span className="text-lg font-black text-black">
+                    {tier.id === 'basic' ? '2주 단위' : '1~3개월'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Features List */}
+              <div className="flex-grow space-y-3 mb-6">
                 {tier.features.map((feature: any, idx: number) => (
-                  <div key={idx} className="flex items-start space-x-4">
-                    <div className={`w-1 h-1 mt-1.5 shrink-0 ${tier.popular ? 'bg-kollab-red' : 'bg-black/20'}`} />
-                    <span className="text-[11px] font-bold tracking-tight uppercase leading-snug text-black/80">
+                  <div key={idx} className="flex items-start space-x-3">
+                    <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0 mt-0.5">
+                      <Check size={12} className="text-white" strokeWidth={3} />
+                    </div>
+                    <span className="text-xs font-bold leading-tight text-black/80">
                       {typeof feature === 'string' ? feature : feature.t}
                     </span>
                   </div>
                 ))}
               </div>
-              
-              <div className="pt-8 mt-auto flex items-center justify-center opacity-0 group-hover:opacity-10 transition-opacity">
-                <div className="w-full h-[1px] bg-black"></div>
+
+              {/* Bottom Divider */}
+              <div className="pt-4 border-t border-black/10">
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Inclusions - Consistent Grid Styling */}
-      <div className="mt-48 pt-24 border-t border-black">
-        <h3 className="logo-font text-4xl md:text-6xl uppercase leading-none mb-16 text-center">
-          {t('platform.everyPackage')} <span className="opacity-20 text-black">{t('platform.includes')}</span>
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/10 border border-black/10">
+      {/* All Include Section - Compact Bottom */}
+      <div className={`mt-12 pt-8 border-t border-black/10 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <span className="text-xs font-black tracking-[0.3em] uppercase text-black/40">
+            {t('platform.everyPackage')} {t('platform.includes')}
+          </span>
           {allInclude.map((item: any, idx: number) => (
-            <div key={idx} className="bg-white p-12 md:p-16 flex flex-col items-center text-center space-y-8 hover:bg-zinc-50 transition-all group duration-500">
-              <div className="w-20 h-20 rounded-full border border-black/5 flex items-center justify-center group-hover:border-kollab-red group-hover:bg-kollab-red group-hover:text-white transition-all duration-500">
-                <ArrowUpRight size={24} className="opacity-30 group-hover:opacity-100" />
-              </div>
-              <div className="space-y-4">
-                <h4 className="text-xl font-black uppercase tracking-tighter">{item.title}</h4>
-                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest leading-relaxed max-w-[220px] mx-auto">
-                  {item.desc}
-                </p>
-              </div>
+            <div key={idx} className="flex items-center space-x-2">
+              <Check size={14} className="text-[#dc0000]" strokeWidth={3} />
+              <span className="text-sm font-bold text-black/70">
+                {item.title}
+              </span>
             </div>
           ))}
-        </div>
-
-        <div className="mt-20 flex items-center justify-center space-x-4 opacity-30">
-          <Info size={14} />
-          <span className="text-[9px] font-black tracking-[0.2em] uppercase">{t('platform.disclaimer').split('\n')[0]}</span>
         </div>
       </div>
     </div>

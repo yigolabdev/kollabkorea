@@ -11,10 +11,9 @@ export const TRANSLATIONS: any = {
       apply: 'APPLY NOW'
     },
     hero: {
-      sub: 'SEOUL × LOS ANGELES',
-      title1: 'WHERE SEOUL',
-      title2: 'MEETS LA',
-      desc: 'KOLLAB는 K-브랜드의 미국 시장 진출을 가장 전략적으로 시작할 수 있는 첫 단계입니다.',
+      mainTitle: 'WHERE SEOUL MEETS LA',
+      subtitle: 'K-브랜드의 글로벌 확장을 위한 크로스보더 플랫폼',
+      desc: '한국에서 검증하고, 미국으로 연결하는 오프라인 브랜드 플랫폼',
       cta: 'APPLY NOW',
       discover: 'DISCOVER'
     },
@@ -174,10 +173,9 @@ export const TRANSLATIONS: any = {
       apply: 'APPLY NOW'
     },
     hero: {
-      sub: 'SEOUL × LOS ANGELES',
-      title1: 'WHERE SEOUL',
-      title2: 'MEETS LA',
-      desc: 'KOLLAB is the first and most strategic step for K-brands to enter the U.S. market.',
+      mainTitle: 'WHERE SEOUL MEETS LA',
+      subtitle: 'Cross-Border Platform for K-Brand Global Expansion',
+      desc: 'Validate in Korea. Scale to America. Offline-first retail platform.',
       cta: 'APPLY NOW',
       discover: 'DISCOVER'
     },

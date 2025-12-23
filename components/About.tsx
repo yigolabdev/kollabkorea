@@ -1,103 +1,77 @@
+
 import React from 'react';
+import { useLanguage } from '../LanguageContext';
 
-export const About: React.FC = () => {
+const About: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
-    // Compact padding and spacing for better viewport usage
-    <section id="about" className="w-full flex flex-col justify-center items-center bg-kollab-beige text-black relative overflow-hidden px-6 py-16 md:py-20">
-      {/* Decorative Line mimicking construction */}
-      <div className="absolute top-0 left-10 md:left-20 w-[1px] h-full bg-zinc-300/50"></div>
-      <div className="absolute top-0 right-10 md:right-20 w-[1px] h-full bg-zinc-300/50"></div>
-
-      <div className="container mx-auto relative z-10 flex flex-col justify-center">
-        
-        {/* Intro - Compact text sizes */}
-        <div className="max-w-5xl mx-auto mb-12 md:mb-16 w-full">
-          <span className="block text-kollab-red font-bold tracking-widest mb-3 text-xs md:text-sm">OUR LOCATIONS</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 text-black uppercase tracking-tighter leading-[0.9]">
-            Seoul <span className="text-zinc-400">&</span><br/>
-            Los Angeles
+    <div className="max-w-7xl mx-auto space-y-40">
+      {/* Top Section - Aligned with the 'Modern, Elegant, Minimal' directive */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+        <div>
+          <h2 className="logo-font text-5xl md:text-8xl font-black tracking-tighter mb-10 leading-[0.85] uppercase text-black">
+            {t('about.title')}
           </h2>
-          <p className="text-sm md:text-base lg:text-lg text-zinc-700 font-medium leading-relaxed max-w-3xl border-l-4 border-kollab-red pl-6">
-            인더스트리얼한 성수동의 무드와 LA의 자유로운 감성이 만나는 곳.<br/>
-            KOLLAB Korea가 두 도시를 연결합니다.
-          </p>
+          <div className="space-y-8 text-gray-700 leading-relaxed max-w-lg">
+            <p className="text-2xl font-black text-black uppercase tracking-tight leading-tight">{t('about.p1')}</p>
+            <p className="font-bold text-black/40 uppercase tracking-wide text-sm leading-relaxed">{t('about.p2')}</p>
+            <div className="pt-10 border-t border-black/10 flex items-center space-x-16">
+              <div className="group cursor-default">
+                <span className="block text-3xl font-black tracking-tighter group-hover:text-kollab-red transition-colors">LA</span>
+                <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-black">{t('about.origin')}</span>
+              </div>
+              <div className="group cursor-default">
+                <span className="block text-3xl font-black tracking-tighter group-hover:text-kollab-red transition-colors">SEOUL</span>
+                <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-black">{t('about.operation')}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Locations Grid - Reduced height */}
-        <div id="locations" className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-black min-h-[400px]">
-          
-          {/* Seoul Card */}
-          <div className="group relative bg-white border-b lg:border-b-0 lg:border-r border-black p-6 md:p-10 hover:bg-zinc-50 transition-colors duration-500 flex flex-col justify-between overflow-hidden min-h-[280px]">
-            <div className="flex justify-between items-start z-10 relative mb-12">
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-black text-black tracking-tighter">SEOUL</h3>
-                  <p className="text-sm md:text-base font-bold text-zinc-600 mt-1">SEONGSU-DONG</p>
-                </div>
-                <span className="bg-kollab-red text-white text-xs font-bold px-3 py-1 uppercase">Current</span>
-            </div>
-            
-            {/* Background Image Absolute */}
-            <div className="absolute inset-0 z-0">
-               <img 
-                src="https://images.unsplash.com/photo-1549825109-8c4470e48a1d?q=80&w=1200&auto=format&fit=crop" 
-                alt="Seoul City View" 
-                className="w-full h-full object-cover grayscale opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
-              />
-            </div>
-
-            <div className="space-y-3 font-mono text-xs md:text-sm border-t border-black pt-6 z-10 relative">
-               <div className="flex justify-between">
-                  <span className="text-zinc-500">LOCATION</span>
-                  <span className="font-bold">SEONGSU-DONG, SEOUL</span>
-               </div>
-               <div className="flex justify-between">
-                  <span className="text-zinc-500">TYPE</span>
-                  <span className="font-bold">POP-UP & EXHIBITION</span>
-               </div>
-               <div className="flex justify-between">
-                  <span className="text-zinc-500">STATUS</span>
-                  <span className="font-bold text-kollab-red">OPEN (10:00 - 20:00)</span>
-               </div>
-            </div>
+        <div className="relative">
+          <div className="aspect-[16/9] bg-[#c0c0c0] overflow-hidden group border border-black/5 shadow-2xl">
+            <img 
+              src="https://images.unsplash.com/photo-1556228448-59b04958c54b?auto=format&fit=crop&q=80&w=1200" 
+              alt="KOLLAB Space" 
+              className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 scale-105 group-hover:scale-100"
+            />
           </div>
-
-          {/* LA Card */}
-          <div className="group relative bg-kollab-black text-white p-6 md:p-10 hover:bg-zinc-900 transition-colors duration-500 flex flex-col justify-between overflow-hidden min-h-[280px]">
-             <div className="flex justify-between items-start z-10 relative mb-12">
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter">LOS ANGELES</h3>
-                  <p className="text-sm md:text-base font-bold text-zinc-400 mt-1">DOWNTOWN LA</p>
-                </div>
-                <span className="bg-white text-black text-xs font-bold px-3 py-1 uppercase">Coming Soon</span>
-            </div>
-            
-            {/* Background Image Absolute */}
-            <div className="absolute inset-0 z-0">
-               <img 
-                  src="https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?q=80&w=1200&auto=format&fit=crop" 
-                  alt="Downtown Los Angeles" 
-                  className="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 scale-100 group-hover:scale-105"
-                />
-            </div>
-
-            <div className="space-y-3 font-mono text-xs md:text-sm border-t border-zinc-700 pt-6 z-10 relative">
-               <div className="flex justify-between">
-                  <span className="text-zinc-500">LOCATION</span>
-                  <span className="font-bold">DOWNTOWN, LOS ANGELES</span>
-               </div>
-               <div className="flex justify-between">
-                  <span className="text-zinc-500">TYPE</span>
-                  <span className="font-bold">GLOBAL FLAGSHIP STORE</span>
-               </div>
-               <div className="flex justify-between">
-                  <span className="text-zinc-500">OPENING</span>
-                  <span className="font-bold text-kollab-red">AUGUST 2025</span>
-               </div>
-            </div>
-          </div>
-
         </div>
       </div>
-    </section>
+
+      {/* Role and Philosophy Grid - Color System Integration */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-black/10 border border-black/10">
+        <div className="bg-white p-14 md:p-28 flex flex-col justify-center min-h-[600px] hover:bg-zinc-50 transition-colors">
+          <h3 className="text-[10px] font-black tracking-[0.5em] kollab-red uppercase mb-10">{t('about.philosophy.title')}</h3>
+          <p className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] mb-10 uppercase">
+            {t('about.philosophy.text')}
+          </p>
+          <p className="text-black/50 font-bold leading-relaxed text-lg uppercase tracking-tight">
+            {t('about.philosophy.desc')}
+          </p>
+        </div>
+        <div className="bg-black text-white p-14 md:p-28 flex flex-col justify-center min-h-[600px] group">
+          <h3 className="text-[10px] font-black tracking-[0.5em] opacity-40 uppercase mb-10">{t('about.role.title')}</h3>
+          <p className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] mb-10 uppercase group-hover:text-kollab-red transition-colors">
+            {t('about.role.text')}
+          </p>
+          <p className="text-white/40 font-bold leading-relaxed text-lg uppercase tracking-tight">
+            {t('about.role.desc')}
+          </p>
+        </div>
+      </div>
+
+      {/* Large Statement - Visibility Focus */}
+      <div className="text-center py-48 md:py-64 bg-white border-y border-black/5">
+        <h3 className="text-[10px] font-black tracking-[0.6em] kollab-red uppercase mb-12">{t('about.whatWeDo.title')}</h3>
+        <p className="text-5xl md:text-[100px] font-black tracking-[-0.05em] uppercase max-w-6xl mx-auto leading-[0.8] text-black">
+          {t('about.whatWeDo.desc')}
+        </p>
+      </div>
+    </div>
   );
 };
+
+// Fixed: Added missing default export
+export default About;

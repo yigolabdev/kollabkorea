@@ -8,71 +8,47 @@
   <!-- 메인 페이지 -->
   <url>
     <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/</loc>
-    <lastmod>2024-12-17</lastmod>
+    <lastmod>2024-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Hero Section -->
+  <!-- Home / Hero Section -->
   <url>
-    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#hero</loc>
-    <lastmod>2024-12-17</lastmod>
+    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#home</loc>
+    <lastmod>2024-12-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
-  <!-- About / Locations Section -->
+  <!-- Features / Why Choose KOLLAB -->
+  <url>
+    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#features</loc>
+    <lastmod>2024-12-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- About Section -->
   <url>
     <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#about</loc>
-    <lastmod>2024-12-17</lastmod>
+    <lastmod>2024-12-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
-  <!-- Partners Section -->
-  <url>
-    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#partners</loc>
-    <lastmod>2024-12-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- Benefits Section -->
-  <url>
-    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#benefits</loc>
-    <lastmod>2024-12-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- Zones Section -->
-  <url>
-    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#zones</loc>
-    <lastmod>2024-12-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- Brands Section -->
+  <!-- Brands / Who Can Join Section -->
   <url>
     <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#brands</loc>
-    <lastmod>2024-12-17</lastmod>
+    <lastmod>2024-12-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
-  <!-- Beauty Mood Section -->
+  <!-- Platform / Zone Selection Section -->
   <url>
-    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#mood</loc>
-    <lastmod>2024-12-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Pricing / Zone Packages Section -->
-  <url>
-    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#pricing</loc>
-    <lastmod>2024-12-17</lastmod>
+    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#platform</loc>
+    <lastmod>2024-12-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -80,11 +56,17 @@
   <!-- FAQ Section -->
   <url>
     <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#faq</loc>
-    <lastmod>2024-12-17</lastmod>
+    <lastmod>2024-12-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Contact Section -->
+  <url>
+    <loc>https://kollabkorea.s3-website-ap-northeast-2.amazonaws.com/#contact</loc>
+    <lastmod>2024-12-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
 </urlset>
-
-

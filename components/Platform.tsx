@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Zap, Star, Check } from 'lucide-react';
+import { Zap, Star, Info, ArrowUpRight, Check } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 const Platform: React.FC = () => {
@@ -33,127 +33,119 @@ const Platform: React.FC = () => {
   return (
     <div ref={sectionRef} className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className={`mb-16 flex items-start justify-between transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <div>
-          <h2 className="logo-font text-5xl md:text-7xl leading-[0.9] tracking-tighter text-black mb-3">
-            CHOOSE YOUR <span className="text-[#dc0000]">PERFECT ZONE</span>
+      <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className="text-center mb-8">
+          <h2 className="logo-font text-5xl md:text-8xl leading-[0.85] tracking-tighter text-black">
+            CHOOSE YOUR <span className="text-[#dc0000]">ZONE.</span>
           </h2>
-          <p className="text-base md:text-lg font-bold tracking-tight text-black/60 uppercase">
+          <p className="text-xl md:text-2xl font-bold tracking-tight text-black/60 uppercase mt-4">
             {t('platform.subtitle')}
           </p>
         </div>
-        <div className="hidden md:block">
-          <div className="px-4 py-2 border-2 border-black text-black text-[10px] font-black tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all cursor-pointer">
-            ZONE PACKAGES
+
+        {/* All Include - Compact Version at Top */}
+        <div className="mt-12 pt-8 border-t border-black/10">
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <Check size={16} className="text-[#dc0000]" />
+            <span className="text-xs font-black tracking-[0.3em] uppercase text-black/50">
+              {t('platform.everyPackage')} {t('platform.includes')}
+            </span>
+            <Check size={16} className="text-[#dc0000]" />
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-8 max-w-5xl mx-auto">
+            {allInclude.map((item: any, idx: number) => (
+              <div 
+                key={idx} 
+                className="flex items-center space-x-3 group cursor-default"
+              >
+                <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center text-black/30 group-hover:border-[#dc0000] group-hover:bg-[#dc0000] group-hover:text-white transition-all duration-300">
+                  <ArrowUpRight size={14} className="opacity-60 group-hover:opacity-100" />
+                </div>
+                <span className="text-sm font-bold uppercase tracking-tight text-black/70 group-hover:text-black transition-colors">
+                  {item.title}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Zone Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {tiers.map((tier: any, idx: number) => (
           <div 
             key={tier.id} 
-            className={`relative flex flex-col bg-white text-black border-2 border-black/10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            className={`group relative flex flex-col bg-white transition-all duration-700 hover:-translate-y-4 hover:scale-[1.02] border-2 ${
+              tier.popular ? 'border-[#dc0000]' : 'border-black/10'
+            } shadow-lg hover:shadow-2xl cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
             style={{ transitionDelay: `${idx * 150}ms` }}
           >
             {/* Popular Badge */}
             {tier.popular && (
-              <div className="absolute -top-0 left-0 right-0 z-20">
-                <div className="bg-[#dc0000] text-white text-[10px] font-black tracking-[0.3em] uppercase py-2 text-center flex items-center justify-center space-x-2">
-                  <span>%</span>
-                  <span>MOST POPULAR</span>
-                  <span>%</span>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                <div className="px-6 py-2 bg-[#dc0000] text-white text-[10px] font-black tracking-[0.3em] uppercase shadow-lg">
+                  POPULAR
                 </div>
               </div>
             )}
+
+            {/* Subtle Background Effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#c0c0c0]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
             
-            <div className={`p-8 flex flex-col h-full ${tier.popular ? 'pt-14' : ''}`}>
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center mb-6">
-                {tier.id === 'premium' ? (
-                  <Star size={24} fill="white" className="text-white" />
-                ) : tier.id === 'standard' ? (
-                  <Zap size={24} className="text-white" />
-                ) : (
-                  <Zap size={24} className="text-white" />
-                )}
+            <div className="p-8 md:p-10 flex flex-col h-full relative z-10">
+              {/* Header */}
+              <div className="flex justify-between items-start mb-12">
+                <div className="flex-1">
+                  <span className={`text-[9px] font-black tracking-[0.4em] uppercase mb-2 block transition-all ${
+                    tier.popular ? 'text-[#dc0000]' : 'text-black/30 group-hover:text-[#dc0000]'
+                  }`}>
+                    {tier.type}
+                  </span>
+                  <h3 className="logo-font text-2xl md:text-3xl tracking-tighter uppercase leading-none text-black group-hover:text-[#dc0000] transition-colors">
+                    {tier.name}
+                  </h3>
+                </div>
+                <div className={`transition-all duration-700 group-hover:scale-125 group-hover:rotate-12 ${
+                  tier.popular ? 'text-[#dc0000]' : 'text-black/10 group-hover:text-[#dc0000]'
+                }`}>
+                   {tier.id === 'premium' ? <Star size={24} fill="currentColor" /> : <Zap size={24} />}
+                </div>
               </div>
 
-              {/* Type Label */}
-              <span className={`text-[10px] font-black tracking-[0.3em] uppercase mb-2 ${
-                tier.popular ? 'text-[#dc0000]' : 'text-black/50'
-              }`}>
-                {tier.type}
-              </span>
-
-              {/* Zone Name */}
-              <h3 className="logo-font text-3xl tracking-tighter uppercase leading-none mb-3 text-black">
-                {tier.name}
-              </h3>
-
               {/* Description */}
-              <p className="text-xs font-bold mb-6 text-black/60">
+              <p className="text-[10px] font-black uppercase tracking-widest text-black/40 mb-8 pb-8 border-b border-black/5 leading-relaxed group-hover:text-black/60 transition-colors">
                 {tier.sub}
               </p>
 
-              {/* Capacity & Duration */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <span className="text-[9px] font-black tracking-wider uppercase block mb-1 text-black/40">
-                    {tier.id === 'premium' ? 'Exclusive' : 'Capacity'}
-                  </span>
-                  <span className="text-lg font-black text-black">
-                    {tier.id === 'basic' ? '20 Brands' : tier.id === 'premium' ? '4 Brands Only' : '6 Brands'}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[9px] font-black tracking-wider uppercase block mb-1 text-black/40">
-                    {tier.id === 'premium' ? 'Contract' : 'Duration'}
-                  </span>
-                  <span className="text-lg font-black text-black">
-                    {tier.id === 'basic' ? '2주 단위' : '1~3개월'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Features List */}
-              <div className="flex-grow space-y-3 mb-6">
+              {/* Features */}
+              <div className="flex-grow space-y-4">
                 {tier.features.map((feature: any, idx: number) => (
                   <div key={idx} className="flex items-start space-x-3">
-                    <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0 mt-0.5">
-                      <Check size={12} className="text-white" strokeWidth={3} />
-                    </div>
-                    <span className="text-xs font-bold leading-tight text-black/80">
+                    <div className={`w-1 h-1 mt-1.5 shrink-0 rounded-full transition-all ${
+                      tier.popular ? 'bg-[#dc0000]' : 'bg-black/20 group-hover:bg-[#dc0000]'
+                    }`} />
+                    <span className="text-[11px] font-bold tracking-tight uppercase leading-snug text-black/80 group-hover:text-black transition-colors">
                       {typeof feature === 'string' ? feature : feature.t}
                     </span>
                   </div>
                 ))}
               </div>
-
-              {/* Bottom Divider */}
-              <div className="pt-4 border-t border-black/10">
+              
+              {/* Hover Bottom Line */}
+              <div className="pt-6 mt-6 flex items-center justify-center opacity-0 group-hover:opacity-20 transition-opacity border-t border-black/0 group-hover:border-black/10">
+                <ArrowUpRight size={16} className="text-black" />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* All Include Section - Compact Bottom */}
-      <div className={`mt-12 pt-8 border-t border-black/10 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-          <span className="text-xs font-black tracking-[0.3em] uppercase text-black/40">
-            {t('platform.everyPackage')} {t('platform.includes')}
-          </span>
-          {allInclude.map((item: any, idx: number) => (
-            <div key={idx} className="flex items-center space-x-2">
-              <Check size={14} className="text-[#dc0000]" strokeWidth={3} />
-              <span className="text-sm font-bold text-black/70">
-                {item.title}
-              </span>
-            </div>
-          ))}
-        </div>
+      {/* Bottom Note - Compact */}
+      <div className={`mt-12 flex items-center justify-center space-x-3 opacity-30 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-30' : 'opacity-0'}`}>
+        <Info size={12} className="text-black" />
+        <span className="text-[9px] font-black tracking-[0.2em] uppercase text-black">
+          {t('platform.disclaimer').split('\n')[0]}
+        </span>
       </div>
     </div>
   );

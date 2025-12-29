@@ -42,37 +42,37 @@ const App: React.FC = () => {
         <Navbar activeSection={activeSection} onApplyClick={openModal} />
         
         <main>
-          <section id="home">
+          <section id="home" className="sticky top-0 h-screen" style={{ zIndex: 1 }}>
             <Hero onApplyClick={openModal} />
           </section>
 
           {/* What is KOLLAB - Introduction */}
-          <section id="what-is-kollab" className="py-20 md:py-32 px-6 md:px-12 bg-white">
+          <section id="what-is-kollab" className="relative py-20 md:py-32 px-6 md:px-12 bg-white" style={{ zIndex: 10 }}>
             <WhatIsKollab />
           </section>
 
           {/* Features - Why Choose KOLLAB */}
-          <section id="features" className="py-20 md:py-32 px-6 md:px-12 bg-zinc-50 border-y border-black/5">
+          <section id="features" className="relative py-20 md:py-32 px-6 md:px-12 bg-zinc-50 border-y border-black/5" style={{ zIndex: 10 }}>
             <Features />
           </section>
           
           {/* About - Company Overview */}
-          <section id="about" className="py-20 md:py-32 px-6 md:px-12 bg-white">
+          <section id="about" className="relative py-20 md:py-32 px-6 md:px-12 bg-white" style={{ zIndex: 10 }}>
             <About />
           </section>
 
           {/* Brands - Who Can Join */}
-          <section id="brands" className="py-20 md:py-32 px-6 md:px-12 bg-black text-white">
+          <section id="brands" className="relative py-20 md:py-32 px-6 md:px-12 bg-black text-white" style={{ zIndex: 10 }}>
             <Brands />
           </section>
           
           {/* FAQ - Frequently Asked Questions */}
-          <section id="faq" className="py-20 md:py-32 px-6 md:px-12 bg-white border-t border-black/5">
+          <section id="faq" className="relative py-20 md:py-32 px-6 md:px-12 bg-white border-t border-black/5" style={{ zIndex: 10 }}>
             <FAQ />
           </section>
 
           {/* Contact - Get in Touch */}
-          <section id="contact" className="py-20 md:py-32 px-6 md:px-12 bg-[#e4e0db]">
+          <section id="contact" className="relative py-20 md:py-32 px-6 md:px-12 bg-[#e4e0db]" style={{ zIndex: 10 }}>
             <Contact onApplyClick={openModal} />
           </section>
         </main>

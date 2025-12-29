@@ -47,7 +47,7 @@ const App: React.FC = () => {
           </section>
 
           {/* What is KOLLAB - Introduction */}
-          <section id="what-is-kollab" className="relative py-20 md:py-32 px-6 md:px-12 bg-white" style={{ zIndex: 10 }}>
+          <section id="what-is-kollab" className="relative py-32 md:py-40 lg:py-48 px-6 md:px-12 bg-white" style={{ zIndex: 10 }}>
             <WhatIsKollab />
           </section>
 

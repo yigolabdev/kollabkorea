@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import Spline from '@splinetool/react-spline';
 
 interface HeroProps {
   onApplyClick: () => void;
@@ -17,26 +16,33 @@ const Hero: React.FC<HeroProps> = ({ onApplyClick }) => {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center items-center px-6 md:px-12 lg:px-20 pt-20 text-white overflow-hidden bg-black">
-      {/* Spline 3D Interactive Background */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-        <Spline
-          scene="https://prod.spline.design/v9KY2a3oVA7NOMb0/scene.splinecode"
-          style={{
-            width: '100%',
-            height: '100%',
+    <div className="relative min-h-screen flex flex-col justify-center items-center pt-20 text-white overflow-hidden bg-black">
+      {/* Spline 3D Interactive Background - Liquid Ring */}
+      <div className="absolute inset-0 w-screen h-full pointer-events-none overflow-hidden" style={{ zIndex: 0, left: '50%', transform: 'translateX(-50%)' }}>
+        <iframe 
+          src='https://my.spline.design/liquidring-OQWg5jylIktkFCEzBjIFBM8K/' 
+          frameBorder='0' 
+          style={{ 
             position: 'absolute',
-            top: 0,
-            left: 0,
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%) scale(1.5)',
+            width: '120vw',
+            height: '120vh',
+            minWidth: '120vw',
+            minHeight: '120vh',
+            border: 'none',
             pointerEvents: 'none'
           }}
+          title="Spline 3D Liquid Ring Background"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         />
       </div>
 
       {/* Gradient Overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" style={{ zIndex: 1 }}></div>
       
-      <div className="max-w-5xl mx-auto w-full relative" style={{ zIndex: 10 }}>
+      <div className="max-w-5xl mx-auto w-full relative px-6 md:px-12 lg:px-20" style={{ zIndex: 10 }}>
         <div className="flex flex-col space-y-12">
           
           {/* Main Headline */}

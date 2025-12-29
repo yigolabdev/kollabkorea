@@ -8,7 +8,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onApplyClick }) => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -16,73 +16,75 @@ const Hero: React.FC<HeroProps> = ({ onApplyClick }) => {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pt-20 bg-black text-white overflow-hidden">
-      {/* Background visual elements */}
-      <div className="absolute inset-0 bg-[#000000]"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#dc0000]/5 rounded-full blur-[160px] -z-0 animate-pulse"></div>
+    <div className="relative min-h-screen flex flex-col justify-center items-center px-6 md:px-12 lg:px-20 pt-20 bg-white text-black overflow-hidden">
+      {/* Yellow accent block - top left */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-[#FFD700] -z-10"></div>
       
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.02]" style={{ 
-        backgroundImage: 'linear-gradient(rgba(220,0,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(220,0,0,0.3) 1px, transparent 1px)',
-        backgroundSize: '50px 50px'
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.015]" style={{ 
+        backgroundImage: 'linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)',
+        backgroundSize: '40px 40px'
       }}></div>
       
-      <div className="max-w-7xl mx-auto w-full relative z-10 text-center">
-        <div className="flex flex-col items-center space-y-16">
+      <div className="max-w-5xl mx-auto w-full relative z-10">
+        <div className="flex flex-col space-y-12">
           
-          {/* Main Title - WHERE SEOUL MEETS LA */}
-          <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-            <h1 className="logo-font text-5xl md:text-[100px] lg:text-[120px] leading-[0.9] tracking-[-0.04em] text-white mb-6">
-              WHERE <span className="text-[#dc0000]">SEOUL</span><br />
-              MEETS <span className="text-[#dc0000]">LA</span>
+          {/* Main Headline */}
+          <div className={`transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <h1 className="font-black text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight text-black break-keep">
+              {language === 'ko' ? (
+                <>
+                  From Korea to the U.S. — <br className="hidden md:block" />
+                  Where Brands Meet <br className="hidden md:block" />
+                  Physical Experience
+                </>
+              ) : (
+                <>
+                  From Korea to the U.S. — <br className="hidden md:block" />
+                  Where Brands Meet <br className="hidden md:block" />
+                  Physical Experience
+                </>
+              )}
             </h1>
           </div>
           
-          {/* Subtitle */}
-          <div className={`space-y-6 max-w-4xl transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <p className="text-2xl md:text-3xl font-black tracking-tight text-white/90 uppercase leading-tight">
-              {t('hero.subtitle')}
-            </p>
-            <div className="flex items-center justify-center space-x-6">
-              <div className="h-[1px] w-16 bg-[#dc0000]"></div>
-              <p className="text-base md:text-lg font-bold tracking-wide text-white/60 uppercase">
-                {t('hero.desc')}
-              </p>
-              <div className="h-[1px] w-16 bg-[#dc0000]"></div>
-            </div>
-          </div>
-          
-          {/* CTA Button */}
-          <div className={`flex items-center justify-center pt-8 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <button 
-              onClick={onApplyClick}
-              className="px-20 py-7 bg-[#dc0000] text-white font-black tracking-[0.3em] uppercase flex items-center group hover:bg-white hover:text-black hover:scale-105 transition-all duration-500 shadow-2xl hover:shadow-[0_0_50px_rgba(220,0,0,0.5)] relative overflow-hidden"
-            >
-              <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></span>
-              <span className="relative z-10">{t('hero.cta')}</span>
-              <ArrowRight className="ml-4 group-hover:translate-x-2 transition-transform relative z-10" size={20} />
-            </button>
+          {/* Divider */}
+          <div className={`transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}>
+            <div className="h-[2px] w-24 bg-black"></div>
           </div>
 
-          {/* Location Tags */}
-          <div className={`flex items-center justify-center space-x-12 pt-12 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="flex items-center space-x-3 group cursor-default">
-              <div className="w-2 h-2 bg-[#dc0000] group-hover:scale-150 transition-transform"></div>
-              <span className="text-sm font-black tracking-[0.3em] text-white/40 group-hover:text-white/70 transition-colors uppercase">SEOUL</span>
-            </div>
-            <div className="w-[1px] h-8 bg-white/20"></div>
-            <div className="flex items-center space-x-3 group cursor-default">
-              <div className="w-2 h-2 bg-[#dc0000] group-hover:scale-150 transition-transform"></div>
-              <span className="text-sm font-black tracking-[0.3em] text-white/40 group-hover:text-white/70 transition-colors uppercase">LOS ANGELES</span>
-            </div>
+          {/* Description - English */}
+          <div className={`transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <p className="text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-black/80 break-keep max-w-3xl">
+              A curated offline retail platform<br />
+              that connects brands from the Korean market<br />
+              to real-world pop-up experiences in the United States.
+            </p>
+          </div>
+
+          {/* Description - Korean */}
+          <div className={`transition-all duration-1000 delay-800 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <p className="text-base md:text-lg lg:text-xl font-semibold leading-relaxed text-black/70 break-keep">
+              한국에서 브랜드를 알리고,<br />
+              미국 팝업으로 확장할 수 있는 실질적인 오프라인 플랫폼
+            </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className={`flex items-start pt-8 transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <button 
+              onClick={onApplyClick}
+              className="px-12 py-5 bg-black text-white font-black text-sm tracking-[0.2em] uppercase flex items-center group hover:bg-[#dc0000] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            >
+              <span className="relative z-10">APPLY NOW</span>
+              <ArrowRight className="ml-3 group-hover:translate-x-1 transition-transform relative z-10" size={18} />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Decorative vertical line */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-20 animate-bounce">
-        <div className="w-[1px] h-24 bg-[#ffffff]"></div>
-      </div>
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-black/20 to-transparent"></div>
     </div>
   );
 };

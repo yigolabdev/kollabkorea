@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import WhatIsKollab from './components/WhatIsKollab';
 import Features from './components/Features';
 import About from './components/About';
 import Platform from './components/Platform';
@@ -46,13 +47,18 @@ const App: React.FC = () => {
             <Hero onApplyClick={openModal} />
           </section>
 
+          {/* What is KOLLAB - Introduction */}
+          <section id="what-is-kollab" className="py-20 md:py-32 px-6 md:px-12 bg-white">
+            <WhatIsKollab />
+          </section>
+
           {/* Features - Why Choose KOLLAB */}
-          <section id="features" className="py-20 md:py-32 px-6 md:px-12 bg-white">
+          <section id="features" className="py-20 md:py-32 px-6 md:px-12 bg-zinc-50 border-y border-black/5">
             <Features />
           </section>
           
           {/* About - Company Overview */}
-          <section id="about" className="py-20 md:py-32 px-6 md:px-12 bg-zinc-50 border-y border-black/5">
+          <section id="about" className="py-20 md:py-32 px-6 md:px-12 bg-white">
             <About />
           </section>
 

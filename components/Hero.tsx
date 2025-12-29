@@ -20,7 +20,7 @@ const Hero: React.FC<HeroProps> = ({ onApplyClick }) => {
       {/* Spline 3D Interactive Background - Liquid Ring */}
       <div className="absolute inset-0 w-screen h-full pointer-events-none overflow-hidden" style={{ zIndex: 0, left: '50%', transform: 'translateX(-50%)' }}>
         <iframe 
-          src='https://my.spline.design/liquidring-OQWg5jylIktkFCEzBjIFBM8K/' 
+          src={`https://my.spline.design/liquidring-OQWg5jylIktkFCEzBjIFBM8K/?v=${Date.now()}`}
           frameBorder='0' 
           style={{ 
             position: 'absolute',

@@ -5,7 +5,6 @@ import Hero from './components/Hero';
 import WhatIsKollab from './components/WhatIsKollab';
 import Features from './components/Features';
 import About from './components/About';
-import Platform from './components/Platform';
 import Brands from './components/Brands';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -65,11 +64,6 @@ const App: React.FC = () => {
           {/* Brands - Who Can Join */}
           <section id="brands" className="py-20 md:py-32 px-6 md:px-12 bg-black text-white">
             <Brands />
-          </section>
-          
-          {/* Platform - Zone Selection (moved after Brands) */}
-          <section id="platform" className="py-20 md:py-32 px-6 md:px-12 bg-[#e4e0db] industrial-mesh">
-            <Platform />
           </section>
           
           {/* FAQ - Frequently Asked Questions */}

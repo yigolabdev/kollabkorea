@@ -17,14 +17,23 @@ const Hero: React.FC<HeroProps> = ({ onApplyClick }) => {
 
   return (
     <div className="relative min-h-screen flex flex-col justify-center items-center px-6 md:px-12 lg:px-20 pt-20 bg-white text-black overflow-hidden">
-      {/* Yellow accent block - top left */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-[#FFD700] -z-10"></div>
+      {/* Spline 3D Interactive Background */}
+      <div className="absolute inset-0 w-full h-full -z-10">
+        <iframe 
+          src='https://my.spline.design/ticktockinteractivelanding-sgBp6OIOkCzEOxMKnjgRxX5Y/' 
+          frameBorder='0' 
+          width='100%' 
+          height='100%'
+          className="absolute inset-0 w-full h-full pointer-events-auto"
+          title="Spline 3D Background"
+          loading="lazy"
+        />
+        {/* Overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]"></div>
+      </div>
       
-      {/* Subtle grid pattern */}
-      <div className="absolute inset-0 opacity-[0.015]" style={{ 
-        backgroundImage: 'linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)',
-        backgroundSize: '40px 40px'
-      }}></div>
+      {/* Yellow accent block - top left */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-[#FFD700]/80 z-0"></div>
       
       <div className="max-w-5xl mx-auto w-full relative z-10">
         <div className="flex flex-col space-y-12">

@@ -1,17 +1,18 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
 
-export interface NavItem {
-  label: string;
-  href: string;
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+  isError?: boolean;
 }
 
-export interface SpaceTier {
+// Artist interface for retail activation cards
+export interface Artist {
   name: string;
-  description: string;
-  features: string[];
-}
-
-export interface BrandPartner {
-  name: string;
-  imageUrl: string;
-  status?: string;
+  image: string;
+  day: string;
+  genre: string;
 }

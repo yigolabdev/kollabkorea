@@ -1,162 +1,134 @@
-import React, { useState, useEffect } from 'react';
-import { NAVIGATION } from '../constants';
-import { Menu, X, Globe } from 'lucide-react';
-import { useLanguage } from '../LanguageContext';
+
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
 interface NavbarProps {
-  activeSection: string;
-  onApplyClick: () => void;
+  currentPage: string;
+  onNavigate: (page: string) => void;
+  isVisible: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ activeSection, onApplyClick }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isTop, setIsTop] = useState(true);
-  const { language, setLanguage, t } = useLanguage();
+const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'CONTACT', 'FAQ'];
+
+const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // 최상단 체크
-      if (currentScrollY < 10) {
-        setIsTop(true);
-        setScrollDirection('up');
+      // Hide header when scrolling down, show when scrolling up
+      // Add a buffer (150px) so it doesn't hide immediately at the top
+      if (currentScrollY > lastScrollY.current && currentScrollY > 150 && !mobileMenuOpen) {
+        setHidden(true);
       } else {
-        setIsTop(false);
-        
-        // 스크롤 방향 감지
-        if (currentScrollY > lastScrollY && currentScrollY > 100) {
-          // 스크롤 다운
-          setScrollDirection('down');
-        } else {
-          // 스크롤 업
-          setScrollDirection('up');
-        }
+        setHidden(false);
       }
       
-      setLastScrollY(currentScrollY);
+      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [mobileMenuOpen]);
 
-  const toggleLanguage = () => {
-    setLanguage(language === 'ko' ? 'en' : 'ko');
+  const handleNav = (page: string) => {
+    onNavigate(page);
+    setMobileMenuOpen(false);
+    setHidden(false);
   };
 
   return (
-    <>
-      {/* Main Navbar - Hide on Scroll Down */}
-      <nav className={`fixed top-0 left-0 w-full z-50 bg-[#e4e0db]/95 backdrop-blur-md border-b border-black/10 shadow-sm transition-transform duration-300 ${
-        scrollDirection === 'down' && !isTop ? '-translate-y-full' : 'translate-y-0'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          {/* Logo Section */}
-          <div className="flex items-center">
-            <a href="#home" className="flex items-center group">
-              <img 
-                src="logo.png" 
-                alt="KOLLAB" 
-                className="h-6 md:h-7 w-auto object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = 'block';
-                }}
-              />
-              <span className="hidden logo-font text-2xl md:text-3xl tracking-tighter text-black" style={{ display: 'none' }}>
-                KOLLAB<span className="text-[#dc0000]">KOREA</span>
-              </span>
-            </a>
+    <AnimatePresence initial={false}>
+      {isVisible && (
+        <motion.nav 
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: hidden ? -100 : 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ 
+            duration: 0.5, 
+            ease: [0.22, 1, 0.36, 1]
+          }}
+          className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-12 py-6 bg-[#EDEBE4]/90 backdrop-blur-md"
+        >
+          <div 
+            className="cursor-pointer z-50 uppercase flex flex-col items-center gap-0"
+            onClick={() => handleNav('home')}
+          >
+            <span className="block text-4xl font-extrabold tracking-tight text-black leading-none text-center">
+              KOLLAB
+            </span>
+            <span className="block text-sm font-extrabold tracking-[0.42em] text-black/70 leading-none mt-1 text-center">
+              KOREA
+            </span>
           </div>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {NAVIGATION.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={`text-[11px] font-black tracking-widest transition-colors duration-300 uppercase ${
-                  activeSection === item.href.substring(1) 
-                    ? 'text-[#dc0000]' 
-                    : 'text-black hover:text-[#dc0000]'
+          
+          <div className="hidden lg:flex gap-10 text-base font-extrabold tracking-[0.22em] uppercase text-black">
+            {SECTIONS.map((item) => (
+              <button 
+                key={item} 
+                onClick={() => handleNav(item)}
+                className={`transition-all bg-transparent border-none cursor-pointer hover:opacity-50 relative group ${
+                  currentPage === item.toLowerCase() ? 'text-black' : 'text-black/60'
                 }`}
               >
-                {t(`nav.${item.label.toLowerCase()}`)}
-              </a>
+                {item}
+                <span className={`absolute -bottom-2 left-0 w-full h-0.5 bg-black transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
+              </button>
             ))}
-            
-            {/* Language Switcher */}
-            <button 
-              onClick={toggleLanguage}
-              className="flex items-center space-x-2 px-3 py-1 border border-black/20 hover:border-black transition-all rounded-full bg-white/50"
-            >
-              <Globe size={14} className="text-black" />
-              <span className="text-[10px] font-black tracking-widest uppercase text-black">
-                {language === 'ko' ? 'EN' : 'KO'}
-              </span>
-            </button>
-
-            <button
-              onClick={onApplyClick}
-              className="px-6 py-2 bg-black text-white text-[10px] font-black tracking-widest hover:bg-[#dc0000] transition-colors uppercase"
-            >
-              {t('nav.apply')}
-            </button>
           </div>
-
-          {/* Mobile Toggle */}
-          <button className="md:hidden p-2 text-black" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          
+          <button 
+            onClick={() => handleNav('CONTACT')}
+            className="hidden lg:inline-block bg-black text-[#EDEBE4] px-10 py-4 text-base font-extrabold tracking-[0.22em] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+          >
+            APPLY NOW
           </button>
-        </div>
 
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden bg-[#e4e0db] border-t border-black/10 absolute top-20 left-0 w-full py-10 px-6 flex flex-col space-y-6 shadow-lg">
-            {NAVIGATION.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="text-3xl font-black tracking-tighter text-black hover:text-[#dc0000] transition-colors uppercase"
+          <button 
+            className="lg:hidden text-black z-50 p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+             {mobileMenuOpen ? <X size={36} /> : <Menu size={36} />}
+          </button>
+
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                className="fixed inset-0 z-40 bg-[#EDEBE4] flex flex-col items-center justify-center gap-10 lg:hidden"
               >
-                {t(`nav.${item.label.toLowerCase()}`)}
-              </a>
-            ))}
-            <button 
-              onClick={() => { toggleLanguage(); setIsOpen(false); }}
-              className="text-left text-2xl font-black tracking-tighter text-gray-600 hover:text-black"
-            >
-              SWITCH TO {language === 'ko' ? 'ENGLISH' : '한국어'}
-            </button>
-            <button
-              onClick={() => { onApplyClick(); setIsOpen(false); }}
-              className="w-full py-6 bg-black text-white text-center font-black tracking-widest hover:bg-[#dc0000] transition-colors uppercase"
-            >
-              {t('nav.apply')}
-            </button>
-          </div>
-        )}
-      </nav>
-
-      {/* Floating Apply Button - Show on Scroll Down */}
-      <button
-        onClick={onApplyClick}
-        className={`fixed right-6 md:right-8 bottom-6 md:bottom-8 z-50 px-8 py-4 bg-[#dc0000] text-white font-black tracking-[0.2em] uppercase shadow-2xl hover:shadow-[0_0_30px_rgba(220,0,0,0.5)] hover:scale-110 transition-all duration-300 ${
-          scrollDirection === 'down' && !isTop 
-            ? 'translate-y-0 opacity-100' 
-            : 'translate-y-32 opacity-0 pointer-events-none'
-        }`}
-      >
-        <span className="text-xs md:text-sm">{t('nav.apply')}</span>
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#dc0000] rounded-full animate-ping"></div>
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full"></div>
-      </button>
-    </>
+                {SECTIONS.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => handleNav(item)}
+                    className="text-6xl font-extrabold text-black uppercase tracking-tight"
+                  >
+                    {item}
+                  </button>
+                ))}
+                <button 
+                  onClick={() => handleNav('CONTACT')}
+                  className="mt-8 bg-black text-[#EDEBE4] px-14 py-6 text-2xl font-extrabold uppercase tracking-[0.22em]"
+                >
+                  APPLY NOW
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.nav>
+      )}
+    </AnimatePresence>
   );
 };
 

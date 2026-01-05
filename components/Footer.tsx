@@ -1,87 +1,49 @@
+
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+
 import React from 'react';
-import { useLanguage } from '../LanguageContext';
+import { Instagram } from 'lucide-react';
 
-const Footer: React.FC = () => {
-  const { t } = useLanguage();
-  const footerInfo = t('contact.info');
+interface FooterProps {
+  onNavigate?: (page: string) => void;
+}
 
+const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="bg-black text-white py-20 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-xs font-black tracking-[0.5em] text-[#dc0000] mb-8 uppercase">
-              {t('footer.contactUs')}
-            </h2>
-            <div className="mb-8">
-              <span className="logo-font text-4xl tracking-tighter text-white">
-                KOLLAB<span className="text-[#dc0000]">KOREA</span>
-              </span>
-            </div>
-            <div className="logo-font text-6xl md:text-8xl flex flex-col leading-[0.8]">
-              <span className="text-white opacity-40">LET'S</span>
-              <span className="text-[#dc0000]">KOLLAB</span>
-            </div>
-            <p className="mt-8 text-zinc-500 font-black tracking-[0.2em] uppercase text-sm">
-              Where Seoul Meets LA
-            </p>
-          </div>
-
-          <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/5 p-10 md:p-12">
-            <h3 className="text-xs font-black tracking-[0.5em] text-white/40 mb-8 uppercase">
-              {t('footer.headquarters')}
-            </h3>
-            <div className="space-y-8">
-              <div className="flex items-center space-x-6 group">
-                <div className="w-1.5 h-10 bg-zinc-800 group-hover:bg-[#dc0000] transition-all"></div>
-                <div>
-                  <span className="block text-[10px] font-black uppercase text-zinc-500 mb-2 tracking-widest">
-                    {t('contact.officeHours')}
-                  </span>
-                  <span className="text-lg font-black uppercase text-white">
-                    {footerInfo.hours}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center space-x-6 group">
-                <div className="w-1.5 h-10 bg-zinc-800 group-hover:bg-[#dc0000] transition-all"></div>
-                <div>
-                  <span className="block text-[10px] font-black uppercase text-zinc-500 mb-2 tracking-widest">
-                    {t('contact.emailInquiry')}
-                  </span>
-                  <a href={`mailto:${footerInfo.email}`} className="text-lg font-black text-white hover:text-[#dc0000] transition-colors">
-                    {footerInfo.email}
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-center space-x-6 group">
-                <div className="w-1.5 h-10 bg-zinc-800 group-hover:bg-[#dc0000] transition-all"></div>
-                <div>
-                  <span className="block text-[10px] font-black uppercase text-zinc-500 mb-2 tracking-widest">
-                    {t('contact.socialChannel')}
-                  </span>
-                  <a href="https://instagram.com/kollabkorea" target="_blank" rel="noopener noreferrer" className="text-lg font-black text-white hover:text-[#dc0000] transition-colors">
-                    {footerInfo.instagram}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+    <footer 
+      className="py-24 px-6 md:px-12 bg-white relative z-10 w-full"
+      style={{ scrollSnapAlign: 'start' }}
+    >
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 mb-20">
+        <div className="space-y-6">
+          <img 
+            src="https://kollabkorea.s3.ap-northeast-2.amazonaws.com/assets/images/kollab_squar_logo-05.jpg" 
+            alt="KOLLAB" 
+            className="h-24 w-auto grayscale hover:grayscale-0 transition-all duration-500"
+          />
+          <p className="text-xl font-semibold text-black/60 uppercase tracking-[0.02em]">From Korea to the U.S.</p>
         </div>
-
-        <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-          <span className="text-[10px] font-black tracking-[0.5em] uppercase opacity-30 text-white">
-            {t('footer.rights')}
-          </span>
-          <div className="flex space-x-12">
-            <a href="#" className="text-[10px] font-black tracking-widest uppercase opacity-30 hover:opacity-100 transition-opacity text-white">
-              {t('footer.privacy')}
-            </a>
-            <a href="#" className="text-[10px] font-black tracking-widest uppercase opacity-30 hover:opacity-100 transition-opacity text-white">
-              {t('footer.terms')}
+        <div className="space-y-6 md:text-right flex flex-col md:items-end">
+          <p className="text-sm font-extrabold text-black uppercase tracking-[0.1em]">CONTACT INFORMATION</p>
+          <div className="space-y-2 text-base font-semibold text-[#1A1A1A] uppercase leading-relaxed tracking-wide flex flex-col md:items-end">
+            <p>AM 10:00 - PM 08:00</p>
+            <p>info@kollabkorea.com</p>
+            <a 
+              href="http://instagram.com/kollabkorea" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:opacity-50 transition-opacity pt-1"
+            >
+              <Instagram className="w-6 h-6" />
             </a>
           </div>
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto flex justify-center items-center pt-12 border-t border-black/10">
+        <p className="text-xs text-black/40 tracking-[0.22em] uppercase font-extrabold text-center">© 2026 KOLLAB KOREA. ALL RIGHTS RESERVED.</p>
       </div>
     </footer>
   );

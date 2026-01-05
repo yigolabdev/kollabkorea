@@ -1,88 +1,86 @@
 
-import React, { useState, useEffect } from 'react';
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+
+import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import WhatIsKollab from './components/WhatIsKollab';
-import Features from './components/Features';
-import About from './components/About';
-import Brands from './components/Brands';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
-import FAQ from './components/FAQ';
-import ApplyModal from './components/ApplyModal';
-import { LanguageProvider } from './LanguageContext';
+import Home from './pages/Home';
+import About from './pages/About';
+import Platform from './pages/Platform';
+import Brands from './pages/Brands';
+import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
+import LanguageToggle from './components/LanguageToggle';
 
 const App: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('home');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const getPath = () => window.location.pathname.replace('/', '') || 'home';
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'platform' | 'brands' | 'contact' | 'faq'>(getPath() as any);
+  
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll('section');
-      let current = 'home';
-      sections.forEach((section) => {
-        const sectionTop = (section as HTMLElement).offsetTop;
-        if (window.pageYOffset >= sectionTop - 150) {
-          current = section.getAttribute('id') || 'home';
-        }
-      });
-      setActiveSection(current);
-    };
+    setShowNavbar(true);
+    window.scrollTo(0, 0);
+  }, [currentPage]);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  useEffect(() => {
+    const handlePopState = () => {
+      const page = getPath() as any;
+      setCurrentPage(page);
+      setShowNavbar(true);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  const handleHeaderVisibility = useCallback((_isVisible: boolean) => {
+    // No-op: 홈에서도 항상 헤더 노출
+  }, []);
+
+  const navigateTo = (page: string) => {
+    const pageId = page.toLowerCase() as any;
+    setCurrentPage(pageId);
+    window.history.pushState({}, '', `/${pageId === 'home' ? '' : pageId}`);
+    
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    setShowNavbar(true);
+  };
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'home': return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;
+      case 'about': return <About />;
+      case 'platform': return <Platform />;
+      case 'brands': return <Brands navigateTo={navigateTo} />;
+      case 'contact': return <Contact />;
+      case 'faq': return <FAQ />;
+      default: return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;
+    }
+  };
+
   return (
-    <LanguageProvider>
-      <div className="relative overflow-x-hidden selection:bg-red-600 selection:text-white bg-[#e4e0db]">
-        <Navbar activeSection={activeSection} onApplyClick={openModal} />
-        
-        <main>
-          <section id="home" className="sticky top-0 h-screen" style={{ zIndex: 1 }}>
-            <Hero onApplyClick={openModal} />
-          </section>
+    <div style={{ display: 'contents' }}>
+      <LanguageToggle />
+      
+      <Navbar currentPage={currentPage} onNavigate={navigateTo} isVisible={showNavbar} />
+      {showNavbar && (
+        currentPage === 'about' ? (
+          <div aria-hidden className="h-[64px] md:h-[88px]" />
+        ) : (
+          <div aria-hidden className="h-[120px] md:h-[144px]" />
+        )
+      )}
 
-          {/* What is KOLLAB - Introduction */}
-          <section id="what-is-kollab" className="relative py-32 md:py-40 lg:py-48 px-6 md:px-12 bg-white" style={{ zIndex: 10 }}>
-            <WhatIsKollab />
-          </section>
+      <main style={{ display: 'contents' }}>
+        {renderPage()}
+      </main>
 
-          {/* Features - Why Choose KOLLAB */}
-          <section id="features" className="relative py-20 md:py-32 px-6 md:px-12 bg-zinc-50 border-y border-black/5" style={{ zIndex: 10 }}>
-            <Features />
-          </section>
-          
-          {/* About - Company Overview */}
-          <section id="about" className="relative py-20 md:py-32 px-6 md:px-12 bg-white" style={{ zIndex: 10 }}>
-            <About />
-          </section>
-
-          {/* Brands - Who Can Join */}
-          <section id="brands" className="relative py-20 md:py-32 px-6 md:px-12 bg-black text-white" style={{ zIndex: 10 }}>
-            <Brands />
-          </section>
-          
-          {/* FAQ - Frequently Asked Questions */}
-          <section id="faq" className="relative py-20 md:py-32 px-6 md:px-12 bg-white border-t border-black/5" style={{ zIndex: 10 }}>
-            <FAQ />
-          </section>
-
-          {/* Contact - Get in Touch */}
-          <section id="contact" className="relative py-20 md:py-32 px-6 md:px-12 bg-[#e4e0db]" style={{ zIndex: 10 }}>
-            <Contact onApplyClick={openModal} />
-          </section>
-        </main>
-
-        <Footer />
-
-        {/* Apply Modal */}
-        <ApplyModal isOpen={isModalOpen} onClose={closeModal} />
-      </div>
-    </LanguageProvider>
+      <Footer onNavigate={navigateTo} />
+    </div>
   );
 };
 

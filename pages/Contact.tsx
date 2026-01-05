@@ -29,11 +29,11 @@ const Contact: React.FC = () => {
   return (
     <div className="bg-[#EDEBE4]">
       {/* Intro Banner */}
-      <section className="pt-0 pb-24 px-6 max-w-7xl mx-auto text-center">
-        <h1 className="text-5xl md:text-8xl font-extrabold text-black leading-[0.95] mb-12 uppercase tracking-normal">CONTACT</h1>
+      <section className="py-24 px-6 max-w-7xl mx-auto text-center">
+        <h1 className="text-8xl md:text-[11rem] font-extrabold text-black leading-[0.85] mb-12 uppercase tracking-normal">CONTACT</h1>
         <div className="max-w-3xl mx-auto space-y-6">
-          <p className="text-xl md:text-3xl font-semibold text-black/60 uppercase tracking-[0.08em]">
-            Let’s build your offline journey<br />from Korea to the U.S.
+          <p className="text-3xl md:text-4xl font-semibold text-[#1A1A1A] uppercase leading-tight tracking-wide">
+            Let’s build your offline journey — from Korea to the U.S.
           </p>
           <p className="text-xl font-medium text-black/60 tracking-wide">
             한국에서 시작해, 미국까지 이어지는 오프라인 여정을 함께합니다.
@@ -68,7 +68,7 @@ const Contact: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-extrabold text-black uppercase tracking-[0.12em] mb-2">INSTAGRAM</p>
-                <a href="https://www.instagram.com/kollabkorea" className="text-3xl font-extrabold text-black hover:underline underline-offset-8 tracking-wide">@kollabkorea</a>
+                <a href="https://instagram.com/kollab_korea" className="text-3xl font-extrabold text-black hover:underline underline-offset-8 tracking-wide">@kollab_korea</a>
               </div>
             </div>
           </div>

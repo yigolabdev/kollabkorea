@@ -14,6 +14,7 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
     <footer 
+      id="footer-section"
       className="font-brand py-24 px-6 md:px-12 bg-black text-white relative z-10 w-full"
       style={{ scrollSnapAlign: 'start' }}
     >

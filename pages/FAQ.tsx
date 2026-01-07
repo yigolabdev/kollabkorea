@@ -32,6 +32,15 @@ const itemVariants = {
 const FAQ: React.FC = () => {
   const { language } = useLanguage();
   const content = getContent(language);
+  
+  const scrollToFooter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const footer = document.getElementById('footer-section');
+    if (footer) {
+      footer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+  
   return (
     <div className="bg-white pt-12 md:pt-18 pb-24 px-6 max-w-4xl mx-auto">
       <h1 className="text-3xl md:text-6xl font-bold mb-24 text-center text-black tracking-normal leading-[0.95]">{content.heroTitle}</h1>
@@ -66,7 +75,7 @@ const FAQ: React.FC = () => {
           {content.bottom.more}
         </p>
         <p className={`text-lg opacity-80 max-w-2xl mx-auto tracking-wide ${language === 'ko' ? 'break-keep' : ''}`}>
-          {content.bottom.koLine} <a href="mailto:INFO@KOLLAB-LA.COM" className="underline underline-offset-8">직접 문의해 주세요.</a>
+          {content.bottom.koLine} <a href="#footer-section" onClick={scrollToFooter} className="underline underline-offset-8 cursor-pointer hover:text-kollab-red transition-colors">직접 문의해 주세요.</a>
         </p>
       </div>
     </div>

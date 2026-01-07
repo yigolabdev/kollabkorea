@@ -46,6 +46,25 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
     return () => window.removeEventListener('scroll', handleScroll);
   }, [mobileMenuOpen]);
 
+  // 모바일 메뉴 열렸을 때 body 스크롤 방지
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [mobileMenuOpen]);
+
   useEffect(() => {
     const updateNavHeight = () => {
       const el = navRef.current;
@@ -106,13 +125,13 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
           ref={(node) => {
             navRef.current = node;
           }}
-          className="font-brand fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-12 py-10"
+          className="font-brand fixed top-0 left-0 right-0 z-[9999] flex items-center justify-between px-6 md:px-12 py-10"
           style={{
             WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
           }}
         >
           <div 
-            className="cursor-pointer z-50 uppercase flex flex-col items-center gap-0"
+            className="cursor-pointer z-[10001] uppercase flex flex-col items-center gap-0"
             onClick={() => handleNav('home')}
           >
             <span className="block text-4xl font-extrabold tracking-tight text-black leading-none text-center">
@@ -146,35 +165,52 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
           </button>
 
           <button 
-            className="lg:hidden text-black z-50 p-2"
+            className="lg:hidden text-black z-[10001] p-2 touch-manipulation"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
           >
-             {mobileMenuOpen ? <X size={36} /> : <Menu size={36} />}
+             {mobileMenuOpen ? <X size={36} strokeWidth={2} /> : <Menu size={36} strokeWidth={2} />}
           </button>
 
           <AnimatePresence>
             {mobileMenuOpen && (
               <motion.div
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.1 }}
-                className="fixed inset-0 z-40 bg-[#EDEBE4] flex flex-col items-center justify-center gap-10 lg:hidden"
+                initial={{ opacity: 0, x: '100%' }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: '100%' }}
+                transition={{ 
+                  type: 'spring',
+                  damping: 30,
+                  stiffness: 300,
+                  duration: 0.3
+                }}
+                className="fixed inset-0 z-[10000] bg-[#EDEBE4] flex flex-col items-center justify-center gap-8 lg:hidden overflow-hidden"
               >
-                {SECTIONS.map((item) => (
-                  <button
+                {SECTIONS.map((item, index) => (
+                  <motion.button
                     key={item}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
                     onClick={() => handleNav(item)}
-                    className="text-6xl font-extrabold text-black uppercase tracking-tight"
+                    className={`text-5xl sm:text-6xl font-extrabold uppercase tracking-tight touch-manipulation py-3 px-6 transition-colors ${
+                      currentPage === item.toLowerCase() 
+                        ? 'text-kollab-red' 
+                        : 'text-black hover:text-kollab-red'
+                    }`}
                   >
                     {item}
-                  </button>
+                  </motion.button>
                 ))}
-                <button 
+                <motion.button 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: SECTIONS.length * 0.05 }}
                   onClick={() => handleNav('CONTACT')}
-                  className="mt-8 bg-black text-[#EDEBE4] px-14 py-6 text-2xl font-extrabold uppercase tracking-[0.22em] hover:bg-kollab-red transition-all"
+                  className="mt-6 bg-black text-[#EDEBE4] px-12 py-5 text-xl font-extrabold uppercase tracking-[0.22em] hover:bg-kollab-red transition-all touch-manipulation shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)]"
                 >
                   APPLY NOW
-                </button>
+                </motion.button>
               </motion.div>
             )}
           </AnimatePresence>

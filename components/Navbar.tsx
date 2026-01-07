@@ -105,118 +105,163 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
   };
 
   return (
-    <AnimatePresence initial={false}>
-      {isVisible && (
-        <motion.nav 
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ 
-            y: hidden ? -(navHeight || 140) : 0, 
-            opacity: 1,
-            backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0)',
-            backdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
-          }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{ 
-            duration: 0.7, 
-            ease: [0.22, 1, 0.36, 1],
-            backgroundColor: { duration: 0.3 },
-            backdropFilter: { duration: 0.3 }
-          }}
-          ref={(node) => {
-            navRef.current = node;
-          }}
-          className="font-brand fixed top-0 left-0 right-0 z-[9999] flex items-center justify-between px-6 md:px-12 py-10"
-          style={{
-            WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
-          }}
-        >
-          <div 
-            className="cursor-pointer z-[10001] uppercase flex flex-col items-center gap-0"
-            onClick={() => handleNav('home')}
+    <>
+      <AnimatePresence initial={false}>
+        {isVisible && (
+          <motion.nav 
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ 
+              y: hidden ? -(navHeight || 140) : 0, 
+              opacity: 1,
+              backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0)',
+              backdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
+            }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ 
+              duration: 0.7, 
+              ease: [0.22, 1, 0.36, 1],
+              backgroundColor: { duration: 0.3 },
+              backdropFilter: { duration: 0.3 }
+            }}
+            ref={(node) => {
+              navRef.current = node;
+            }}
+            className="font-brand fixed top-0 left-0 right-0 z-[9999] flex items-center justify-between px-6 md:px-12 py-10"
+            style={{
+              WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
+            }}
           >
-            <span className="block text-4xl font-extrabold tracking-tight text-black leading-none text-center">
-              KOLLAB
-            </span>
-            <span className="block text-sm font-extrabold tracking-[0.42em] text-black/70 leading-none mt-1 text-center">
-              KOREA
-            </span>
-          </div>
-          
-          <div className="hidden lg:flex gap-10 text-base font-extrabold tracking-[0.22em] uppercase text-black">
-            {SECTIONS.map((item) => (
-              <button 
-                key={item} 
-                onClick={() => handleNav(item)}
-                className={`transition-all bg-transparent border-none cursor-pointer hover:opacity-50 relative group ${
-                  currentPage === item.toLowerCase() ? 'text-black' : 'text-black/60'
-                }`}
-              >
-                {item}
-                <span className={`absolute -bottom-2 left-0 w-full h-px bg-black transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
-              </button>
-            ))}
-          </div>
-          
-          <button 
-            onClick={() => handleNav('CONTACT')}
-            className="hidden lg:inline-block bg-black text-[#EDEBE4] px-10 py-4 text-base font-extrabold tracking-[0.22em] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:bg-kollab-red hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
-          >
-            APPLY NOW
-          </button>
-
-          <button 
-            className="lg:hidden text-black z-[10001] p-2 touch-manipulation"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-             {mobileMenuOpen ? <X size={36} strokeWidth={2} /> : <Menu size={36} strokeWidth={2} />}
-          </button>
-
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: '100%' }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: '100%' }}
-                transition={{ 
-                  type: 'spring',
-                  damping: 30,
-                  stiffness: 300,
-                  duration: 0.3
-                }}
-                className="fixed inset-0 z-[10000] bg-[#EDEBE4] flex flex-col items-center justify-center gap-8 lg:hidden overflow-hidden"
-              >
-                {SECTIONS.map((item, index) => (
-                  <motion.button
-                    key={item}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => handleNav(item)}
-                    className={`text-5xl sm:text-6xl font-extrabold uppercase tracking-tight touch-manipulation py-3 px-6 transition-colors ${
-                      currentPage === item.toLowerCase() 
-                        ? 'text-kollab-red' 
-                        : 'text-black hover:text-kollab-red'
-                    }`}
-                  >
-                    {item}
-                  </motion.button>
-                ))}
-                <motion.button 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: SECTIONS.length * 0.05 }}
-                  onClick={() => handleNav('CONTACT')}
-                  className="mt-6 bg-black text-[#EDEBE4] px-12 py-5 text-xl font-extrabold uppercase tracking-[0.22em] hover:bg-kollab-red transition-all touch-manipulation shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)]"
+            <div 
+              className="cursor-pointer uppercase flex flex-col items-center gap-0"
+              onClick={() => handleNav('home')}
+            >
+              <span className="block text-4xl font-extrabold tracking-tight text-black leading-none text-center">
+                KOLLAB
+              </span>
+              <span className="block text-sm font-extrabold tracking-[0.42em] text-black/70 leading-none mt-1 text-center">
+                KOREA
+              </span>
+            </div>
+            
+            <div className="hidden lg:flex gap-10 text-base font-extrabold tracking-[0.22em] uppercase text-black">
+              {SECTIONS.map((item) => (
+                <button 
+                  key={item} 
+                  onClick={() => handleNav(item)}
+                  className={`transition-all bg-transparent border-none cursor-pointer hover:opacity-50 relative group ${
+                    currentPage === item.toLowerCase() ? 'text-black' : 'text-black/60'
+                  }`}
                 >
-                  APPLY NOW
-                </motion.button>
+                  {item}
+                  <span className={`absolute -bottom-2 left-0 w-full h-px bg-black transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              onClick={() => handleNav('CONTACT')}
+              className="hidden lg:inline-block bg-black text-[#EDEBE4] px-10 py-4 text-base font-extrabold tracking-[0.22em] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:bg-kollab-red hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+            >
+              APPLY NOW
+            </button>
+
+            {/* 모바일 햄버거 버튼 */}
+            <button 
+              className="lg:hidden text-black p-2 touch-manipulation active:scale-95 transition-transform"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              <Menu size={32} strokeWidth={2.5} />
+            </button>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+
+      {/* 모바일 전용 풀스크린 메뉴 */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[99999] bg-white lg:hidden"
+          >
+            {/* 상단 헤더 영역 - 고정 */}
+            <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-8 bg-white border-b border-zinc-200">
+              {/* 로고 */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="cursor-pointer uppercase flex flex-col items-center gap-0"
+                onClick={() => handleNav('home')}
+              >
+                <span className="block text-3xl font-extrabold tracking-tight text-black leading-none">
+                  KOLLAB
+                </span>
+                <span className="block text-xs font-extrabold tracking-[0.42em] text-black/70 leading-none mt-0.5">
+                  KOREA
+                </span>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.nav>
-      )}
-    </AnimatePresence>
+
+              {/* 닫기 버튼 */}
+              <motion.button
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                transition={{ delay: 0.15 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 touch-manipulation active:scale-95 transition-transform"
+                aria-label="Close mobile menu"
+              >
+                <X size={32} strokeWidth={2.5} className="text-black" />
+              </motion.button>
+            </div>
+
+            {/* 메뉴 콘텐츠 영역 - 스크롤 가능 */}
+            <div className="h-full pt-24 pb-8 px-6 overflow-y-auto flex flex-col items-center justify-center gap-6">
+              {SECTIONS.map((item, index) => (
+                <motion.button
+                  key={item}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    delay: 0.2 + (index * 0.08),
+                    type: 'spring',
+                    damping: 20,
+                    stiffness: 200
+                  }}
+                  onClick={() => handleNav(item)}
+                  className={`text-4xl font-extrabold uppercase tracking-tight touch-manipulation py-4 px-8 transition-all active:scale-95 ${
+                    currentPage === item.toLowerCase() 
+                      ? 'text-kollab-red scale-110' 
+                      : 'text-black active:text-kollab-red'
+                  }`}
+                >
+                  {item}
+                </motion.button>
+              ))}
+
+              {/* Apply Now 버튼 */}
+              <motion.button 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: 0.2 + (SECTIONS.length * 0.08),
+                  type: 'spring',
+                  damping: 20,
+                  stiffness: 200
+                }}
+                onClick={() => handleNav('CONTACT')}
+                className="mt-8 bg-kollab-red text-white px-12 py-5 text-lg font-extrabold uppercase tracking-[0.22em] touch-manipulation shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
+              >
+                APPLY NOW
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

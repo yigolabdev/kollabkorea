@@ -61,18 +61,18 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
 
   return (
     <>
-      {/* SECTION 1: HERO - 일반 스크롤 섹션으로 유지 */}
+      {/* SECTION 1: HERO - 빠른 로딩 최적화 */}
       <section
         id="hero-section"
         ref={heroRef}
         className="relative overflow-hidden bg-white z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
         aria-label="KOLLAB hero section"
       >
-        {/* No background media in hero per request */}
+        {/* 배경 기능은 추후 개발 예정 */}
         <motion.div 
-          initial={{ opacity: 0, y: 40, scale: 1.05 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="z-10 max-w-6xl w-full mx-auto px-6 text-center flex flex-col items-center py-20 md:py-24 -mt-28 md:-mt-40"
         >
           <div className="bg-black text-[#EDEBE4] px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6">

@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Spline from '@splinetool/react-spline';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { homeContentEn } from '../content/home.en';
@@ -23,6 +24,11 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
   const heroRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  
+  // Spline 로딩 상태
+  const [splineLoaded, setSplineLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
   // Intro section depth effect
   const introRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress: introScroll } = useScroll({ target: introRef, offset: ["start 100%", "end start"] });
@@ -37,6 +43,16 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
     const updateVh = () => { vhRef.current = window.innerHeight; };
     window.addEventListener('resize', updateVh);
     return () => window.removeEventListener('resize', updateVh);
+  }, []);
+
+  // 모바일 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
@@ -61,14 +77,37 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
 
   return (
     <>
-      {/* SECTION 1: HERO - 빠른 로딩 최적화 */}
+      {/* SECTION 1: HERO - Spline 3D Background */}
       <section
         id="hero-section"
         ref={heroRef}
         className="relative overflow-hidden bg-white z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
         aria-label="KOLLAB hero section"
       >
-        {/* 배경 기능은 추후 개발 예정 */}
+        {/* Spline 3D Background (데스크톱만) */}
+        {!isMobile && (
+          <div className="absolute inset-0 w-full h-full -z-10">
+            <Spline 
+              scene="https://prod.spline.design/l7eYiLV0MdhAFxRp/scene.splinecode"
+              onLoad={() => setSplineLoaded(true)}
+              className="w-full h-full"
+              style={{ 
+                opacity: splineLoaded ? 1 : 0,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            />
+            {/* 로딩 상태 */}
+            {!splineLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white">
+                <div className="text-kollab-red text-xl font-bold animate-pulse">
+                  Loading...
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Hero Text Content */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

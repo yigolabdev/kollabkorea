@@ -66,7 +66,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
       <section
         id="hero-section"
         ref={heroRef}
-        className="relative overflow-hidden bg-black z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
+        className="relative overflow-hidden bg-white z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
         aria-label="KOLLAB hero section"
       >
         {/* 배경 비디오 - 계속 반복 재생 */}

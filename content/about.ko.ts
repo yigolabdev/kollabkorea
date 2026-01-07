@@ -4,7 +4,7 @@ export const aboutContentKo: AboutContent = {
   pageLabel: 'ABOUT',
   structureSection: {
     title: 'KOLLAB KOREA는\n브랜드, 인플루언서, 소비자, 디스트리뷰터, 리테일을\n하나의 구조로 연결하는 글로벌 런치 플랫폼입니다.',
-    leftNode: { title: 'KOLLAB', subtitle: 'KOREA\n성수동' },
+    leftNode: { title: 'KOLLAB', subtitle: 'KOREA\n성수' },
     rightNode: { title: 'KOLLAB', subtitle: 'Downtown\nLA' },
     lanes: [
       { text: '브랜드 전입 | 월 단위 합리적 비용 & 제품만 제공' },

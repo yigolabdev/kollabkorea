@@ -36,8 +36,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
         run: |
-          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete --acl public-read
+          echo "Deploying to S3 bucket: $S3_BUCKET"
+          aws s3 sync dist/ s3://$S3_BUCKET --delete --acl public-read
+          echo "✅ Files uploaded to S3"
 
       - name: Invalidate CloudFront cache (optional)
         continue-on-error: true

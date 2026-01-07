@@ -4,126 +4,232 @@
 */
 
 import React from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useLanguage } from '../LanguageContext';
+import { contactContentEn } from '../content/contact.en';
+import { contactContentKo } from '../content/contact.ko';
 
-const CRITERIA = [
-  {
-    title: "Have a clear brand identity and positioning",
-    kor: "명확한 브랜드 아이덴티티"
-  },
-  {
-    title: "Are ready for offline customer engagement",
-    kor: "오프라인 고객 경험 준비"
-  },
-  {
-    title: "Seek validation before global expansion",
-    kor: "글로벌 확장 전 검증을 원하는 브랜드"
-  },
-  {
-    title: "Aim for sustainable, long-term growth",
-    kor: "지속 가능한 성장을 목표로 하는 브랜드"
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 }
   }
-];
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+};
 
 const Contact: React.FC = () => {
+  const { language } = useLanguage();
+  const content = language === 'en' ? contactContentEn : contactContentKo;
   return (
-    <div className="bg-[#EDEBE4]">
+    <div className="bg-white">
       {/* Intro Banner */}
-      <section className="py-24 px-6 max-w-7xl mx-auto text-center">
-        <h1 className="text-8xl md:text-[11rem] font-extrabold text-black leading-[0.85] mb-12 uppercase tracking-normal">CONTACT</h1>
-        <div className="max-w-3xl mx-auto space-y-6">
-          <p className="text-3xl md:text-4xl font-semibold text-[#1A1A1A] uppercase leading-tight tracking-wide">
-            Let’s build your offline journey — from Korea to the U.S.
-          </p>
-          <p className="text-xl font-medium text-black/60 tracking-wide">
-            한국에서 시작해, 미국까지 이어지는 오프라인 여정을 함께합니다.
-          </p>
-        </div>
+      <section className="bg-white pt-12 md:pt-18 pb-24 px-6 max-w-7xl mx-auto text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-3xl md:text-6xl font-bold text-black leading-[0.95] mb-6 tracking-normal"
+        >
+          {content.hero.title}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className={`max-w-3xl mx-auto text-xl md:text-2xl font-semibold text-black/70 leading-[1.25] tracking-normal ${
+            language === 'ko' ? 'break-keep' : ''
+          }`}
+        >
+          {content.hero.deck}
+        </motion.p>
+
+        {/* Tier cards (STANDARD / PREMIUM / BASIC) */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="mt-14 md:mt-16 text-left w-full"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 bg-white p-0.5">
+            {content.spaceStructure.tiers.map((tier, idx) => {
+              const isPremium = tier.accent === 'premium';
+              const lines = language === 'ko' ? tier.linesKo : tier.linesEn;
+              const firstLine = lines[0];
+              const rest = lines.slice(1);
+              const tierLabel = tier.name ? tier.name.toLowerCase().replace(/^\w/, (c) => c.toUpperCase()) : '';
+              return (
+                <motion.div
+                  key={`${tier.name}-${idx}`}
+                  variants={itemVariants}
+                  className={`group relative bg-[#f5f5f5] p-8 md:p-10 w-full transition-colors duration-300 ${
+                    isPremium ? 'hover:bg-kollab-red' : 'hover:bg-black'
+                  }`}
+                >
+                  <div className="absolute left-8 top-6 md:left-10 md:top-7 space-y-1">
+                    <div
+                      className={`text-4xl md:text-5xl font-thin leading-none tracking-tight transition-colors duration-300 ${
+                        isPremium ? 'text-kollab-red' : 'text-black'
+                      } group-hover:text-white`}
+                    >
+                      {tierLabel}
+                    </div>
+
+                    {firstLine ? (
+                      <p
+                        className={`text-xl md:text-2xl font-semibold text-black leading-[1.05] tracking-normal transition-colors duration-300 group-hover:text-white ${
+                          language === 'ko' ? 'break-keep' : ''
+                        }`}
+                      >
+                        {firstLine}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="pt-20 md:pt-24">
+
+                    {rest.length ? (
+                      <div
+                        className={`mt-3 space-y-2 text-lg md:text-xl font-medium text-black leading-relaxed tracking-normal transition-colors duration-300 group-hover:text-white ${
+                          language === 'ko' ? 'break-keep' : ''
+                        }`}
+                      >
+                        {rest.map((l, i) => (
+                          <p key={i} className="whitespace-pre-line">
+                            {l}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Scroll Indicator - About 스타일 */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.0, duration: 1 }}
+          className="mt-16 md:mt-20 flex flex-col items-center gap-2"
+        >
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-[1px] h-12 bg-black/20"
+          />
+          <p className="text-xs font-medium text-black/30 tracking-wider">SCROLL</p>
+        </motion.div>
       </section>
 
       {/* Apply Section */}
-      <section className="py-24 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24">
-        <div className="space-y-16">
-          <div>
-            <h2 className="text-5xl font-extrabold text-black uppercase mb-10 tracking-wide">Who Should Apply</h2>
-            <div className="space-y-8">
-              {CRITERIA.map((item, i) => (
-                <div key={i} className="flex items-start gap-4 border-b border-black/10 pb-6">
-                  <CheckCircle2 className="w-7 h-7 text-black mt-1 shrink-0" />
-                  <div>
-                    <p className="text-xl font-semibold text-[#1A1A1A] uppercase tracking-wide">{item.title}</p>
-                    <p className="text-base font-medium text-black/60 tracking-wide">{item.kor}</p>
-                  </div>
-                </div>
+      <motion.section
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        className="py-24 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24"
+      >
+        <div className="flex flex-col h-full">
+          <motion.div variants={itemVariants} className="pt-16">
+            <p
+              className={`text-xl md:text-2xl font-semibold tracking-normal text-black/80 ${
+                language === 'ko' ? 'break-keep' : ''
+              }`}
+              style={{ lineHeight: 1.34 }}
+            >
+              {content.applyLeft.copy.split('\n').map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i < content.applyLeft.copy.split('\n').length - 1 ? <br /> : null}
+                </span>
               ))}
-            </div>
-          </div>
+            </p>
+          </motion.div>
 
-          <div className="space-y-10">
-            <h2 className="text-5xl font-extrabold text-black uppercase tracking-wide">Contact Information</h2>
+          <motion.div
+            variants={itemVariants}
+            className="mt-16 lg:mt-20 space-y-10"
+            style={{ fontFamily: '"Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif' }}
+          >
+            <h2 className="text-3xl md:text-5xl font-bold text-black tracking-tight">{content.contactInfo.title}</h2>
             <div className="space-y-6">
               <div>
-                <p className="text-sm font-extrabold text-black uppercase tracking-[0.12em] mb-2">EMAIL</p>
-                <a href="mailto:info@kollabkorea.com" className="text-3xl font-extrabold text-black hover:underline underline-offset-8 tracking-wide">info@kollabkorea.com</a>
+                <p className="text-sm font-bold text-black tracking-[0.12em] mb-2">{content.contactInfo.emailLabel}</p>
+                <a href={`mailto:${content.contactInfo.email}`} className="text-3xl font-bold text-black hover:underline underline-offset-8 tracking-wide">
+                  {content.contactInfo.email}
+                </a>
               </div>
               <div>
-                <p className="text-sm font-extrabold text-black uppercase tracking-[0.12em] mb-2">INSTAGRAM</p>
-                <a href="https://instagram.com/kollab_korea" className="text-3xl font-extrabold text-black hover:underline underline-offset-8 tracking-wide">@kollab_korea</a>
+                <p className="text-sm font-bold text-black tracking-[0.12em] mb-2">{content.contactInfo.instagramLabel}</p>
+                <a href={content.contactInfo.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-3xl font-bold text-black hover:underline underline-offset-8 tracking-wide">
+                  {content.contactInfo.instagram}
+                </a>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Form */}
-        <div className="bg-white p-12 border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-          <h3 className="text-4xl font-extrabold text-black uppercase mb-12 tracking-wide">Submit Application</h3>
-          <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+        <motion.div variants={itemVariants} className="bg-[#f5f5f5] p-10 md:p-12 border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+          <h3 className="text-2xl md:text-4xl font-extrabold text-black mb-8 tracking-tight">{content.form.title}</h3>
+          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
             <div className="space-y-2">
-              <label className="text-sm font-extrabold uppercase text-black tracking-[0.12em]">Brand Name</label>
-              <input type="text" className="w-full border-b-2 border-black/20 py-3 focus:outline-none focus:border-black text-xl font-semibold uppercase tracking-wide" placeholder="Kollab Beauty" />
+              <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.brandName}</label>
+              <input type="text" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="Kollab Beauty" />
             </div>
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-extrabold uppercase text-black tracking-[0.12em]">Contact Person</label>
-                <input type="text" className="w-full border-b-2 border-black/20 py-3 focus:outline-none focus:border-black text-xl font-semibold tracking-wide" />
+                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.contactPerson}</label>
+                <input type="text" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-extrabold uppercase text-black tracking-[0.12em]">Category</label>
-                <select className="w-full border-b-2 border-black/20 py-3 focus:outline-none focus:border-black text-xl font-semibold uppercase bg-transparent tracking-wide">
+                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.phone}</label>
+                <input type="tel" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="010-0000-0000" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.email}</label>
+                <input type="email" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="brand@example.com" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.category}</label>
+                <select className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold bg-transparent tracking-normal">
                   <option>Beauty</option>
                   <option>Fashion</option>
                   <option>Goods</option>
                   <option>F&B</option>
+                  <option>Life</option>
                 </select>
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-extrabold uppercase text-black tracking-[0.12em]">Website / SNS</label>
-              <input type="text" className="w-full border-b-2 border-black/20 py-3 focus:outline-none focus:border-black text-xl font-semibold tracking-wide" placeholder="https://..." />
+              <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.website}</label>
+              <input type="text" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="https://..." />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-extrabold uppercase text-black tracking-[0.12em]">Message</label>
-              <textarea rows={3} className="w-full border-b-2 border-black/20 py-3 focus:outline-none focus:border-black text-xl font-medium tracking-wide" placeholder="Brief intro..." />
+              <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.message}</label>
+              <textarea
+                rows={3}
+                className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-medium tracking-normal bg-transparent resize-none"
+                placeholder={language === 'ko' ? '브랜드를 간단히 소개해 주세요' : 'Brief intro...'}
+              />
             </div>
-            <button className="w-full bg-black text-[#EDEBE4] py-8 text-2xl font-extrabold uppercase tracking-[0.42em] hover:bg-[#1A1A1A] transition-all">
-              SUBMIT APPLICATION
-            </button>
+            <button className="w-full bg-black text-[#EDEBE4] py-6 text-xl md:text-2xl font-extrabold tracking-[0.42em] hover:bg-[#1A1A1A] transition-all">{content.form.submit}</button>
           </form>
-        </div>
-      </section>
-
-      {/* Global Banner */}
-      <section className="mt-32 relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-black">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle,white_1px,transparent_1px)] [background-size:20px_20px]"></div>
-        </div>
-        <div className="relative z-10 text-center text-[#EDEBE4] space-y-10 px-6">
-          <h2 className="text-5xl md:text-[7vw] font-extrabold uppercase leading-none tracking-tight">READY TO GO<br />GLOBAL?</h2>
-          <div className="space-y-4">
-            <p className="text-2xl md:text-3xl font-semibold uppercase tracking-wide">KOLLAB SEOUL과 함께 당신의 브랜드를 전 세계에 알리세요.</p>
-          </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     </div>
   );
 };

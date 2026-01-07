@@ -5,32 +5,95 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KOLLAB | WHERE SEOUL MEETS LA</title>
+    <script>
+      // Tailwind CDN config (ensures brand tokens like `bg-kollab-red` work)
+      // Brand colors (from .cursorrules)
+      window.tailwind = window.tailwind || {};
+      window.tailwind.config = {
+        safelist: [
+          // Ensure brand red utilities are always generated (React runtime + CDN edge cases)
+          'bg-kollab-red',
+          'text-kollab-red',
+          'border-kollab-red',
+          'hover:bg-kollab-red',
+          // Ensure brand silver utility is always generated
+          'bg-kollab-silver',
+          // Ensure brand beige utility is always generated
+          'bg-kollab-beige'
+        ],
+        theme: {
+          extend: {
+            colors: {
+              'kollab-red': '#dc0000',
+              'kollab-beige': '#e4e0db',
+              'kollab-silver': '#c0c0c0',
+              'kollab-black': '#000000',
+              'kollab-dark': '#111111'
+            }
+          }
+        }
+      };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://use.typekit.net/bev8awd.css">
+    <link rel="preconnect" href="https://use.typekit.net" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+    />
+    <script>
+      (function(d) {
+        var config = {
+          kitId: 'bev8awd',
+          scriptTimeout: 3000,
+          async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+      })(document);
+    </script>
     <style>
       html {
         overflow-y: scroll;
         overflow-x: hidden;
+        overscroll-behavior: none;
       }
       
       body {
         margin: 0;
         padding: 0;
         min-height: 100%;
-        font-family: "sofia-pro", sans-serif;
-        background-color: #EDEBE4;
+        font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        background-color: #ffffff;
         color: #000000;
         letter-spacing: 0.015em;
+        overscroll-behavior: none;
       }
+
+      /* Hard fallback: ensure brand-red utilities always work */
+      .bg-kollab-red { background-color: rgb(220 0 0 / var(--tw-bg-opacity, 1)) !important; }
+      /* Avoid !important here so hover (e.g. group-hover:text-white) can override safely */
+      .text-kollab-red { color: rgb(220 0 0 / var(--tw-text-opacity, 1)); }
+      .border-kollab-red { border-color: #dc0000 !important; }
+      .hover\:bg-kollab-red:hover { background-color: #dc0000 !important; }
+      .bg-kollab-silver { background-color: rgb(192 192 192 / var(--tw-bg-opacity, 1)) !important; }
+      .bg-kollab-beige { background-color: rgb(228 224 219 / var(--tw-bg-opacity, 1)) !important; }
 
       /* React 루트 및 앱 래퍼가 레이아웃을 방해하지 않도록 설정 */
       #root {
         display: contents;
       }
       
-      h1, h2, h3, h4, .font-heading { 
+      /* Header / Footer branding font (Typekit) */
+      .font-brand { 
         font-family: "sofia-pro", sans-serif; 
-        text-transform: uppercase;
+      }
+
+      /* Prevent FOUT for Typekit-loaded brand font */
+      html.wf-loading .font-brand {
+        visibility: hidden;
+      }
+      html.wf-inactive .font-brand {
+        visibility: visible;
       }
 
       .snap-section {

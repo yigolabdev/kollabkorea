@@ -6,8 +6,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../LanguageContext';
+import { brandsContentEn } from '../content/brands.en';
+import { brandsContentKo } from '../content/brands.ko';
 
-const BRANDS = ['MUZMAK', 'ARENCIA', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD'];
+const getContent = (lang: 'en' | 'ko') => (lang === 'en' ? brandsContentEn : brandsContentKo);
 
 interface BrandsProps {
   navigateTo: (page: string) => void;
@@ -30,105 +33,158 @@ const itemVariants = {
   }
 };
 
+const renderBrandNameBold = (text: string) => {
+  const parts = text.split(/(KOLLAB KOREA|KOLLAB LA)/g);
+  return parts.map((part, i) => {
+    if (part === 'KOLLAB KOREA' || part === 'KOLLAB LA') {
+      return (
+        <span key={`brand-${i}`} className="font-extrabold">
+          {part}
+        </span>
+      );
+    }
+    return <React.Fragment key={`text-${i}`}>{part}</React.Fragment>;
+  });
+};
+
 const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
+  const { language } = useLanguage();
+  const content = getContent(language);
+  
+  // LA Partner logos with brand names
+  const laPartners = [
+    { logo: '/assets/brands/la/LA01.png', name: 'OLIVE YOUNG' },
+    { logo: '/assets/brands/la/LA02.png', name: 'Arencia' },
+    { logo: '/assets/brands/la/LA03.png', name: 'MUZIGAE MANSION' },
+    { logo: '/assets/brands/la/LA04.png', name: 'MUZMAK' },
+    { logo: '/assets/brands/la/LA05.png', name: 'SELF BEAUTY' },
+    { logo: '/assets/brands/la/LA06.png', name: 'DIFFER & DEEPER' },
+    { logo: '/assets/brands/la/LA07.png', name: 'A mar da' },
+    { logo: '/assets/brands/la/LA08.png', name: 'SAMPAR paris' },
+    { logo: '/assets/brands/la/LA09.png', name: 'VANILLA TASTE' },
+    { logo: '/assets/brands/la/LA10.png', name: 'shaishaishai' }
+  ];
+  
+  // Fill remaining slots with TBD
+  const laGridItems = Array.from({ length: 40 }, (_, i) => {
+    if (i < laPartners.length) {
+      return laPartners[i];
+    }
+    return null;
+  });
+  
   return (
-    <div className="px-6 max-w-7xl mx-auto pt-0 pb-24">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10 text-left border-b-4 border-black pb-12">
+    <div className="px-6 max-w-7xl mx-auto pt-12 md:pt-18 pb-24">
+      {/* Hero title block (centered text + full-width line aligned to grid edges) */}
+      <div className="bg-white text-center">
         <motion.h2 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-8xl font-extrabold text-black leading-[0.95] uppercase tracking-normal"
+          className="inline-block text-left text-3xl md:text-6xl font-bold text-black leading-[0.95] tracking-normal"
         >
-          THE<br />BRANDS
+          {content.hero.titleLines[0]}<br />{content.hero.titleLines[1]}
         </motion.h2>
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="max-w-md text-xl md:text-3xl font-semibold text-black/60 uppercase tracking-[0.08em]"
-        >
-          Curating the finest Korean labels ready for the global stage. From K-beauty to streetwear.
-        </motion.p>
+        <div className="mt-12 h-px w-full bg-black" />
       </div>
 
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-5 gap-px bg-black/20 border border-black/20"
+      {/* Hero deck (below the line, centered above the grid) */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className={`mt-12 md:mt-16 mb-8 md:mb-10 text-center text-xl md:text-3xl font-semibold text-black ${
+          language === 'ko' ? 'tracking-[0.01em] break-keep' : 'tracking-[0.02em]'
+        }`}
       >
-        {BRANDS.map((brand, i) => (
-          <motion.div 
-            key={i} 
-            variants={itemVariants}
-            whileHover={{ backgroundColor: '#000000', color: '#EDEBE4' }}
-            className="aspect-square bg-[#EDEBE4] flex items-center justify-center p-8 group transition-colors duration-300 cursor-pointer relative overflow-hidden"
-          >
-            <span className="font-extrabold text-xl tracking-[0.22em] uppercase text-center relative z-10">{brand}</span>
-            <div className="absolute inset-0 border-4 border-black opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          </motion.div>
-        ))}
-      </motion.div>
+        {renderBrandNameBold(content.hero.deck)}
+      </motion.p>
 
-      <div className="mt-32 grid grid-cols-1 md:grid-cols-2 gap-16 text-left">
+      {/* KOLLAB KOREA partners - Coming Soon Grid */}
+      <div className="mt-12 md:mt-16 relative">
+        {/* Grid as background */}
         <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="p-12 bg-white"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="grid grid-cols-4 md:grid-cols-8 gap-px bg-black/10 border border-black/10"
         >
-           <h4 className="font-extrabold mb-8 text-3xl text-black uppercase border-b-2 border-black pb-4 tracking-wide">OCTOBER POP-UP</h4>
-           <div className="space-y-6">
-             <div className="flex flex-col">
-               <span className="text-sm font-extrabold text-black/50 tracking-[0.12em] uppercase mb-1">PERIOD</span>
-               <span className="text-2xl font-extrabold text-black tracking-wide">10/17 - 10/26 (10 DAYS)</span>
-             </div>
-             <div className="flex flex-col">
-               <span className="text-sm font-extrabold text-black/50 tracking-[0.12em] uppercase mb-1">FOCUS</span>
-               <span className="text-2xl font-extrabold text-black tracking-wide">K-BEAUTY, FASHION, GOODS</span>
-             </div>
-           </div>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <motion.div
+              key={`korea-soon-${i}`}
+              variants={itemVariants}
+              className="aspect-square bg-[#EDEBE4] flex items-center justify-center relative"
+            >
+              {/* Very subtle dashed border inside each cell */}
+              <div className="absolute inset-4 border border-dashed border-black/10" />
+            </motion.div>
+          ))}
         </motion.div>
         
-        <motion.div 
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="p-12 bg-black text-[#EDEBE4]"
+        {/* Opening Soon text overlay */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <p className="text-2xl md:text-4xl font-extrabold text-black/40 tracking-tight uppercase">
+            Opening Soon
+          </p>
+        </div>
+      </div>
+
+      {/* KOLLAB LA partners (with logos) */}
+      <div className="mt-24 md:mt-32">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8 }}
+          className={`mb-10 md:mb-12 text-center text-xl md:text-3xl font-semibold text-black ${
+            language === 'ko' ? 'tracking-[0.01em] break-keep' : 'tracking-[0.02em]'
+          }`}
         >
-           <h4 className="font-extrabold mb-8 text-3xl uppercase border-b-2 border-[#EDEBE4]/30 pb-4 tracking-wide">BRAND BENEFITS</h4>
-           <ul className="space-y-6 text-xl font-extrabold tracking-[0.05em] uppercase">
-             <li className="flex items-center gap-4">
-               <span className="w-2 h-2 bg-[#EDEBE4] rounded-full"></span>
-               FULL OPERATION MANAGEMENT
-             </li>
-             <li className="flex items-center gap-4">
-               <span className="w-2 h-2 bg-[#EDEBE4] rounded-full"></span>
-               MEDIA CONTENT PRODUCTION
-             </li>
-             <li className="flex items-center gap-4">
-               <span className="w-2 h-2 bg-[#EDEBE4] rounded-full"></span>
-               INFLUENCER PR & EXPOSURE
-             </li>
-           </ul>
+          {renderBrandNameBold(language === 'ko' ? 'KOLLAB LA 협력사' : 'KOLLAB LA Partners')}
+        </motion.p>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-4 md:grid-cols-8 gap-px bg-black/20 border border-black/20"
+        >
+          {laGridItems.map((item, i: number) => (
+            <motion.div
+              key={`la-${i}`}
+              variants={itemVariants}
+              className="aspect-square bg-[#EDEBE4] flex items-center justify-center group transition-colors duration-300 cursor-pointer relative overflow-hidden hover:bg-white"
+            >
+              {item ? (
+                <>
+                  {/* Logo (default state) - no padding */}
+                  <img 
+                    src={item.logo} 
+                    alt={item.name}
+                    className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 absolute inset-0"
+                  />
+                  {/* Brand name (on hover) - gray text on white */}
+                  <span className="font-extrabold text-xs sm:text-sm md:text-base lg:text-lg tracking-[0.15em] text-center text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10 break-keep px-2">
+                    {item.name}
+                  </span>
+                  <div className="absolute inset-0 border-4 border-kollab-red opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </>
+              ) : (
+                <>
+                  {/* TBD slot */}
+                  <span className="font-extrabold text-sm md:text-lg lg:text-xl tracking-[0.22em] text-center text-black group-hover:text-zinc-600 transition-colors duration-300 relative z-10">
+                    TBD
+                  </span>
+                  <div className="absolute inset-0 border-4 border-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </>
+              )}
+            </motion.div>
+          ))}
         </motion.div>
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-32 text-center"
-      >
-        <button 
-          onClick={() => navigateTo('CONTACT')}
-          className="inline-block border-b-4 border-black text-5xl font-extrabold text-black uppercase hover:opacity-50 transition-all pb-2 tracking-wide"
-        >
-          WANT TO BE NEXT? APPLY NOW
-        </button>
-      </motion.div>
     </div>
   );
 };

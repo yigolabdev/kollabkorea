@@ -6,6 +6,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { LanguageProvider } from './LanguageContext';
 
 // Step 1: Environment Stabilization
 // Ensure process.env is accessible even if the bundler doesn't polyfill it,
@@ -22,6 +23,8 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
   </React.StrictMode>
 );

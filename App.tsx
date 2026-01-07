@@ -27,6 +27,55 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
+  // Prevent overscroll "escape" at top/bottom (wheel input)
+  useEffect(() => {
+    const isScrollable = (el: Element) => {
+      const style = window.getComputedStyle(el);
+      const overflowY = style.overflowY;
+      return (overflowY === 'auto' || overflowY === 'scroll') && (el as HTMLElement).scrollHeight > (el as HTMLElement).clientHeight;
+    };
+
+    const getScrollableParent = (start: Element | null) => {
+      let el: Element | null = start;
+      while (el && el !== document.body) {
+        if (isScrollable(el)) return el as HTMLElement;
+        el = el.parentElement;
+      }
+      return null;
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      // Allow pinch-to-zoom / trackpad zoom gestures
+      if (e.ctrlKey) return;
+      if (e.deltaY === 0) return;
+
+      const targetEl = (e.target as Element | null) ?? null;
+      const scrollParent = getScrollableParent(targetEl);
+      if (scrollParent) {
+        const top = (scrollParent as HTMLElement).scrollTop;
+        const max = (scrollParent as HTMLElement).scrollHeight - (scrollParent as HTMLElement).clientHeight;
+        const atTop = top <= 0;
+        const atBottom = top >= max - 1;
+        if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      const docEl = document.documentElement;
+      const scrollTop = window.scrollY || docEl.scrollTop;
+      const maxScroll = docEl.scrollHeight - window.innerHeight;
+      const atTop = scrollTop <= 0;
+      const atBottom = scrollTop >= maxScroll - 1;
+      if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel as EventListener);
+  }, []);
+
   useEffect(() => {
     const handlePopState = () => {
       const page = getPath() as any;
@@ -68,10 +117,10 @@ const App: React.FC = () => {
       
       <Navbar currentPage={currentPage} onNavigate={navigateTo} isVisible={showNavbar} />
       {showNavbar && (
-        currentPage === 'about' ? (
-          <div aria-hidden className="h-[64px] md:h-[88px]" />
-        ) : (
+        currentPage === 'home' ? (
           <div aria-hidden className="h-[120px] md:h-[144px]" />
+        ) : (
+          <div aria-hidden style={{ height: 'var(--nav-h, 88px)' }} />
         )
       )}
 

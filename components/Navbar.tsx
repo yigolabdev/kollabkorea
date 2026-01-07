@@ -14,20 +14,26 @@ interface NavbarProps {
   isVisible: boolean;
 }
 
-const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'CONTACT', 'FAQ'];
+const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'CONTACT', 'FAQ'] as const;
 
 const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [navHeight, setNavHeight] = useState<number>(0);
   const lastScrollY = useRef(0);
+  const navRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
+      // Add background when scrolled past 50px
+      setScrolled(currentScrollY > 50);
+      
       // Hide header when scrolling down, show when scrolling up
-      // Add a buffer (150px) so it doesn't hide immediately at the top
-      if (currentScrollY > lastScrollY.current && currentScrollY > 150 && !mobileMenuOpen) {
+      // Hide immediately when scroll-down starts (no buffer)
+      if (currentScrollY > lastScrollY.current && currentScrollY > 0 && !mobileMenuOpen) {
         setHidden(true);
       } else {
         setHidden(false);
@@ -40,6 +46,39 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
     return () => window.removeEventListener('scroll', handleScroll);
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    const updateNavHeight = () => {
+      const el = navRef.current;
+      if (!el) return;
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--nav-h', `${h}px`);
+      setNavHeight(h);
+    };
+
+    // Initial measurement
+    updateNavHeight();
+
+    // Re-measure after fonts load (can affect nav height)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fonts: any = (document as any).fonts;
+    if (fonts?.ready?.then) {
+      fonts.ready.then(() => updateNavHeight()).catch(() => {});
+    }
+
+    // Observe size changes
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && navRef.current) {
+      ro = new ResizeObserver(() => updateNavHeight());
+      ro.observe(navRef.current);
+    }
+
+    window.addEventListener('resize', updateNavHeight);
+    return () => {
+      window.removeEventListener('resize', updateNavHeight);
+      ro?.disconnect();
+    };
+  }, []);
+
   const handleNav = (page: string) => {
     onNavigate(page);
     setMobileMenuOpen(false);
@@ -51,13 +90,26 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
       {isVisible && (
         <motion.nav 
           initial={{ y: -100, opacity: 0 }}
-          animate={{ y: hidden ? -100 : 0, opacity: 1 }}
+          animate={{ 
+            y: hidden ? -(navHeight || 140) : 0, 
+            opacity: 1,
+            backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0)',
+            backdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
+          }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ 
-            duration: 0.5, 
-            ease: [0.22, 1, 0.36, 1]
+            duration: 0.7, 
+            ease: [0.22, 1, 0.36, 1],
+            backgroundColor: { duration: 0.3 },
+            backdropFilter: { duration: 0.3 }
           }}
-          className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-12 py-6 bg-[#EDEBE4]/90 backdrop-blur-md"
+          ref={(node) => {
+            navRef.current = node;
+          }}
+          className="font-brand fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-12 py-10"
+          style={{
+            WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'blur(0px)'
+          }}
         >
           <div 
             className="cursor-pointer z-50 uppercase flex flex-col items-center gap-0"
@@ -81,14 +133,14 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
                 }`}
               >
                 {item}
-                <span className={`absolute -bottom-2 left-0 w-full h-0.5 bg-black transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
+                <span className={`absolute -bottom-2 left-0 w-full h-px bg-black transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
               </button>
             ))}
           </div>
           
           <button 
             onClick={() => handleNav('CONTACT')}
-            className="hidden lg:inline-block bg-black text-[#EDEBE4] px-10 py-4 text-base font-extrabold tracking-[0.22em] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+            className="hidden lg:inline-block bg-black text-[#EDEBE4] px-10 py-4 text-base font-extrabold tracking-[0.22em] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:bg-kollab-red hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
           >
             APPLY NOW
           </button>
@@ -119,7 +171,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
                 ))}
                 <button 
                   onClick={() => handleNav('CONTACT')}
-                  className="mt-8 bg-black text-[#EDEBE4] px-14 py-6 text-2xl font-extrabold uppercase tracking-[0.22em]"
+                  className="mt-8 bg-black text-[#EDEBE4] px-14 py-6 text-2xl font-extrabold uppercase tracking-[0.22em] hover:bg-kollab-red transition-all"
                 >
                   APPLY NOW
                 </button>

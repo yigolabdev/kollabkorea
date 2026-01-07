@@ -62,14 +62,27 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
 
   return (
     <>
-      {/* SECTION 1: HERO - 빠른 로딩 최적화 */}
+      {/* SECTION 1: HERO - 배경 비디오 */}
       <section
         id="hero-section"
         ref={heroRef}
-        className="relative overflow-hidden bg-white z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
+        className="relative overflow-hidden bg-black z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
         aria-label="KOLLAB hero section"
       >
-        {/* 배경 기능은 Spline 정보 받은 후 추가 예정 */}
+        {/* 배경 비디오 - 계속 반복 재생 */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover -z-10"
+          aria-hidden="true"
+        >
+          <source src="/assets/mega-node-network-earth.mp4" type="video/mp4" />
+        </video>
+
+        {/* 비디오 위 오버레이 (가독성 향상) */}
+        <div className="absolute inset-0 bg-black/40 -z-10" />
         
         {/* Hero Text Content */}
         <motion.div 
@@ -78,14 +91,14 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="z-10 max-w-6xl w-full mx-auto px-6 text-center flex flex-col items-center py-20 md:py-24 -mt-28 md:-mt-40"
         >
-          <div className="bg-black text-[#EDEBE4] px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6">
+          <div className="bg-white text-black px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6">
             {content.badge}
           </div>
-          <h1 className="font-brand text-[7vw] md:text-[5.5vw] leading-[1.1] font-extrabold tracking-tight text-kollab-red mb-4 uppercase">
+          <h1 className="font-brand text-[7vw] md:text-[5.5vw] leading-[1.1] font-extrabold tracking-tight text-white mb-4 uppercase drop-shadow-lg">
             {content.hero.title.split('\n').map((l, i) => (<span key={i}>{l}{i === 0 ? <br /> : null}</span>))}
           </h1>
           <p
-            className={`text-[3.6vw] md:text-[2vw] font-semibold text-kollab-red opacity-70 whitespace-nowrap ${
+            className={`text-[3.6vw] md:text-[2vw] font-semibold text-white opacity-90 whitespace-nowrap drop-shadow-md ${
               heroDeckHasKo ? 'tracking-[0.008em] break-keep' : 'tracking-[0.015em]'
             }`}
           >

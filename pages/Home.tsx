@@ -81,8 +81,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           <source src="/assets/mega-node-network-earth.mp4" type="video/mp4" />
         </video>
 
-        {/* 비디오 위 오버레이 (가독성 향상) */}
-        <div className="absolute inset-0 bg-black/40 -z-10" />
+        {/* 비디오 위 밝은 오버레이 (영상을 밝게 표현) */}
+        <div className="absolute inset-0 bg-white/60 -z-10" />
         
         {/* Hero Text Content */}
         <motion.div 
@@ -91,14 +91,14 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="z-10 max-w-6xl w-full mx-auto px-6 text-center flex flex-col items-center py-20 md:py-24 -mt-28 md:-mt-40"
         >
-          <div className="bg-white text-black px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6">
+          <div className="bg-black text-[#EDEBE4] px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6">
             {content.badge}
           </div>
-          <h1 className="font-brand text-[7vw] md:text-[5.5vw] leading-[1.1] font-extrabold tracking-tight text-white mb-4 uppercase drop-shadow-lg">
+          <h1 className="font-brand text-[7vw] md:text-[5.5vw] leading-[1.1] font-extrabold tracking-tight text-kollab-red mb-4 uppercase">
             {content.hero.title.split('\n').map((l, i) => (<span key={i}>{l}{i === 0 ? <br /> : null}</span>))}
           </h1>
           <p
-            className={`text-[3.6vw] md:text-[2vw] font-semibold text-white opacity-90 whitespace-nowrap drop-shadow-md ${
+            className={`text-[3.6vw] md:text-[2vw] font-semibold text-kollab-red opacity-80 whitespace-nowrap ${
               heroDeckHasKo ? 'tracking-[0.008em] break-keep' : 'tracking-[0.015em]'
             }`}
           >

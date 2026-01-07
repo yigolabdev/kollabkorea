@@ -24,9 +24,11 @@
 2. 속성 탭 → 정적 웹 사이트 호스팅 → 편집
 3. 활성화 선택
 4. 인덱스 문서: index.html
-5. 오류 문서: index.html
+5. 오류 문서: index.html ⚠️ 매우 중요! (SPA 라우팅용)
 6. 저장
 ```
+
+**⚠️ 중요:** 오류 문서를 `index.html`로 설정하지 않으면 페이지 새로고침 시 404 에러가 발생합니다!
 
 #### S3 버킷 정책 설정
 ```json
@@ -212,9 +214,18 @@ https://github.com/yigolabdev/kollabkorea/actions
 
 ### ❌ 404 on Page Refresh
 ```bash
+증상:
+- /platform 등 페이지에서 새로고침 시 404 에러
+- 직접 URL 입력 시 404 에러
+
+원인:
+S3가 실제 파일 경로를 찾으려고 시도 (SPA 라우팅 문제)
+
 해결:
-S3 버킷 → 속성 → 정적 웹사이트 호스팅
-오류 문서: index.html (SPA 라우팅용)
+1. S3 버킷 → 속성 → 정적 웹사이트 호스팅 → 편집
+2. 오류 문서: index.html 설정 확인 ⚠️ 매우 중요!
+3. 변경 사항 저장
+4. 브라우저 캐시 지우고 재시도 (Ctrl+Shift+R 또는 Cmd+Shift+R)
 ```
 
 ### ❌ GitHub Secrets 오류

@@ -1,14 +1,14 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
 
 import React, { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { homeContentEn } from '../content/home.en';
 import { homeContentKo } from '../content/home.ko';
+import ImageSlider from '../components/ImageSlider';
 
 interface HomeProps {
   onNavigate: (page: string) => void;
@@ -21,31 +21,21 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
   const lastVisibilityState = useRef<boolean>(false);
   const vhRef = useRef(window.innerHeight);
   const heroRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  
-  // Intro section depth effect
-  const introRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress: introScroll } = useScroll({ target: introRef, offset: ["start 100%", "end start"] });
-  const introBgY = useTransform(introScroll, [0, 1], [-200, 150]);
-  const introBgScale = useTransform(introScroll, [0, 1], [1.08, 1.0]);
-  const introTextY = useTransform(introScroll, [0, 1], [120, -150]);
-  const introTextScale = useTransform(introScroll, [0, 1], [0.96, 1.03]);
-  const introOverlayOpacity = useTransform(introScroll, [0, 1], [0.4, 0]);
   const heroDeckHasKo = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(content.hero.deck);
   
+  // Viewport height 업데이트
   useEffect(() => {
     const updateVh = () => { vhRef.current = window.innerHeight; };
     window.addEventListener('resize', updateVh);
     return () => window.removeEventListener('resize', updateVh);
   }, []);
 
+  // 헤더 가시성 제어
   useEffect(() => {
     const handleScroll = () => {
       window.requestAnimationFrame(() => {
         const vh = vhRef.current;
         const scrollPos = window.scrollY;
-        // 헤더 가시성 제어: 스크롤이 일정 수준 내려가면 내비바 표시
         const shouldShow = scrollPos > vh * 0.4;
         
         if (lastVisibilityState.current !== shouldShow) {
@@ -62,14 +52,13 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
 
   return (
     <>
-      {/* SECTION 1: HERO - 배경 비디오 */}
+      {/* HERO SECTION - 배경 비디오 */}
       <section
         id="hero-section"
         ref={heroRef}
         className="relative overflow-hidden bg-white z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
         aria-label="KOLLAB hero section"
       >
-        {/* 배경 비디오 - 계속 반복 재생 */}
         <video
           autoPlay
           loop
@@ -81,10 +70,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           <source src="/assets/mega-node-network-earth.mp4" type="video/mp4" />
         </video>
 
-        {/* 비디오 위 밝은 오버레이 (영상을 밝게 표현) */}
         <div className="absolute inset-0 bg-white/60 -z-10" />
         
-        {/* Hero Text Content */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -107,73 +94,48 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
         </motion.div>
       </section>
 
-      {/* SECTION 1.5: FULL IMAGE */}
-      <section className="relative w-full bg-black">
-        <div className="w-full mx-auto overflow-hidden flex items-center justify-center">
-          <img
-            src="/assets/photos/shoots/shoot01.png"
-            alt="KOLLAB event & pop-up moments"
-            className="w-full h-[68vh] md:h-[78vh] object-cover md:object-contain"
-            loading="lazy"
-          />
-        </div>
-      </section>
+      {/* IMAGE SLIDER - LA 팝업 이미지 */}
+      <ImageSlider />
 
-      {/* SECTION 2: INTRO - Static Background */}
+      {/* INTRO SECTION - 일반 스크롤 */}
       <section
         id="intro-section"
-        ref={introRef}
-        className="relative overflow-hidden snap-section z-10 bg-white min-h-[60vh] md:min-h-[70vh]"
+        className="relative overflow-hidden bg-black min-h-[100vh] mt-[100px] flex items-center justify-center"
       >
-        {/* Background image tiled horizontally */}
-        <motion.div 
-          className="absolute inset-0 -z-10 pointer-events-none will-change-transform"
+        {/* 배경 이미지 */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-0"
           aria-hidden="true"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ y: introBgY, scale: introBgScale }}
         >
           <div
-            className="w-full h-full bg-repeat-x bg-bottom"
+            className="w-full h-full opacity-40"
             style={{
               backgroundImage: 'url(/assets/images/hero/kollab-hero-bg-02.png)',
-              backgroundSize: 'auto 100%',
-              backgroundPosition: 'center bottom'
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat'
             }}
           />
-          <motion.div
-            className="absolute inset-0 bg-white"
-            style={{ opacity: introOverlayOpacity }}
-          />
-        </motion.div>
-        <motion.div 
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
-          }}
-          initial="hidden"
-          whileInView="visible"
+          {/* 어두운 오버레이 */}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+
+        {/* 메인 콘텐츠 */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          className="max-w-4xl mx-auto text-center px-6 py-16 md:py-24 space-y-16 will-change-transform"
-          style={{ y: introTextY, scale: introTextScale }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 w-full max-w-4xl mx-auto text-center px-6 py-16 md:py-24"
         >
-          <motion.div 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
-            }} 
-            className="space-y-6"
-          >
-            <p className={`text-2xl md:text-4xl font-semibold text-black leading-tight tracking-normal ${language === 'ko' ? 'break-keep' : ''}`}>
+          <div className="space-y-6">
+            <p 
+              className={`text-2xl md:text-4xl font-semibold leading-tight tracking-normal text-white ${language === 'ko' ? 'break-keep' : ''}`}
+            >
               {content.intro.lines.map((l, i) => (<span key={i}>{l}<br /></span>))}
             </p>
-            <motion.p 
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.8 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className={`text-2xl md:text-3xl font-bold text-black/85 leading-[1.4] ${language === 'ko' ? 'tracking-[0.015em] break-keep' : 'tracking-[0.025em]'}`}
+            <p 
+              className={`text-2xl md:text-3xl font-bold leading-[1.4] text-white/85 ${language === 'ko' ? 'tracking-[0.015em] break-keep' : 'tracking-[0.025em]'}`}
             >
               {content.intro.deck.split('\n').map((line, i) => (
                 <span key={i}>
@@ -181,26 +143,25 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
                   {i < content.intro.deck.split('\n').length - 1 ? <br /> : null}
                 </span>
               ))}
-            </motion.p>
-          </motion.div>
+            </p>
+          </div>
 
-          <motion.div 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
-            }} 
-            className="flex flex-col md:flex-row justify-center gap-6"
-          >
-            <button 
+          <div className="flex flex-col md:flex-row justify-center gap-6 mt-16 md:mt-20">
+            <motion.button 
               onClick={() => onNavigate('CONTACT')}
-              className="bg-black text-[#EDEBE4] px-14 py-6 text-base font-extrabold tracking-[0.22em] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:bg-kollab-red hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+              className="px-14 py-6 text-base font-extrabold tracking-[0.22em] bg-kollab-red text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
+              whileHover={{ 
+                scale: 1.05,
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                transition: { duration: 0.3 }
+              }}
             >
               {language === 'ko' ? 'APPLY NOW' : t('cta.apply')}
-            </button>
-          </motion.div>
+            </motion.button>
+          </div>
         </motion.div>
       </section>
-
     </>
   );
 };

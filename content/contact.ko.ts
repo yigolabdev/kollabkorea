@@ -63,7 +63,7 @@ export const contactContentKo = {
     instagramUrl: 'https://instagram.com/kollab_korea'
   },
   form: {
-    title: '부스 신청서 제출',
+    title: '입점 문의',
     fields: {
       brandName: '브랜드명',
       contactPerson: '담당자명',

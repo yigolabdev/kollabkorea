@@ -25,15 +25,22 @@ const StageCard: React.FC<StageCardProps> = ({ data }) => {
   return (
     <div 
       className={`
-        relative group flex flex-col items-center text-center
-        transition-all duration-300 ease-out z-10
-        ${isHovered ? 'scale-105 z-50' : 'scale-100'}
+        relative group text-center
+        transition-all duration-300 ease-out
+        ${isHovered ? 'scale-105' : 'scale-100'}
       `}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{
+        // 아이콘을 절대 기준점으로 설정
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
     >
-      {/* Icon Section - KOLLAB Black Round Box (곡선 위 앵커 포인트) */}
-      <div className="relative">
+      {/* Icon Section - KOLLAB Black Round Box (곡선 위 - z-30) */}
+      {/* 이 아이콘이 정확히 곡선 위에 위치하도록 부모의 translate(-50%, -50%)가 적용됨 */}
+      <div className="relative z-30" style={{ flexShrink: 0 }}>
         <div className={`
           relative z-10 p-5 rounded-2xl bg-kollab-black shadow-2xl text-white
           border border-zinc-800 hover:border-kollab-red transition-colors duration-300
@@ -46,17 +53,11 @@ const StageCard: React.FC<StageCardProps> = ({ data }) => {
         
         {/* Shadow/Glow behind icon */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-kollab-black/30 blur-xl rounded-full -z-10" />
-        
-        {/* Connection Anchor (The dot on the line) - KOLLAB Red */}
-        <div className={`
-          absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-kollab-red border-2 border-white shadow-md
-          transition-all duration-300 group-hover:scale-150 group-hover:bg-kollab-black pointer-events-none
-        `} />
       </div>
 
-      {/* Content - KOLLAB Typography (아이콘 아래로 배치) */}
+      {/* Content - KOLLAB Typography (곡선 아래 - z-10) */}
       <div className={`
-        relative flex flex-col items-center mt-8
+        relative flex flex-col items-center mt-8 z-10
         transition-all duration-300
         ${isHovered ? '-translate-y-1' : ''}
       `}>
@@ -64,7 +65,7 @@ const StageCard: React.FC<StageCardProps> = ({ data }) => {
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-[1px] h-8 bg-gradient-to-b from-kollab-red/50 to-transparent -z-10" />
 
         {/* Title - Inter Black */}
-        <h3 className="text-lg md:text-xl font-black text-kollab-black leading-tight tracking-tight drop-shadow-sm break-keep">
+        <h3 className="text-lg md:text-xl font-black text-kollab-black leading-tight tracking-tight drop-shadow-sm whitespace-nowrap">
           {data.title}
         </h3>
         

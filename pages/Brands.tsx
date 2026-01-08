@@ -65,13 +65,23 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
     { logo: '/assets/brands/la/LA10.png', name: 'shaishaishai' }
   ];
   
-  // Fill remaining slots with TBD
-  const laGridItems = Array.from({ length: 40 }, (_, i) => {
-    if (i < laPartners.length) {
-      return laPartners[i];
-    }
-    return null;
-  });
+  // TBD 항목 생성
+  const tbdItem = { logo: null, name: 'TBD' };
+  
+  // 40개 브랜드 배열 (10개 실제 브랜드 + 30개 TBD)
+  const allBrands = [
+    ...laPartners,
+    ...Array.from({ length: 30 }, () => tbdItem)
+  ];
+  
+  // 첫 번째 줄: 20개 (좌 → 우)
+  const firstRow = allBrands.slice(0, 20);
+  // 두 번째 줄: 20개 (우 → 좌)
+  const secondRow = allBrands.slice(20, 40);
+  
+  // 무한 루프를 위해 각 줄을 3번 복제
+  const firstRowDuplicated = [...firstRow, ...firstRow, ...firstRow];
+  const secondRowDuplicated = [...secondRow, ...secondRow, ...secondRow];
   
   return (
     <div className="px-6 max-w-7xl mx-auto pt-12 md:pt-18 pb-24">
@@ -130,7 +140,7 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         </div>
       </div>
 
-      {/* KOLLAB LA partners (with logos) */}
+      {/* KOLLAB LA partners (with infinite scroll animation) */}
       <div className="mt-24 md:mt-32">
         <motion.p
           initial={{ opacity: 0 }}
@@ -144,45 +154,99 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
           {renderBrandNameBold(language === 'ko' ? 'KOLLAB LA 협력사' : 'KOLLAB LA Partners')}
         </motion.p>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="grid grid-cols-4 md:grid-cols-8 gap-px bg-black/20 border border-black/20"
-        >
-          {laGridItems.map((item, i: number) => (
-            <motion.div
-              key={`la-${i}`}
-              variants={itemVariants}
-              className="aspect-square bg-[#EDEBE4] flex items-center justify-center group transition-colors duration-300 cursor-pointer relative overflow-hidden hover:bg-white"
-            >
-              {item ? (
-                <>
-                  {/* Logo (default state) - no padding */}
-                  <img 
-                    src={item.logo} 
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 absolute inset-0"
-                  />
-                  {/* Brand name (on hover) - gray text on white */}
-                  <span className="font-extrabold text-xs sm:text-sm md:text-base lg:text-lg tracking-[0.15em] text-center text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10 break-keep px-2">
-                    {item.name}
-                  </span>
-                  <div className="absolute inset-0 border-4 border-kollab-red opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </>
-              ) : (
-                <>
-                  {/* TBD slot */}
-                  <span className="font-extrabold text-sm md:text-lg lg:text-xl tracking-[0.22em] text-center text-black group-hover:text-zinc-600 transition-colors duration-300 relative z-10">
-                    TBD
-                  </span>
-                  <div className="absolute inset-0 border-4 border-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* 첫 번째 줄: 좌 → 우 */}
+        <div className="relative overflow-hidden mb-2">
+          <motion.div
+            className="flex gap-2"
+            animate={{
+              x: [0, -100 / 3 + '%'],
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: 'loop',
+                duration: 33.6,
+                ease: 'linear',
+              },
+            }}
+          >
+            {firstRowDuplicated.map((item, index) => (
+              <div
+                key={`row1-${index}`}
+                className="flex-shrink-0 w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-[#EDEBE4] flex items-center justify-center group transition-colors duration-300 cursor-pointer relative overflow-hidden hover:bg-white border border-black/10"
+              >
+                {item.logo ? (
+                  <>
+                    {/* Logo (default state) */}
+                    <img 
+                      src={item.logo} 
+                      alt={item.name}
+                      className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 absolute inset-0"
+                    />
+                    {/* Brand name (on hover) */}
+                    <span className="font-extrabold text-xs sm:text-sm md:text-base tracking-[0.15em] text-center text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10 break-keep px-2">
+                      {item.name}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {/* TBD slot */}
+                    <span className="font-extrabold text-sm md:text-lg tracking-[0.22em] text-center text-black/60 group-hover:text-zinc-600 transition-colors duration-300 relative z-10">
+                      {item.name}
+                    </span>
+                  </>
+                )}
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* 두 번째 줄: 우 → 좌 */}
+        <div className="relative overflow-hidden">
+          <motion.div
+            className="flex gap-2"
+            animate={{
+              x: [-100 / 3 + '%', 0],
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: 'loop',
+                duration: 33.6,
+                ease: 'linear',
+              },
+            }}
+          >
+            {secondRowDuplicated.map((item, index) => (
+              <div
+                key={`row2-${index}`}
+                className="flex-shrink-0 w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-[#EDEBE4] flex items-center justify-center group transition-colors duration-300 cursor-pointer relative overflow-hidden hover:bg-white border border-black/10"
+              >
+                {item.logo ? (
+                  <>
+                    {/* Logo (default state) */}
+                    <img 
+                      src={item.logo} 
+                      alt={item.name}
+                      className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 absolute inset-0"
+                    />
+                    {/* Brand name (on hover) */}
+                    <span className="font-extrabold text-xs sm:text-sm md:text-base tracking-[0.15em] text-center text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10 break-keep px-2">
+                      {item.name}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {/* TBD slot */}
+                    <span className="font-extrabold text-sm md:text-lg tracking-[0.22em] text-center text-black/60 group-hover:text-zinc-600 transition-colors duration-300 relative z-10">
+                      {item.name}
+                    </span>
+                  </>
+                )}
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
     </div>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ShoppingCart, Share2, Atom, MonitorPlay, Network } from 'lucide-react';
+import { Store, Video, Users, Megaphone, Plane } from 'lucide-react';
 import { StageData } from './types';
 
 /**
@@ -21,7 +21,7 @@ export const ROADMAP_DATA: StageData[] = [
       "팝업 및 인플루언서 마케팅",
       "판매 데이터 공유"
     ],
-    Icon: ShoppingCart,
+    Icon: Store,
     color: "from-kollab-red to-red-600",
     position: { top: 60 }
   },
@@ -34,7 +34,7 @@ export const ROADMAP_DATA: StageData[] = [
       "릴스 중심 숏폼",
       "실사용 기반 스토리 발행"
     ],
-    Icon: Share2,
+    Icon: Video,
     color: "from-zinc-700 to-kollab-dark",
     position: { top: 25 }
   },
@@ -47,7 +47,7 @@ export const ROADMAP_DATA: StageData[] = [
       "브랜드 협업",
       "자발적 UGC 생성"
     ],
-    Icon: Atom,
+    Icon: Users,
     color: "from-kollab-black to-zinc-900",
     position: { top: 5 }
   },
@@ -59,7 +59,7 @@ export const ROADMAP_DATA: StageData[] = [
       "오프라인 PR 자산확보",
       "미디어/리테일 연계 레퍼런스"
     ],
-    Icon: MonitorPlay,
+    Icon: Megaphone,
     color: "from-zinc-800 to-kollab-dark",
     position: { top: 25 }
   },
@@ -74,7 +74,7 @@ export const ROADMAP_DATA: StageData[] = [
       "메이저 리테일 연결기회",
       "(Ulta, Sephora 등)"
     ],
-    Icon: Network,
+    Icon: Plane,
     color: "from-kollab-red to-red-700",
     position: { top: 60 }
   }

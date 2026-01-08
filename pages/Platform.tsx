@@ -31,8 +31,16 @@ const Platform: React.FC = () => {
   const { language } = useLanguage();
   const [mounted, setMounted] = useState(false);
   
-  // 첫 번째 노드의 기준 높이 (아이콘 중심 기준)
-  const baseIconTop = '59%';
+  // SVG 곡선의 정확한 Y좌표 (2차 베지어 곡선 계산)
+  // 새로운 곡선: M 10,40 Q 50,10 90,40
+  // viewBox: 0 0 100 50 (비율 2:1로 원형에 가깝게)
+  const curveYPositions = {
+    node1: '40%',    // X=10%, t=0 - baseline
+    node2: '26.25%', // X=30%, t=0.25 - 대칭!
+    node3: '20%',    // X=50%, t=0.5 - 정점
+    node4: '26.25%', // X=70%, t=0.75 - 대칭!
+    node5: '43%'     // X=90%, t=1 - baseline (조정됨)
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -44,7 +52,7 @@ const Platform: React.FC = () => {
         <img
           src="/assets/photos/shoots/design_guide02.png"
           alt="Platform design guide"
-          className="w-full h-auto object-contain"
+          className="w-full h-auto object-contain mb-[200px]"
           loading="lazy"
         />
 
@@ -54,10 +62,10 @@ const Platform: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
-          className="mt-12 md:mt-16 py-16 md:py-20 relative bg-gradient-to-b from-white via-zinc-50/30 to-white rounded-2xl"
+          className="py-4 md:py-6 relative bg-gradient-to-b from-white via-zinc-50/30 to-white rounded-2xl"
         >
           {/* Desktop View: The Arc */}
-          <div className="hidden md:block relative w-full h-[600px] px-8">
+          <div className="hidden md:block relative w-full h-[450px] px-8">
             
             {/* SVG Connector Layer */}
             <div className="absolute inset-0 w-full h-full pointer-events-none">
@@ -66,21 +74,25 @@ const Platform: React.FC = () => {
 
             {/* 
               Cards positioned absolutely based on the curve geometry.
-              아이콘(이모티콘) 중심을 곡선 위에 정렬
               
-              첫 번째(브랜드 액티베이션)와 다섯 번째(미국 수출)는 동일한 높이
-              - baseIconTop: 59% (첫 번째 기준)
-              - 다섯 번째도 동일한 baseIconTop 사용
+              ✨ 핵심: SVG 2차 베지어 곡선의 정확한 좌표 사용
+              - 새로운 곡선: M 10,40 Q 50,10 90,40
+              - viewBox: 0 0 100 50 (비율 2:1 - 원형에 가깝게)
+              - 각 X 좌표에서 곡선 공식으로 정확한 Y값 계산
+              - Node 1 & 5: 40% (시작/끝 - 동일한 baseline)
+              - Node 2 & 4: 26.25% (대칭 - 동일 높이)
+              - Node 3: 20% (정점)
               
               Transform: translate(-50%, -50%) - 아이콘 중심을 곡선 좌표에 정렬
             */}
             
-            {/* Node 1 - 브랜드 액티베이션 (기준점 - 59%) */}
+            {/* Node 1 - 브랜드 액티베이션 */}
             <div 
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-[0ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[0ms] hover:z-50"
               style={{ 
                 left: '10%',
-                top: baseIconTop,
+                top: curveYPositions.node1,
+                transform: 'translate(-50%, -50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
@@ -89,10 +101,11 @@ const Platform: React.FC = () => {
 
             {/* Node 2 - 콘텐츠 제작 */}
             <div 
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-[200ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[200ms] hover:z-50"
               style={{ 
                 left: '30%',
-                top: '49%',
+                top: curveYPositions.node2,
+                transform: 'translate(-50%, -50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
@@ -101,10 +114,11 @@ const Platform: React.FC = () => {
 
             {/* Node 3 (Peak) - 인플루언서 마케팅 */}
             <div 
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-[400ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[400ms] hover:z-50"
               style={{ 
                 left: '50%',
-                top: '45%',
+                top: curveYPositions.node3,
+                transform: 'translate(-50%, -50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
@@ -113,22 +127,24 @@ const Platform: React.FC = () => {
 
             {/* Node 4 - PR */}
             <div 
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-[600ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[600ms] hover:z-50"
               style={{ 
                 left: '70%',
-                top: '49%',
+                top: curveYPositions.node4,
+                transform: 'translate(-50%, -50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
               <StageCard data={ROADMAP_DATA[3]} isEven={true} />
             </div>
 
-            {/* Node 5 - 미국 수출 연결 기회 (Node 1과 동일한 높이 - 59%) */}
+            {/* Node 5 - 미국 수출 연결 기회 (Node 1과 정확히 동일한 높이) */}
             <div 
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-[800ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[800ms] hover:z-50"
               style={{ 
                 left: '90%',
-                top: baseIconTop,
+                top: curveYPositions.node5,
+                transform: 'translate(-50%, -50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
@@ -160,7 +176,7 @@ const Platform: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 md:mt-8 p-12 border-2 border-kollab-black text-center max-w-4xl mx-auto bg-white"
+          className="mt-4 md:mt-6 p-12 border-2 border-kollab-black text-center max-w-4xl mx-auto bg-white"
         >
           <p className="text-base font-black tracking-[0.22em] mb-4 uppercase">
             PARTICIPATION NOTICE

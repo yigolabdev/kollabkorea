@@ -27,7 +27,6 @@ const Platform: React.FC = () => {
   const { language } = useLanguage();
   const content = language === 'ko' ? platformContentKo : platformContentEn;
   const [mounted, setMounted] = useState(false);
-  const [hideHeader, setHideHeader] = useState(false);
   
   // Convert content roadmap to StageData format
   const ROADMAP_DATA: StageData[] = content.roadmap.map((stage) => ({
@@ -49,48 +48,6 @@ const Platform: React.FC = () => {
 
   useEffect(() => {
     setMounted(true);
-    
-    // 최상단으로 즉시 이동
-    window.scrollTo({ top: 0, behavior: 'auto' });
-    
-    // 1단계: 헤더 즉시 숨김
-    setHideHeader(true);
-    
-    // 2단계: 350ms 후 스크롤 애니메이션 시작 (헤더 완전히 사라진 후)
-    setTimeout(() => {
-      const targetScroll = 150;
-      const duration = 1000; // 1초 (부드럽지만 빠르게)
-      const startTime = performance.now();
-      
-      // Ease-in-out cubic - 매우 부드러운 가속/감속
-      const easeInOutCubic = (t: number) => 
-        t < 0.5 
-          ? 4 * t * t * t 
-          : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      
-      const animateScroll = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = easeInOutCubic(progress);
-        
-        window.scrollTo({
-          top: targetScroll * easedProgress,
-          behavior: 'auto'
-        });
-        
-        if (progress < 1) {
-          requestAnimationFrame(animateScroll);
-        }
-      };
-      
-      // 스크롤 애니메이션 시작
-      requestAnimationFrame(animateScroll);
-    }, 350); // 50ms → 350ms (헤더 완전히 사라진 후 + 여유)
-    
-    // 클린업 함수
-    return () => {
-      setHideHeader(false);
-    };
   }, []);
 
   return (

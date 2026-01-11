@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { contactContentEn } from '../content/contact.en';
 import { contactContentKo } from '../content/contact.ko';
@@ -158,23 +158,40 @@ const Contact: React.FC = () => {
                   </span>
                   <button
                     onClick={handleCopyEmail}
-                    className="relative flex-shrink-0 p-2.5 bg-black text-white hover:bg-zinc-800 transition-all duration-300 group"
+                    className="relative flex-shrink-0 p-2 text-black hover:text-zinc-600 transition-all duration-300 group"
                     aria-label={emailCopied ? (language === 'ko' ? '복사됨' : 'Copied') : (language === 'ko' ? '이메일 복사' : 'Copy email')}
                     title={emailCopied ? (language === 'ko' ? '복사됨!' : 'Copied!') : (language === 'ko' ? '복사' : 'Copy')}
                   >
                     {emailCopied ? (
-                      <Check size={20} className="transition-transform duration-300 scale-110" />
+                      <Check size={24} className="transition-transform duration-300 scale-110" />
                     ) : (
-                      <Copy size={20} className="group-hover:scale-110 transition-transform duration-300" />
+                      <Copy size={24} className="group-hover:scale-110 transition-transform duration-300" />
                     )}
                   </button>
                 </div>
               </div>
               <div>
                 <p className="text-sm font-bold text-black tracking-[0.12em] mb-2">{content.contactInfo.instagramLabel}</p>
-                <a href={content.contactInfo.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-3xl font-bold text-black hover:underline underline-offset-8 tracking-wide">
-                  {content.contactInfo.instagram}
-                </a>
+                <div className="flex items-center gap-4">
+                  <a 
+                    href={content.contactInfo.instagramUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-3xl font-bold text-black hover:underline underline-offset-8 tracking-wide"
+                  >
+                    {content.contactInfo.instagram}
+                  </a>
+                  <a
+                    href={content.contactInfo.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative flex-shrink-0 p-2 text-black hover:text-zinc-600 transition-all duration-300 group"
+                    aria-label={language === 'ko' ? '인스타그램으로 이동' : 'Go to Instagram'}
+                    title={language === 'ko' ? '인스타그램으로 이동' : 'Go to Instagram'}
+                  >
+                    <ExternalLink size={24} className="group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>

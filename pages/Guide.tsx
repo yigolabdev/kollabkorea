@@ -21,22 +21,22 @@ const Guide: React.FC = () => {
     { id: 'g1', label: 'Google Search Console 접속', completed: false },
     { id: 'g2', label: '속성 추가 (https://kollabkorea.com)', completed: false },
     { id: 'g3', label: 'HTML 태그 방식으로 소유권 확인', completed: false },
-    { id: 'g4', label: 'index.html에 verification 코드 입력', completed: false },
-    { id: 'g5', label: 'GitHub 푸시 및 배포 완료', completed: false },
-    { id: 'g6', label: '소유권 확인 완료', completed: false },
-    { id: 'g7', label: 'Sitemap 제출 (sitemap.xml)', completed: false },
-    { id: 'g8', label: 'URL 검사 및 색인 요청', completed: false },
+    { id: 'g4', label: 'verification 코드 복사', completed: false },
+    { id: 'g5', label: '와이고 개발팀에 코드 전달', completed: false },
+    { id: 'g6', label: '개발팀 배포 완료 알림 확인', completed: false },
+    { id: 'g7', label: '소유권 확인 완료', completed: false },
+    { id: 'g8', label: 'Sitemap 제출 (sitemap.xml)', completed: false },
   ]);
 
   const [naverChecklist, setNaverChecklist] = useState<ChecklistItem[]>([
     { id: 'n1', label: 'Naver Search Advisor 접속', completed: false },
     { id: 'n2', label: '사이트 등록 (https://kollabkorea.com)', completed: false },
     { id: 'n3', label: 'HTML 태그 방식으로 소유 확인', completed: false },
-    { id: 'n4', label: 'index.html에 verification 코드 입력', completed: false },
-    { id: 'n5', label: 'GitHub 푸시 및 배포 완료', completed: false },
-    { id: 'n6', label: '소유 확인 완료', completed: false },
-    { id: 'n7', label: 'Sitemap 제출 (sitemap.xml)', completed: false },
-    { id: 'n8', label: '주요 페이지 수집 요청', completed: false },
+    { id: 'n4', label: 'verification 코드 복사', completed: false },
+    { id: 'n5', label: '와이고 개발팀에 코드 전달', completed: false },
+    { id: 'n6', label: '개발팀 배포 완료 알림 확인', completed: false },
+    { id: 'n7', label: '소유 확인 완료', completed: false },
+    { id: 'n8', label: 'Sitemap 제출 (sitemap.xml)', completed: false },
   ]);
 
   const toggleGoogleItem = (id: string) => {
@@ -168,17 +168,30 @@ const Guide: React.FC = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold min-w-[24px]">3.</span>
-                  <span>index.html 파일 수정:</span>
+                  <div className="flex-1">
+                    <span className="font-semibold text-kollab-red">복사한 코드를 와이고 개발팀에 전달</span>
+                    <p className="text-sm mt-2 text-black/60">
+                      파일 수정은 개발팀이 처리합니다. 아래 형식으로 전달해주세요:
+                    </p>
+                  </div>
                 </li>
               </ol>
-              <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+              <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto mb-4">
                 <code>
                   &lt;meta name="google-site-verification" content="<span className="text-yellow-300">여기에_복사한_코드_붙여넣기</span>" /&gt;
                 </code>
               </div>
+              <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
+                <p className="text-sm font-bold text-blue-900 mb-2">📧 개발팀 전달 사항</p>
+                <p className="text-sm text-blue-800">
+                  ✅ Google verification 코드: <code className="bg-white px-2 py-1 rounded">복사한_코드</code><br />
+                  ✅ 작업 요청: index.html의 google-site-verification 메타 태그에 코드 입력<br />
+                  ✅ 배포 완료 후 알림 요청
+                </p>
+              </div>
               <p className="mt-4 text-sm text-black/70">
-                4. GitHub에 푸시 및 배포 완료 (2-3분 대기)<br />
-                5. "확인" 버튼 클릭
+                4. 개발팀 작업 완료 및 배포 대기 (2-3분)<br />
+                5. 배포 완료 알림 받은 후 "확인" 버튼 클릭
               </p>
             </div>
 
@@ -308,17 +321,30 @@ const Guide: React.FC = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-bold min-w-[24px]">3.</span>
-                  <span>index.html 파일 수정:</span>
+                  <div className="flex-1">
+                    <span className="font-semibold text-[#03C75A]">복사한 코드를 와이고 개발팀에 전달</span>
+                    <p className="text-sm mt-2 text-black/60">
+                      파일 수정은 개발팀이 처리합니다. 아래 형식으로 전달해주세요:
+                    </p>
+                  </div>
                 </li>
               </ol>
-              <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+              <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto mb-4">
                 <code>
                   &lt;meta name="naver-site-verification" content="<span className="text-yellow-300">여기에_복사한_코드_붙여넣기</span>" /&gt;
                 </code>
               </div>
+              <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                <p className="text-sm font-bold text-green-900 mb-2">📧 개발팀 전달 사항</p>
+                <p className="text-sm text-green-800">
+                  ✅ Naver verification 코드: <code className="bg-white px-2 py-1 rounded">복사한_코드</code><br />
+                  ✅ 작업 요청: index.html의 naver-site-verification 메타 태그에 코드 입력<br />
+                  ✅ 배포 완료 후 알림 요청
+                </p>
+              </div>
               <p className="mt-4 text-sm text-black/70">
-                4. GitHub에 푸시 및 배포 완료 (2-3분 대기)<br />
-                5. "소유확인" 버튼 클릭
+                4. 개발팀 작업 완료 및 배포 대기 (2-3분)<br />
+                5. 배포 완료 알림 받은 후 "소유확인" 버튼 클릭
               </p>
             </div>
 
@@ -376,14 +402,29 @@ const Guide: React.FC = () => {
           className="text-center bg-red-50 border-2 border-red-300 rounded-xl p-6"
         >
           <p className="text-sm font-bold text-red-900 mb-2">
-            🚨 등록 완료 후 다음 작업 필요
+            🚨 중요: 파일 수정은 와이고 개발팀이 처리합니다
           </p>
-          <ol className="text-sm text-red-800 text-left max-w-2xl mx-auto space-y-1">
-            <li>1. pages/Guide.tsx 파일 삭제</li>
-            <li>2. App.tsx에서 Guide 라우팅 제거</li>
-            <li>3. robots.txt에서 /guide 제외 규칙 제거</li>
-            <li>4. GitHub 푸시 및 배포</li>
-          </ol>
+          <div className="text-sm text-red-800 text-left max-w-3xl mx-auto space-y-3">
+            <div className="bg-white rounded-lg p-4 border border-red-200">
+              <p className="font-bold mb-2">📧 개발팀에 전달할 정보:</p>
+              <ol className="space-y-1 ml-4">
+                <li>1. Google verification 코드 (복사한 content 값)</li>
+                <li>2. Naver verification 코드 (복사한 content 값)</li>
+                <li>3. 작업 요청: index.html 메타 태그 추가</li>
+                <li>4. 배포 완료 후 알림 요청</li>
+              </ol>
+            </div>
+            <div className="bg-white rounded-lg p-4 border border-red-200">
+              <p className="font-bold mb-2">✅ 등록 완료 후 가이드 페이지 삭제 작업 (개발팀):</p>
+              <ol className="space-y-1 ml-4">
+                <li>1. pages/Guide.tsx 파일 삭제</li>
+                <li>2. App.tsx에서 Guide 라우팅 제거</li>
+                <li>3. types.ts에서 'guide' 타입 제거</li>
+                <li>4. robots.txt에서 /guide 제외 규칙 제거</li>
+                <li>5. GitHub 푸시 및 배포</li>
+              </ol>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>

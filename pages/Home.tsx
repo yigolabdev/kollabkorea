@@ -111,7 +111,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
       {/* INTRO SECTION - 일반 스크롤 */}
       <section
         id="intro-section"
-        className="relative overflow-hidden bg-black min-h-[100vh] mt-[100px] flex items-center justify-center"
+        className="relative overflow-hidden bg-black min-h-[100vh] mt-[500px] flex items-center justify-center"
       >
         {/* 배경 이미지 */}
         <div 

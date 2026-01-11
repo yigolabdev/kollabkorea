@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Copy, Check } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { contactContentEn } from '../content/contact.en';
 import { contactContentKo } from '../content/contact.ko';
@@ -14,6 +15,18 @@ import { containerVariants, itemVariants } from '../utils/animations';
 const Contact: React.FC = () => {
   const { language } = useLanguage();
   const content = language === 'en' ? contactContentEn : contactContentKo;
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(content.contactInfo.email);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy email:', err);
+    }
+  };
+
   return (
     <div className="bg-white">
       {/* Intro Banner */}
@@ -139,9 +152,23 @@ const Contact: React.FC = () => {
             <div className="space-y-6">
               <div>
                 <p className="text-sm font-bold text-black tracking-[0.12em] mb-2">{content.contactInfo.emailLabel}</p>
-                <a href={`mailto:${content.contactInfo.email}`} className="text-3xl font-bold text-black hover:underline underline-offset-8 tracking-wide">
-                  {content.contactInfo.email}
-                </a>
+                <div className="flex items-center gap-4">
+                  <span className="text-3xl font-bold text-black tracking-wide">
+                    {content.contactInfo.email}
+                  </span>
+                  <button
+                    onClick={handleCopyEmail}
+                    className="relative flex-shrink-0 p-2.5 bg-black text-white hover:bg-zinc-800 transition-all duration-300 group"
+                    aria-label={emailCopied ? (language === 'ko' ? '복사됨' : 'Copied') : (language === 'ko' ? '이메일 복사' : 'Copy email')}
+                    title={emailCopied ? (language === 'ko' ? '복사됨!' : 'Copied!') : (language === 'ko' ? '복사' : 'Copy')}
+                  >
+                    {emailCopied ? (
+                      <Check size={20} className="transition-transform duration-300 scale-110" />
+                    ) : (
+                      <Copy size={20} className="group-hover:scale-110 transition-transform duration-300" />
+                    )}
+                  </button>
+                </div>
               </div>
               <div>
                 <p className="text-sm font-bold text-black tracking-[0.12em] mb-2">{content.contactInfo.instagramLabel}</p>

@@ -128,7 +128,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
             <img 
               src="/assets/brands/kollab_logo_korea_primary.png" 
               alt="KOLLAB KOREA" 
-              className="h-10 md:h-12 w-auto object-contain"
+              className="h-12 md:h-14 w-auto object-contain"
             />
           </div>
           
@@ -142,7 +142,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
                 }`}
               >
                 {item}
-                <span className={`absolute -bottom-2 left-0 w-full h-px bg-black transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
+                <span className={`absolute -bottom-2 left-0 w-full h-px bg-kollab-red transform origin-left transition-transform duration-300 ${currentPage === item.toLowerCase() ? 'scale-x-100' : 'scale-x-0'}`}></span>
               </button>
             ))}
           </div>

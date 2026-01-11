@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { brandsContentEn } from '../content/brands.en';
 import { brandsContentKo } from '../content/brands.ko';
@@ -35,37 +35,88 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   const { language } = useLanguage();
   const content = language === 'ko' ? brandsContentKo : brandsContentEn;
   
-  // LA Partner logos with brand names
-  const laPartners: BrandPartner[] = [
-    { logo: '/assets/brands/la/LA01.png', name: 'OLIVE YOUNG' },
-    { logo: '/assets/brands/la/LA02.png', name: 'Arencia' },
-    { logo: '/assets/brands/la/LA03.png', name: 'MUZIGAE MANSION' },
-    { logo: '/assets/brands/la/LA04.png', name: 'MUZMAK' },
-    { logo: '/assets/brands/la/LA05.png', name: 'SELF BEAUTY' },
-    { logo: '/assets/brands/la/LA06.png', name: 'DIFFER & DEEPER' },
-    { logo: '/assets/brands/la/LA07.png', name: 'A mar da' },
-    { logo: '/assets/brands/la/LA08.png', name: 'SAMPAR paris' },
-    { logo: '/assets/brands/la/LA09.png', name: 'VANILLA TASTE' },
-    { logo: '/assets/brands/la/LA10.png', name: 'shaishaishai' }
-  ];
+  // 애니메이션 컨트롤러
+  const firstRowControls = useAnimation();
+  const secondRowControls = useAnimation();
   
-  // TBD 항목 생성
-  const tbdItem: BrandPartner = { logo: null, name: 'TBD' };
+  // LA Partner logos - 40개 이미지
+  const laPartners: BrandPartner[] = Array.from({ length: 40 }, (_, i) => ({
+    logo: `/BrandLogo/la-popup-logo${String(i + 1).padStart(2, '0')}.png`,
+    name: `Brand ${i + 1}`
+  }));
   
-  // 40개 브랜드 배열 (10개 실제 브랜드 + 30개 TBD)
-  const allBrands = [
-    ...laPartners,
-    ...Array.from({ length: 30 }, () => tbdItem)
-  ];
+  // 첫 번째 줄: 20개 (좌로 이동)
+  const firstRow = laPartners.slice(0, 20);
+  // 두 번째 줄: 20개를 역순으로 (logo40→logo21 순서, 우로 이동)
+  const secondRow = [...laPartners.slice(20, 40)].reverse();
   
-  // 첫 번째 줄: 20개 (좌 → 우)
-  const firstRow = allBrands.slice(0, 20);
-  // 두 번째 줄: 20개 (우 → 좌)
-  const secondRow = allBrands.slice(20, 40);
-  
-  // 무한 루프를 위해 각 줄을 3번 복제
+  // 무한 루프를 위해 각 줄을 3번 복제 (완벽한 공백 제거)
   const firstRowDuplicated = [...firstRow, ...firstRow, ...firstRow];
   const secondRowDuplicated = [...secondRow, ...secondRow, ...secondRow];
+  
+  // 첫 번째 줄 애니메이션 - 좌로 무한 이동 (0% → -33.333%)
+  useEffect(() => {
+    firstRowControls.start({
+      x: [0, '-33.333%'],
+      transition: {
+        duration: 20,
+        repeat: Infinity,
+        repeatType: 'loop',
+        ease: 'linear',
+      },
+    });
+  }, [firstRowControls]);
+  
+  // 두 번째 줄 애니메이션 - 우로 무한 이동 (-33.333% → 0%)
+  useEffect(() => {
+    // 초기 위치 설정
+    secondRowControls.set({ x: '-33.333%' });
+    
+    secondRowControls.start({
+      x: ['-33.333%', 0],
+      transition: {
+        duration: 20,
+        repeat: Infinity,
+        repeatType: 'loop',
+        ease: 'linear',
+      },
+    });
+  }, [secondRowControls]);
+  
+  // 마우스 오버 핸들러 - 현재 위치 유지
+  const handleFirstRowMouseEnter = () => {
+    firstRowControls.stop();
+  };
+  
+  const handleFirstRowMouseLeave = () => {
+    // 애니메이션 재개
+    firstRowControls.start({
+      x: '-33.333%',
+      transition: {
+        duration: 20,
+        repeat: Infinity,
+        repeatType: 'loop',
+        ease: 'linear',
+      },
+    });
+  };
+  
+  const handleSecondRowMouseEnter = () => {
+    secondRowControls.stop();
+  };
+  
+  const handleSecondRowMouseLeave = () => {
+    // 애니메이션 재개
+    secondRowControls.start({
+      x: 0,
+      transition: {
+        duration: 20,
+        repeat: Infinity,
+        repeatType: 'loop',
+        ease: 'linear',
+      },
+    });
+  };
   
   return (
     <div className="px-6 max-w-7xl mx-auto pt-12 md:pt-18 pb-24">
@@ -160,97 +211,65 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         </motion.p>
 
         {/* 첫 번째 줄: 좌 → 우 */}
-        <div className="relative overflow-hidden mb-2">
+        <div 
+          className="relative overflow-hidden mb-2"
+          onMouseEnter={handleFirstRowMouseEnter}
+          onMouseLeave={handleFirstRowMouseLeave}
+        >
           <motion.div
             className="flex gap-2"
-            animate={{
-              x: [0, -100 / 3 + '%'],
-            }}
-            transition={{
-              x: {
-                repeat: Infinity,
-                repeatType: 'loop',
-                duration: 33.6,
-                ease: 'linear',
-              },
-            }}
+            animate={firstRowControls}
           >
             {firstRowDuplicated.map((item, index) => (
               <div
                 key={`row1-${index}`}
-                className="flex-shrink-0 w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-[#EDEBE4] flex items-center justify-center group transition-colors duration-300 cursor-pointer relative overflow-hidden hover:bg-white border border-black/10"
+                className="flex-shrink-0 w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white flex items-center justify-center"
               >
-                {item.logo ? (
-                  <>
-                    {/* Logo (default state) */}
-                    <img 
-                      src={item.logo} 
-                      alt={item.name}
-                      className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 absolute inset-0"
-                    />
-                    {/* Brand name (on hover) */}
-                    <span className="font-extrabold text-xs sm:text-sm md:text-base tracking-[0.15em] text-center text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10 break-keep px-2">
-                      {item.name}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {/* TBD slot */}
-                    <span className="font-extrabold text-sm md:text-lg tracking-[0.22em] text-center text-black/60 group-hover:text-zinc-600 transition-colors duration-300 relative z-10">
-                      {item.name}
-                    </span>
-                  </>
-                )}
+                <img 
+                  src={item.logo} 
+                  alt={item.name}
+                  className="w-full h-full object-contain p-4"
+                />
               </div>
             ))}
           </motion.div>
+          
+          {/* 좌측 그라데이션 */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-white to-transparent pointer-events-none z-10" />
+          
+          {/* 우측 그라데이션 */}
+          <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
         </div>
 
         {/* 두 번째 줄: 우 → 좌 */}
-        <div className="relative overflow-hidden">
+        <div 
+          className="relative overflow-hidden"
+          onMouseEnter={handleSecondRowMouseEnter}
+          onMouseLeave={handleSecondRowMouseLeave}
+        >
           <motion.div
             className="flex gap-2"
-            animate={{
-              x: [-100 / 3 + '%', 0],
-            }}
-            transition={{
-              x: {
-                repeat: Infinity,
-                repeatType: 'loop',
-                duration: 33.6,
-                ease: 'linear',
-              },
-            }}
+            animate={secondRowControls}
           >
             {secondRowDuplicated.map((item, index) => (
               <div
                 key={`row2-${index}`}
-                className="flex-shrink-0 w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-[#EDEBE4] flex items-center justify-center group transition-colors duration-300 cursor-pointer relative overflow-hidden hover:bg-white border border-black/10"
+                className="flex-shrink-0 w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white flex items-center justify-center"
               >
-                {item.logo ? (
-                  <>
-                    {/* Logo (default state) */}
-                    <img 
-                      src={item.logo} 
-                      alt={item.name}
-                      className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 absolute inset-0"
-                    />
-                    {/* Brand name (on hover) */}
-                    <span className="font-extrabold text-xs sm:text-sm md:text-base tracking-[0.15em] text-center text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 relative z-10 break-keep px-2">
-                      {item.name}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {/* TBD slot */}
-                    <span className="font-extrabold text-sm md:text-lg tracking-[0.22em] text-center text-black/60 group-hover:text-zinc-600 transition-colors duration-300 relative z-10">
-                      {item.name}
-                    </span>
-                  </>
-                )}
+                <img 
+                  src={item.logo} 
+                  alt={item.name}
+                  className="w-full h-full object-contain p-4"
+                />
               </div>
             ))}
           </motion.div>
+          
+          {/* 좌측 그라데이션 */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-white to-transparent pointer-events-none z-10" />
+          
+          {/* 우측 그라데이션 */}
+          <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
         </div>
       </div>
 

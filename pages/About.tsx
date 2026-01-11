@@ -3,83 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { aboutContentEn } from '../content/about.en';
 import { aboutContentKo } from '../content/about.ko';
+import BlindLine from '../components/BlindLine';
+import ScrollIndicator from '../components/ScrollIndicator';
+import {
+  containerVariants,
+  headerVariants,
+  blindGroupVariants,
+  blindGroupDelayedVariants,
+  riseVariants,
+  scaleInVariants
+} from '../utils/animations';
+import { splitTwoLines } from '../utils/text';
+import type { NavigationProps } from '../types';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.06 }
-  }
-};
-
-const headerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.3 }
-  }
-};
-
-// Blind-style line reveal (each line masked + slides up)
-const blindGroupVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.09 }
-  }
-};
-
-const blindGroupDelayedVariants = {
-  hidden: {},
-  visible: {
-    // after hero lines finish (~1.0s), add a slight delay
-    transition: { delayChildren: 0.65, staggerChildren: 0.09 }
-  }
-};
-
-const blindLineVariants = {
-  hidden: { y: '120%' },
-  visible: {
-    y: '0%',
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] }
-  }
-};
-
-const riseVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.65 }
-  }
-};
-
-const scaleInVariants = {
-  hidden: { opacity: 0, scale: 0.96 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
-  }
-};
-
-interface BlindLineProps {
-  children: React.ReactNode;
-}
-
-const BlindLine: React.FC<BlindLineProps> = ({ children }) => (
-  <span className="block overflow-hidden">
-    <motion.span className="block will-change-transform" variants={blindLineVariants}>
-      {children}
-    </motion.span>
-  </span>
-);
-
-const About: React.FC = () => {
+const About: React.FC<NavigationProps> = ({ onNavigate }) => {
   const { language } = useLanguage();
   const content = language === 'en' ? aboutContentEn : aboutContentKo;
 
@@ -96,10 +38,47 @@ const About: React.FC = () => {
   const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start start', 'end end'] });
   const progressX = useSpring(scrollYProgress, { stiffness: 120, damping: 20, mass: 0.2 });
 
-  const splitTwoLines = (v: string) => {
-    const [a, b] = v.split('\n');
-    return { a: a ?? '', b: b ?? '' };
-  };
+  const measureConnectors = useCallback(() => {
+    const hostEl = connectorHostRef.current;
+    const circleEl = leftCircleRef.current;
+    const rightEl = rightCircleRef.current;
+    if (!hostEl || !circleEl || !rightEl) return;
+
+    const hostRect = hostEl.getBoundingClientRect();
+    const circleRect = circleEl.getBoundingClientRect();
+    const rightRect = rightCircleRef.current.getBoundingClientRect();
+
+    const w = Math.max(1, Math.round(hostRect.width));
+    const h = Math.max(1, Math.round(hostRect.height));
+    setConnectorBox({ w, h });
+
+    const start = {
+      x: circleRect.left + circleRect.width / 2 - hostRect.left,
+      y: circleRect.top + circleRect.height / 2 - hostRect.top
+    };
+    const rightStart = {
+      x: rightRect.left + rightRect.width / 2 - hostRect.left,
+      y: rightRect.top + rightRect.height / 2 - hostRect.top
+    };
+
+    const next: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
+    pillarRefs.current.forEach((pill) => {
+      if (!pill) return;
+      const r = pill.getBoundingClientRect();
+      const end = {
+        x: r.left - hostRect.left,
+        y: r.top + r.height / 2 - hostRect.top
+      };
+      next.push({ x1: start.x, y1: start.y, x2: end.x, y2: end.y });
+
+      const rightEnd = {
+        x: r.right - hostRect.left,
+        y: r.top + r.height / 2 - hostRect.top
+      };
+      next.push({ x1: rightStart.x, y1: rightStart.y, x2: rightEnd.x, y2: rightEnd.y });
+    });
+    setConnectorLines(next);
+  }, []);
 
   useEffect(() => {
     const host = connectorHostRef.current;
@@ -108,47 +87,7 @@ const About: React.FC = () => {
     let raf = 0;
     const measure = () => {
       cancelAnimationFrame(raf);
-      raf = window.requestAnimationFrame(() => {
-        const hostEl = connectorHostRef.current;
-        const circleEl = leftCircleRef.current;
-        const rightEl = rightCircleRef.current;
-        if (!hostEl || !circleEl || !rightEl) return;
-
-        const hostRect = hostEl.getBoundingClientRect();
-        const circleRect = circleEl.getBoundingClientRect();
-        const rightRect = rightEl.getBoundingClientRect();
-
-        const w = Math.max(1, Math.round(hostRect.width));
-        const h = Math.max(1, Math.round(hostRect.height));
-        setConnectorBox({ w, h });
-
-        const start = {
-          x: circleRect.left + circleRect.width / 2 - hostRect.left,
-          y: circleRect.top + circleRect.height / 2 - hostRect.top
-        };
-        const rightStart = {
-          x: rightRect.left + rightRect.width / 2 - hostRect.left,
-          y: rightRect.top + rightRect.height / 2 - hostRect.top
-        };
-
-        const next: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
-        pillarRefs.current.forEach((pill) => {
-          if (!pill) return;
-          const r = pill.getBoundingClientRect();
-          const end = {
-            x: r.left - hostRect.left,
-            y: r.top + r.height / 2 - hostRect.top
-          };
-          next.push({ x1: start.x, y1: start.y, x2: end.x, y2: end.y });
-
-          const rightEnd = {
-            x: r.right - hostRect.left,
-            y: r.top + r.height / 2 - hostRect.top
-          };
-          next.push({ x1: rightStart.x, y1: rightStart.y, x2: rightEnd.x, y2: rightEnd.y });
-        });
-        setConnectorLines(next);
-      });
+      raf = window.requestAnimationFrame(measureConnectors);
     };
 
     measure();
@@ -164,7 +103,7 @@ const About: React.FC = () => {
       window.removeEventListener('resize', measure);
       ro?.disconnect();
     };
-  }, [language, content.structureSection?.lanes.length]);
+  }, [measureConnectors]);
 
   return (
     <div className="bg-white" ref={scrollRef}>
@@ -173,17 +112,18 @@ const About: React.FC = () => {
         <motion.div className="h-full bg-black origin-left" style={{ scaleX: progressX }} />
       </div>
 
-      {/* Article Header */}
+      {/* Article Header - Seoul to LA Journey Design */}
       <header className="bg-white px-6 pt-12 pb-28 md:pt-18 md:pb-40 max-w-7xl mx-auto relative">
         {content.topPrelude ? (
           <motion.div
             variants={headerVariants}
             initial="hidden"
             animate="visible"
-            className="mb-16 md:mb-20"
+            className="mb-16 md:mb-20 relative"
           >
-            <div className="space-y-10">
-              {/* Large text block (headline + 2 lines) */}
+            {/* Text Content */}
+            <div className="space-y-10 relative z-10">
+              {/* Large text block (headline + 2 lines) - Full Width */}
               <motion.div variants={blindGroupVariants} className="space-y-4 mt-8 md:mt-12">
                 <h2 className={`text-3xl md:text-5xl font-extrabold tracking-tight text-black ${language === 'ko' ? 'break-keep' : ''}`}>
                   <BlindLine>
@@ -207,49 +147,138 @@ const About: React.FC = () => {
                 ))}
               </motion.div>
 
-              {/* Small text block (remaining lines) */}
-              <motion.div variants={blindGroupDelayedVariants} className="pt-10 md:pt-12">
-                {(() => {
-                  const lines = content.topPrelude.introLines.slice(2);
-                  const first = lines.slice(0, 2);
-                  const last = lines[2];
-                  return (
-                    <>
-                      {first.length ? (
-                        <div className={`text-xl md:text-2xl font-semibold text-black/70 leading-[1.25] tracking-normal ${language === 'ko' ? 'break-keep' : ''}`}>
-                          {first.map((l, i) => (
-                            <BlindLine key={`small-first-${i}`}>{l}</BlindLine>
-                          ))}
-                        </div>
-                      ) : null}
+              {/* Small text block + Seoul → LA Grid Layout */}
+              <motion.div 
+                variants={blindGroupDelayedVariants} 
+                className="pt-10 md:pt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
+              >
+                {/* Left: Small Text */}
+                <div>
+                  {(() => {
+                    const lines = content.topPrelude.introLines.slice(2);
+                    const first = lines.slice(0, 2);
+                    const last = lines[2];
+                    return (
+                      <>
+                        {first.length ? (
+                          <div className={`text-xl md:text-2xl font-semibold text-black/70 leading-[1.25] tracking-normal ${language === 'ko' ? 'break-keep' : ''}`}>
+                            {first.map((l, i) => (
+                              <BlindLine key={`small-first-${i}`}>{l}</BlindLine>
+                            ))}
+                          </div>
+                        ) : null}
 
-                      {last ? (
-                        <div className={`mt-6 text-xl md:text-2xl font-semibold text-black/70 leading-[1.25] tracking-normal ${language === 'ko' ? 'break-keep' : ''}`}>
-                          <BlindLine>{last}</BlindLine>
-                        </div>
-                      ) : null}
-                    </>
-                  );
-                })()}
+                        {last ? (
+                          <div className={`mt-6 text-xl md:text-2xl font-semibold text-black/70 leading-[1.25] tracking-normal ${language === 'ko' ? 'break-keep' : ''}`}>
+                            <BlindLine>{last}</BlindLine>
+                          </div>
+                        ) : null}
+                      </>
+                    );
+                  })()}
+                </div>
+
+                {/* Right: Seoul → LA Journey Visualization - Horizontal Layout */}
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="hidden lg:flex flex-col justify-center items-center space-y-8"
+                >
+                  {/* Horizontal Journey Layout */}
+                  <div className="flex items-center justify-center gap-6">
+                    {/* Seoul Node */}
+                    <motion.div 
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.6, delay: 1.2 }}
+                      className="flex flex-col items-center gap-2"
+                    >
+                      <div className="w-4 h-4 rounded-full bg-black" />
+                      <div className="text-center">
+                        <div className="text-3xl md:text-4xl font-black tracking-tight text-black leading-none">SEOUL</div>
+                        <div className="text-xs font-semibold text-black/40 tracking-wide mt-1">{language === 'ko' ? '성수' : 'Seongsu'}</div>
+                      </div>
+                    </motion.div>
+
+                    {/* Animated Arrow/Line - Horizontal */}
+                    <motion.div 
+                      className="relative flex items-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.8, delay: 1.5 }}
+                    >
+                      <div className="relative w-48 md:w-56 h-px">
+                        {/* Base line */}
+                        <div className="absolute inset-0 bg-black/20" />
+                        {/* Animated line */}
+                        <motion.div
+                          className="absolute inset-0 bg-kollab-red origin-left"
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          transition={{ duration: 1.2, delay: 1.6, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                      </div>
+                      {/* Arrow */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 2.8 }}
+                        className="ml-2"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                          <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="#dc0000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </motion.div>
+                    </motion.div>
+
+                    {/* LA Node */}
+                    <motion.div 
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.6, delay: 1.4 }}
+                      className="flex flex-col items-center gap-2"
+                    >
+                      <div className="w-4 h-4 rounded-full bg-kollab-red relative">
+                        <motion.div
+                          className="absolute inset-0 rounded-full bg-kollab-red"
+                          animate={{
+                            scale: [1, 2, 2, 1],
+                            opacity: [0.5, 0, 0, 0.5]
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "easeOut"
+                          }}
+                        />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl md:text-4xl font-black tracking-tight text-kollab-red leading-none">LA</div>
+                        <div className="text-xs font-semibold text-black/40 tracking-wide mt-1">Downtown</div>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Tagline */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 2.2 }}
+                    className="text-center pt-4"
+                  >
+                    <p className="text-xs font-bold text-black/30 tracking-[0.2em] uppercase">
+                      {language === 'ko' ? 'Global Launch Platform' : 'Global Launch Platform'}
+                    </p>
+                  </motion.div>
+                </motion.div>
               </motion.div>
             </div>
           </motion.div>
         ) : null}
 
         {/* Subtle scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-[1px] h-12 bg-black/20"
-          />
-          <p className="text-xs font-medium text-black/30 tracking-wider">SCROLL</p>
-        </motion.div>
+        <ScrollIndicator className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2" />
 
       </header>
 
@@ -452,7 +481,7 @@ const About: React.FC = () => {
 
       {/* Section 3: READY TO GO GLOBAL? (moved from Contact) */}
       {content.readyBanner ? (
-        <section className="relative py-16 md:py-20 min-h-[360px] flex items-center justify-center overflow-hidden">
+        <section className="relative py-16 md:py-24 min-h-[420px] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-black">
             <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle,white_1px,transparent_1px)] [background-size:20px_20px]" />
           </div>
@@ -461,7 +490,7 @@ const About: React.FC = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.35 }}
-            className="relative z-10 text-center text-[#EDEBE4] space-y-6 px-6 max-w-5xl mx-auto"
+            className="relative z-10 text-center text-[#EDEBE4] space-y-8 px-6 max-w-5xl mx-auto"
           >
             <h2 className="text-5xl md:text-7xl font-extrabold leading-[0.95] tracking-tight">
               {content.readyBanner.title.split('\n').map((line, i) => (
@@ -471,6 +500,29 @@ const About: React.FC = () => {
             <p className={`text-lg md:text-xl font-semibold text-[#EDEBE4]/85 tracking-normal ${language === 'ko' ? 'break-keep' : ''}`}>
               <BlindLine>{content.readyBanner.line}</BlindLine>
             </p>
+            
+            {/* APPLY NOW 버튼 - 섹션 내부로 이동 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="pt-4"
+            >
+              <motion.button
+                onClick={() => onNavigate?.('CONTACT')}
+                className="px-14 py-6 text-base font-extrabold tracking-[0.22em] bg-white text-black border-2 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]"
+                whileHover={{
+                  scale: 1.05,
+                  backgroundColor: 'transparent',
+                  color: '#ffffff',
+                  borderColor: '#ffffff',
+                  transition: { duration: 0.3 }
+                }}
+              >
+                {language === 'ko' ? 'APPLY NOW' : 'APPLY NOW'}
+              </motion.button>
+            </motion.div>
           </motion.div>
         </section>
       ) : null}

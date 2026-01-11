@@ -2,7 +2,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
@@ -14,36 +14,21 @@ import Brands from './pages/Brands';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import LanguageToggle from './components/LanguageToggle';
+import { getPathFromUrl, navigateToPage } from './utils/navigation';
+import { scrollToTop, isScrollable, getScrollableParent } from './utils/scroll';
+import type { PageId } from './types';
 
 const App: React.FC = () => {
-  const getPath = () => window.location.pathname.replace('/', '') || 'home';
-
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'platform' | 'brands' | 'contact' | 'faq'>(getPath() as any);
-  
+  const [currentPage, setCurrentPage] = useState<PageId>(getPathFromUrl());
   const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     setShowNavbar(true);
-    window.scrollTo(0, 0);
+    scrollToTop('auto');
   }, [currentPage]);
 
   // Prevent overscroll "escape" at top/bottom (wheel input)
   useEffect(() => {
-    const isScrollable = (el: Element) => {
-      const style = window.getComputedStyle(el);
-      const overflowY = style.overflowY;
-      return (overflowY === 'auto' || overflowY === 'scroll') && (el as HTMLElement).scrollHeight > (el as HTMLElement).clientHeight;
-    };
-
-    const getScrollableParent = (start: Element | null) => {
-      let el: Element | null = start;
-      while (el && el !== document.body) {
-        if (isScrollable(el)) return el as HTMLElement;
-        el = el.parentElement;
-      }
-      return null;
-    };
-
     const onWheel = (e: WheelEvent) => {
       // Allow pinch-to-zoom / trackpad zoom gestures
       if (e.ctrlKey) return;
@@ -78,7 +63,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handlePopState = () => {
-      const page = getPath() as any;
+      const page = getPathFromUrl();
       setCurrentPage(page);
       setShowNavbar(true);
     };
@@ -90,19 +75,18 @@ const App: React.FC = () => {
     // No-op: 홈에서도 항상 헤더 노출
   }, []);
 
-  const navigateTo = (page: string) => {
-    const pageId = page.toLowerCase() as any;
+  const navigateTo = useCallback((page: string) => {
+    const pageId = page.toLowerCase() as PageId;
     setCurrentPage(pageId);
-    window.history.pushState({}, '', `/${pageId === 'home' ? '' : pageId}`);
-    
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    navigateToPage(pageId);
+    scrollToTop('auto');
     setShowNavbar(true);
-  };
+  }, []);
 
   const renderPage = () => {
     switch (currentPage) {
       case 'home': return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;
-      case 'about': return <About />;
+      case 'about': return <About onNavigate={navigateTo} />;
       case 'platform': return <Platform />;
       case 'brands': return <Brands navigateTo={navigateTo} />;
       case 'contact': return <Contact />;

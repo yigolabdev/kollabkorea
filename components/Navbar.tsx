@@ -2,17 +2,13 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-
-interface NavbarProps {
-  currentPage: string;
-  onNavigate: (page: string) => void;
-  isVisible: boolean;
-}
+import { lockBodyScroll, unlockBodyScroll } from '../utils/scroll';
+import type { NavbarProps } from '../types';
 
 const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'CONTACT', 'FAQ'] as const;
 
@@ -49,19 +45,13 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
   // 모바일 메뉴 열렸을 때 body 스크롤 방지
   useEffect(() => {
     if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
+      lockBodyScroll();
     } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
+      unlockBodyScroll();
     }
     
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
+      unlockBodyScroll();
     };
   }, [mobileMenuOpen]);
 
@@ -98,11 +88,11 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
     };
   }, []);
 
-  const handleNav = (page: string) => {
+  const handleNav = useCallback((page: string) => {
     onNavigate(page);
     setMobileMenuOpen(false);
     setHidden(false);
-  };
+  }, [onNavigate]);
 
   return (
     <>
@@ -132,15 +122,14 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
           }}
         >
           <div 
-              className="cursor-pointer uppercase flex flex-col items-center gap-0"
+              className="cursor-pointer flex items-center"
             onClick={() => handleNav('home')}
           >
-            <span className="block text-4xl font-extrabold tracking-tight text-black leading-none text-center">
-              KOLLAB
-            </span>
-            <span className="block text-sm font-extrabold tracking-[0.42em] text-black/70 leading-none mt-1 text-center">
-              KOREA
-            </span>
+            <img 
+              src="/assets/brands/kollab_logo_korea_primary.png" 
+              alt="KOLLAB KOREA" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
           </div>
           
           <div className="hidden lg:flex gap-10 text-base font-extrabold tracking-[0.22em] uppercase text-black">
@@ -194,15 +183,14 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
-                className="cursor-pointer uppercase flex flex-col items-center gap-0"
+                className="cursor-pointer flex items-center"
                 onClick={() => handleNav('home')}
               >
-                <span className="block text-3xl font-extrabold tracking-tight text-black leading-none">
-                  KOLLAB
-                </span>
-                <span className="block text-xs font-extrabold tracking-[0.42em] text-black/70 leading-none mt-0.5">
-                  KOREA
-                </span>
+                <img 
+                  src="/assets/brands/kollab_logo_korea_primary.png" 
+                  alt="KOLLAB KOREA" 
+                  className="h-8 w-auto object-contain"
+                />
               </motion.div>
 
               {/* 닫기 버튼 */}

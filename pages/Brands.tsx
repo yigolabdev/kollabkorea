@@ -2,57 +2,41 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { brandsContentEn } from '../content/brands.en';
 import { brandsContentKo } from '../content/brands.ko';
-
-const getContent = (lang: 'en' | 'ko') => (lang === 'en' ? brandsContentEn : brandsContentKo);
+import { containerVariants, itemVariants } from '../utils/animations';
+import { highlightBrandName } from '../utils/text';
+import type { BrandPartner } from '../types';
 
 interface BrandsProps {
   navigateTo: (page: string) => void;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
-  }
-};
-
-const renderBrandNameBold = (text: string) => {
-  const parts = text.split(/(KOLLAB KOREA|KOLLAB LA)/g);
+const renderBrandNameBold = (text: string): React.ReactNode => {
+  const parts = highlightBrandName(text);
   return parts.map((part, i) => {
-    if (part === 'KOLLAB KOREA' || part === 'KOLLAB LA') {
+    if (part.bold) {
       return (
         <span key={`brand-${i}`} className="font-extrabold">
-          {part}
+          {part.text}
         </span>
       );
     }
-    return <React.Fragment key={`text-${i}`}>{part}</React.Fragment>;
+    return <React.Fragment key={`text-${i}`}>{part.text}</React.Fragment>;
   });
 };
 
 const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   const { language } = useLanguage();
-  const content = getContent(language);
+  const content = language === 'ko' ? brandsContentKo : brandsContentEn;
   
   // LA Partner logos with brand names
-  const laPartners = [
+  const laPartners: BrandPartner[] = [
     { logo: '/assets/brands/la/LA01.png', name: 'OLIVE YOUNG' },
     { logo: '/assets/brands/la/LA02.png', name: 'Arencia' },
     { logo: '/assets/brands/la/LA03.png', name: 'MUZIGAE MANSION' },
@@ -66,7 +50,7 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   ];
   
   // TBD 항목 생성
-  const tbdItem = { logo: null, name: 'TBD' };
+  const tbdItem: BrandPartner = { logo: null, name: 'TBD' };
   
   // 40개 브랜드 배열 (10개 실제 브랜드 + 30개 TBD)
   const allBrands = [
@@ -110,8 +94,29 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         {renderBrandNameBold(content.hero.deck)}
       </motion.p>
 
+      {/* CTA Text - 입점 유도 */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-12 md:mt-16 mb-8 md:mb-12 text-center"
+      >
+        <p className={`text-base md:text-xl font-semibold text-black/70 leading-relaxed ${language === 'ko' ? 'break-keep' : ''}`}>
+          {language === 'ko' 
+            ? 'Seoul에서 시작해 LA로, 당신의 브랜드를 글로벌 무대로 연결합니다.'
+            : 'From Seoul to LA, connecting your brand to the global stage.'}
+        </p>
+        <motion.button
+          onClick={() => navigateTo('CONTACT')}
+          className="mt-6 px-10 py-3 text-sm font-extrabold tracking-[0.2em] bg-transparent text-black border-2 border-black/20 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
+        >
+          {language === 'ko' ? 'APPLY NOW' : 'APPLY NOW'}
+        </motion.button>
+      </motion.div>
+
       {/* KOLLAB KOREA partners - Coming Soon Grid */}
-      <div className="mt-12 md:mt-16 relative">
+      <div className="relative">
         {/* Grid as background */}
         <motion.div 
           variants={containerVariants}
@@ -135,7 +140,7 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         {/* Opening Soon text overlay */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <p className="text-2xl md:text-4xl font-extrabold text-black/40 tracking-tight uppercase">
-            Opening Soon
+            Your Brand Here
           </p>
         </div>
       </div>

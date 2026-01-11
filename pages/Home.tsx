@@ -1,27 +1,24 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { homeContentEn } from '../content/home.en';
 import { homeContentKo } from '../content/home.ko';
 import ImageSlider from '../components/ImageSlider';
+import { hasKorean } from '../utils/text';
+import type { PageProps } from '../types';
 
-interface HomeProps {
-  onNavigate: (page: string) => void;
-  onHeaderVisibilityChange: (isVisible: boolean) => void;
-}
-
-const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => {
+const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => {
   const { language, t } = useLanguage();
   const content = language === 'en' ? homeContentEn : homeContentKo;
   const lastVisibilityState = useRef<boolean>(false);
   const vhRef = useRef(window.innerHeight);
   const heroRef = useRef<HTMLDivElement | null>(null);
-  const heroDeckHasKo = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(content.hero.deck);
+  const heroDeckHasKo = hasKorean(content.hero.deck);
   
   // Viewport height 업데이트
   useEffect(() => {
@@ -32,7 +29,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
 
   // 헤더 가시성 제어
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
       window.requestAnimationFrame(() => {
         const vh = vhRef.current;
         const scrollPos = window.scrollY;
@@ -40,12 +37,12 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
         
         if (lastVisibilityState.current !== shouldShow) {
           lastVisibilityState.current = shouldShow;
-          onHeaderVisibilityChange(shouldShow);
+          onHeaderVisibilityChange?.(shouldShow);
         }
       });
-    };
+    }, [onHeaderVisibilityChange]);
 
-    onHeaderVisibilityChange(false);
+    onHeaderVisibilityChange?.(false);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [onHeaderVisibilityChange]);
@@ -158,6 +155,20 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
               }}
             >
               {language === 'ko' ? 'APPLY NOW' : t('cta.apply')}
+            </motion.button>
+            
+            <motion.button 
+              onClick={() => onNavigate('ABOUT')}
+              className="px-14 py-6 text-base font-extrabold tracking-[0.22em] bg-white text-black border-2 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]"
+              whileHover={{ 
+                scale: 1.05,
+                backgroundColor: 'transparent',
+                color: '#ffffff',
+                borderColor: '#ffffff',
+                transition: { duration: 0.3 }
+              }}
+            >
+              {language === 'ko' ? 'LEARN MORE' : 'LEARN MORE'}
             </motion.button>
           </div>
         </motion.div>

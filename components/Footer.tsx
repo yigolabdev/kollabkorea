@@ -23,14 +23,13 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <button
             type="button"
             onClick={() => onNavigate?.('home')}
-            className="cursor-pointer uppercase flex flex-col items-center gap-0 bg-transparent border-none p-0 text-center"
+            className="cursor-pointer flex items-center bg-transparent border-none p-0"
           >
-            <span className="block text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-              KOLLAB
-            </span>
-            <span className="block text-base md:text-lg font-extrabold tracking-[0.42em] text-white leading-none mt-2">
-              KOREA
-            </span>
+            <img 
+              src="/assets/brands/kollab_logo_korea_white.png" 
+              alt="KOLLAB KOREA" 
+              className="h-14 md:h-16 w-auto object-contain"
+            />
           </button>
         </div>
         <div className="space-y-6 md:text-right flex flex-col md:items-end">

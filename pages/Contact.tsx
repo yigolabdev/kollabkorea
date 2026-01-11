@@ -1,30 +1,15 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { contactContentEn } from '../content/contact.en';
 import { contactContentKo } from '../content/contact.ko';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-  }
-};
+import ScrollIndicator from '../components/ScrollIndicator';
+import { containerVariants, itemVariants } from '../utils/animations';
 
 const Contact: React.FC = () => {
   const { language } = useLanguage();
@@ -117,19 +102,7 @@ const Contact: React.FC = () => {
         </motion.div>
 
         {/* Scroll Indicator - About 스타일 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.0, duration: 1 }}
-          className="mt-16 md:mt-20 flex flex-col items-center gap-2"
-        >
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-[1px] h-12 bg-black/20"
-          />
-          <p className="text-xs font-medium text-black/30 tracking-wider">SCROLL</p>
-        </motion.div>
+        <ScrollIndicator className="mt-16 md:mt-20" delay={1.0} />
       </section>
 
       {/* Apply Section */}

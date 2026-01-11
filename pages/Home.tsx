@@ -29,7 +29,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
 
   // 헤더 가시성 제어
   useEffect(() => {
-    const handleScroll = useCallback(() => {
+    const handleScroll = () => {
       window.requestAnimationFrame(() => {
         const vh = vhRef.current;
         const scrollPos = window.scrollY;
@@ -40,7 +40,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           onHeaderVisibilityChange?.(shouldShow);
         }
       });
-    }, [onHeaderVisibilityChange]);
+    };
 
     onHeaderVisibilityChange?.(false);
     window.addEventListener('scroll', handleScroll, { passive: true });

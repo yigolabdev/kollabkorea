@@ -28,16 +28,16 @@ export const aboutContentEn: AboutContent = {
   pageLabel: 'ABOUT',
   structureSection: {
     title:
-      'A structured pathway that connects brand validation, retail execution, and cross-border growth.',
+      'KOLLAB KOREA is a global launch platform that connects brands, influencers, consumers, distributors, and retail into one structure.',
     leftNode: { title: 'KOLLAB', subtitle: 'KOREA\nSeongsu' },
     rightNode: { title: 'KOLLAB', subtitle: 'Downtown\nLA' },
     lanes: [
-      { text: 'Brand onboarding (monthly) · reasonable cost · products only' },
-      { text: 'KOLLAB retail platform · integrated offline execution structure' },
-      { text: 'Consumers · offline experience · conversion · awareness' },
-      { text: 'Influencers · voluntary visits · content · social spread' },
-      { text: 'Data & validation · sales data · content performance · customer response' },
-      { text: 'Distribution & major retail opportunities · Korea & U.S. validation and expansion' }
+      { text: 'Brand onboarding (monthly)\nreasonable cost · products only' },
+      { text: 'KOLLAB retail platform\nintegrated offline execution structure' },
+      { text: 'Consumers · offline experience\nconversion · awareness' },
+      { text: 'Influencers · voluntary visits\ncontent · social spread' },
+      { text: 'Data & validation · sales data\ncontent performance · customer response' },
+      { text: 'Distribution & major retail opportunities\nKorea & U.S. validation and expansion' }
     ]
   },
   readyBanner: {
@@ -48,10 +48,10 @@ export const aboutContentEn: AboutContent = {
     label: 'ABOUT',
     introTitle: 'KOLLAB KOREA',
     introLines: [
-      'KOLLAB KOREA curates and operates Korean beauty, fashion, lifestyle, F&B, and goods brands,',
-      'and connects validated brands to successful U.S. market entry through pop-up opportunities.',
-      'We curate brands and operate spaces with efficiency,',
-      'creating offline growth opportunities across markets.',
+      'selects and operates Korean beauty, fashion, lifestyle, F&B, and goods brands,',
+      'connecting validated brands to successful U.S. market entry.',
+      'We curate brands, operate spaces with efficiency,',
+      'and create offline growth opportunities across markets.',
       'Starting in Korea, we move together toward the world.'
     ],
     bigTitle:

@@ -1,7 +1,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- */
+*/
 
 import { LucideIcon } from 'lucide-react';
 import { ReactNode } from 'react';
@@ -104,6 +104,17 @@ export interface BrandApplicationForm {
 }
 
 // ==================== CONTENT ====================
+
+export interface BrandsContent {
+  hero: {
+    titleLines: string[];
+    deck: string;
+  };
+  laPartnersTitle?: string;
+  grid: {
+    items: string[];
+  };
+}
 
 export interface ContentBlock {
   title: string;

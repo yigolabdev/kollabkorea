@@ -142,7 +142,19 @@ const About: React.FC<NavigationProps> = ({ onNavigate }) => {
                     key={`big-${i}`}
                     className={`text-3xl md:text-5xl font-semibold text-black leading-[1.1] tracking-tight ${language === 'ko' ? 'break-keep' : ''}`}
                   >
-                    <BlindLine>{line}</BlindLine>
+                    <BlindLine>
+                      {language === 'en' && line.includes('curates and operates') ? (
+                        <>
+                          KOLLAB KOREA curates and operates<br />Korean beauty, fashion, lifestyle, F&B, and goods brands,
+                        </>
+                      ) : language === 'en' && line.includes('and connects validated brands') ? (
+                        <>
+                          and connects validated brands to successful<br />U.S. market entry through pop-up opportunities.
+                        </>
+                      ) : (
+                        line
+                      )}
+                    </BlindLine>
                   </p>
                 ))}
               </motion.div>
@@ -428,6 +440,10 @@ const About: React.FC<NavigationProps> = ({ onNavigate }) => {
                   const [rawTitle, rawDesc] = lane.text.split('|').map((s) => s.trim());
                   const title = rawDesc ? rawTitle : lane.text;
                   const description = rawDesc ?? '';
+                  
+                  // Check if text contains newline for multiline display
+                  const hasNewline = title.includes('\n');
+                  
                   return (
                     <motion.div
                       key={idx}
@@ -437,14 +453,22 @@ const About: React.FC<NavigationProps> = ({ onNavigate }) => {
                         pillarRefs.current[idx] = el;
                       }}
                     >
-                      <span className="font-bold whitespace-nowrap text-sm sm:text-base md:text-lg border-b md:border-b-0 md:border-r border-black/20 pb-1 md:pb-0 md:pr-5">
-                        {title}
-                      </span>
-                      {description ? (
-                        <span className={`text-xs sm:text-sm md:text-base font-medium opacity-95 text-center ${language === 'ko' ? 'break-keep' : ''}`}>
-                          {description}
+                      {hasNewline ? (
+                        <span className={`text-xs sm:text-sm md:text-base font-medium opacity-95 text-center ${language === 'ko' ? 'break-keep' : ''} whitespace-pre-line`}>
+                          {title}
                         </span>
-                      ) : null}
+                      ) : (
+                        <>
+                          <span className="font-bold whitespace-nowrap text-sm sm:text-base md:text-lg border-b md:border-b-0 md:border-r border-black/20 pb-1 md:pb-0 md:pr-5">
+                            {title}
+                          </span>
+                          {description ? (
+                            <span className={`text-xs sm:text-sm md:text-base font-medium opacity-95 text-center ${language === 'ko' ? 'break-keep' : ''}`}>
+                              {description}
+                            </span>
+                          ) : null}
+                        </>
+                      )}
                     </motion.div>
                   );
                 })}

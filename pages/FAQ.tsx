@@ -75,7 +75,7 @@ const FAQ: React.FC = () => {
           {content.bottom.more}
         </p>
         <p className={`text-lg opacity-80 max-w-2xl mx-auto tracking-wide ${language === 'ko' ? 'break-keep' : ''}`}>
-          {content.bottom.koLine} <a href="#footer-section" onClick={scrollToFooter} className="underline underline-offset-8 cursor-pointer hover:text-kollab-red transition-colors">직접 문의해 주세요.</a>
+          {content.bottom.koLine} 직접 문의해 주세요.
         </p>
       </div>
     </div>

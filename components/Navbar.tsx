@@ -89,10 +89,35 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
   }, []);
 
   const handleNav = useCallback((page: string) => {
+    // 현재 페이지와 같은 메뉴를 클릭한 경우
+    if (currentPage.toLowerCase() === page.toLowerCase()) {
+      // Platform 페이지인 경우 헤더를 숨기면서 최상단으로
+      if (page.toLowerCase() === 'platform') {
+        // 최상단으로 이동
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // 헤더 즉시 숨김
+        setHidden(true);
+      } else {
+        // 다른 페이지는 최상단으로 스크롤하고 헤더 보이기
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setHidden(false);
+      }
+      
+      setMobileMenuOpen(false);
+      return;
+    }
+    
+    // 다른 페이지로 이동 시
     onNavigate(page);
     setMobileMenuOpen(false);
     setHidden(false);
-  }, [onNavigate]);
+    
+    // 페이지 이동 후 최상단으로 스크롤
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }, 100);
+  }, [onNavigate, currentPage]);
 
   return (
     <>
@@ -128,7 +153,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
             <img 
               src="/assets/brands/kollab_logo_korea_primary.png" 
               alt="KOLLAB KOREA" 
-              className="h-12 md:h-14 w-auto object-contain"
+              className="h-14 md:h-16 lg:h-18 w-auto object-contain"
             />
           </div>
           
@@ -189,7 +214,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
                 <img 
                   src="/assets/brands/kollab_logo_korea_primary.png" 
                   alt="KOLLAB KOREA" 
-                  className="h-8 w-auto object-contain"
+                  className="h-10 w-auto object-contain"
                 />
               </motion.div>
 

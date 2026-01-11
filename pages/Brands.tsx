@@ -83,40 +83,6 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
     });
   }, [secondRowControls]);
   
-  // 마우스 오버 핸들러 - 현재 위치 유지
-  const handleFirstRowMouseEnter = () => {
-    firstRowControls.stop();
-  };
-  
-  const handleFirstRowMouseLeave = () => {
-    // 애니메이션 재개
-    firstRowControls.start({
-      x: '-33.333%',
-      transition: {
-        duration: 20,
-        repeat: Infinity,
-        repeatType: 'loop',
-        ease: 'linear',
-      },
-    });
-  };
-  
-  const handleSecondRowMouseEnter = () => {
-    secondRowControls.stop();
-  };
-  
-  const handleSecondRowMouseLeave = () => {
-    // 애니메이션 재개
-    secondRowControls.start({
-      x: 0,
-      transition: {
-        duration: 20,
-        repeat: Infinity,
-        repeatType: 'loop',
-        ease: 'linear',
-      },
-    });
-  };
   
   return (
     <div className="px-6 max-w-7xl mx-auto pt-12 md:pt-18 pb-24">
@@ -167,32 +133,48 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
       </motion.div>
 
       {/* KOLLAB KOREA partners - Coming Soon Grid */}
-      <div className="relative">
-        {/* Grid as background */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          className="grid grid-cols-4 md:grid-cols-8 gap-px bg-black/10 border border-black/10"
+      <div>
+        {/* Section Title */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8 }}
+          className={`mb-10 md:mb-12 text-center text-xl md:text-3xl font-semibold text-black ${
+            language === 'ko' ? 'tracking-[0.01em] break-keep' : 'tracking-[0.02em]'
+          }`}
         >
-          {Array.from({ length: 8 }).map((_, i) => (
-            <motion.div
-              key={`korea-soon-${i}`}
-              variants={itemVariants}
-              className="aspect-square bg-[#EDEBE4] flex items-center justify-center relative"
-            >
-              {/* Very subtle dashed border inside each cell */}
-              <div className="absolute inset-4 border border-dashed border-black/10" />
-            </motion.div>
-          ))}
-        </motion.div>
+          {renderBrandNameBold(language === 'ko' ? 'KOLLAB KOREA 협력사' : 'KOLLAB KOREA Partners')}
+        </motion.p>
         
-        {/* Opening Soon text overlay */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <p className="text-2xl md:text-4xl font-extrabold text-black/40 tracking-tight uppercase">
-            Your Brand Here
-          </p>
+        {/* Grid Container with Text Overlay */}
+        <div className="relative">
+          {/* Grid as background */}
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            className="grid grid-cols-4 md:grid-cols-8 gap-px bg-black/10 border border-black/10"
+          >
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={`korea-soon-${i}`}
+                variants={itemVariants}
+                className="aspect-square bg-[#EDEBE4] flex items-center justify-center relative"
+              >
+                {/* Very subtle dashed border inside each cell */}
+                <div className="absolute inset-4 border border-dashed border-black/10" />
+              </motion.div>
+            ))}
+          </motion.div>
+          
+          {/* Opening Soon text overlay */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <p className="text-2xl md:text-4xl font-extrabold text-black/40 tracking-tight uppercase text-center px-4">
+              Your Brand Here
+            </p>
+          </div>
         </div>
       </div>
 
@@ -207,14 +189,12 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
             language === 'ko' ? 'tracking-[0.01em] break-keep' : 'tracking-[0.02em]'
           }`}
         >
-          {renderBrandNameBold(language === 'ko' ? 'KOLLAB LA 협력사' : 'KOLLAB LA Partners')}
+          {renderBrandNameBold(language === 'ko' ? 'KOLLAB LA 협력사' : content.laPartnersTitle || 'KOLLAB LA Partners')}
         </motion.p>
 
         {/* 첫 번째 줄: 좌 → 우 */}
         <div 
           className="relative overflow-hidden mb-2"
-          onMouseEnter={handleFirstRowMouseEnter}
-          onMouseLeave={handleFirstRowMouseLeave}
         >
           <motion.div
             className="flex gap-2"
@@ -244,8 +224,6 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         {/* 두 번째 줄: 우 → 좌 */}
         <div 
           className="relative overflow-hidden"
-          onMouseEnter={handleSecondRowMouseEnter}
-          onMouseLeave={handleSecondRowMouseLeave}
         >
           <motion.div
             className="flex gap-2"

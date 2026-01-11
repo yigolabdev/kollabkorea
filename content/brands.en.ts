@@ -1,9 +1,9 @@
 export const brandsContentEn = {
   hero: {
     titleLines: ['THE', 'BRANDS'],
-    deck:
-      'Curating the finest Korean labels ready for the global stage. From K-beauty to streetwear.'
+    deck: 'KOLLAB KOREA Partners'
   },
+  laPartnersTitle: 'KOLLAB LA Partners',
   grid: {
     items: ['MUZMAK', 'ARENCIA', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD', 'TBD']
   }

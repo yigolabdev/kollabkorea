@@ -5,15 +5,36 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Store, Video, Users, Megaphone, Plane } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import { ROADMAP_DATA } from '../constants';
+import { platformContentEn } from '../content/platform.en';
+import { platformContentKo } from '../content/platform.ko';
 import StageCard from '../components/StageCard';
 import CurvedPath from '../components/CurvedPath';
 import { containerVariants, itemVariants } from '../utils/animations';
+import type { StageData } from '../types';
+
+// Icon mapping
+const iconMap = {
+  Store,
+  Video,
+  Users,
+  Megaphone,
+  Plane
+};
 
 const Platform: React.FC = () => {
   const { language } = useLanguage();
+  const content = language === 'ko' ? platformContentKo : platformContentEn;
   const [mounted, setMounted] = useState(false);
+  const [hideHeader, setHideHeader] = useState(false);
+  
+  // Convert content roadmap to StageData format
+  const ROADMAP_DATA: StageData[] = content.roadmap.map((stage) => ({
+    ...stage,
+    Icon: iconMap[stage.icon as keyof typeof iconMap],
+    position: { top: 60 } // Default position, will be overridden by curveYPositions
+  }));
   
   // SVG 곡선의 정확한 Y좌표 (2차 베지어 곡선 계산)
   // 새로운 곡선: M 10,40 Q 50,10 90,40
@@ -28,17 +49,144 @@ const Platform: React.FC = () => {
 
   useEffect(() => {
     setMounted(true);
+    
+    // 페이지 진입 시 최상단으로 스크롤
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    
+    // 헤더를 완전히 숨기기 위해 충분히 스크롤 다운 (헤더 높이보다 많이)
+    setTimeout(() => {
+      window.scrollTo({ top: 200, behavior: 'auto' });
+      setHideHeader(true);
+    }, 100);
   }, []);
 
   return (
     <div className="bg-white">
-      <section className="bg-white pt-16 md:pt-24 pb-24 px-6 max-w-7xl mx-auto">
-        <img
-          src="/assets/photos/shoots/design_guide02.png"
-          alt="Platform design guide"
-          className="w-full h-auto object-contain mb-[200px]"
-          loading="lazy"
-        />
+      {/* Hero Section - KOLLAB SEONGSU */}
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/images/hero/platform_Hero2.png"
+            alt="KOLLAB Seongsu Space"
+            className="w-full h-full object-cover"
+          />
+          {/* Dark Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+
+        {/* Hero Text */}
+        <div className="relative z-10 h-full flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center px-6"
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white tracking-tighter leading-none uppercase">
+              KOLLAB<br />SEONGSU
+            </h1>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Seongsu-dong Introduction Section */}
+      <section className="bg-white py-20 md:py-32 px-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          {/* Left Column - Titles */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-16"
+          >
+            {/* Main Title */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight uppercase mb-8">
+                SEONGSU-DONG
+              </h2>
+              <div className="space-y-2 text-base md:text-lg font-medium">
+                <p>Industrial Heritage</p>
+                <p>Creative Transformation</p>
+                <p>Pop-up Culture Hub</p>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <h3 className="text-sm font-black tracking-[0.15em] uppercase mb-4">
+                POP-UP LOCATION
+              </h3>
+              <p className="text-base md:text-lg font-medium">
+                Seongsu-dong, Seoul
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Right Column - Description */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="space-y-8"
+          >
+            <p className="text-xl md:text-2xl font-semibold text-black leading-relaxed break-keep">
+              {language === 'ko'
+                ? '성수동은 서울의 산업적 기반 위에서 창의적인 문화가 가장 빠르게 재구성되고 있는 지역입니다.'
+                : 'Seongsu-dong is a district where creative culture is being reconstructed most rapidly on Seoul\'s industrial foundation.'}
+            </p>
+
+            <p className="text-base md:text-lg text-black/80 leading-relaxed break-keep">
+              {language === 'ko'
+                ? '과거 공장과 창고가 밀집했던 이곳은 이제 브랜드, 크리에이터, 소비자가 자연스럽게 교차하는 도시형 실험 공간으로 확장되었습니다.'
+                : 'What was once densely packed with factories and warehouses has now expanded into an urban experimental space where brands, creators, and consumers naturally intersect.'}
+            </p>
+
+            <p className="text-base md:text-lg text-black/80 leading-relaxed break-keep">
+              <span className="font-bold">KOLLAB KOREA</span>
+              {language === 'ko'
+                ? '의 성수 팝업은 이러한 성수동의 맥락 위에서 진행됩니다.'
+                : '\'s Seongsu pop-up takes place within this context of Seongsu-dong.'}
+            </p>
+
+            <p className="text-base md:text-lg text-black/80 leading-relaxed break-keep">
+              {language === 'ko'
+                ? '일시적인 전시가 아닌, 브랜드가 실제 고객과 오프라인에서 만나고 글로벌 확장을 앞두고 시장 반응을 검증하는 자리.'
+                : 'Not a temporary exhibition, but a place where brands meet real customers offline and verify market response ahead of global expansion.'}
+            </p>
+
+            <p className="text-base md:text-lg text-black/80 leading-relaxed break-keep">
+              {language === 'ko'
+                ? '성수라는 장소성과 KOLLAB의 큐레이션이 결합된 이 팝업은 브랜드가 다음 단계로 나아가기 전 가장 현실적인 접점을 제공합니다.'
+                : 'This pop-up, combining the sense of place of Seongsu with KOLLAB\'s curation, provides the most realistic touchpoint for brands before moving to the next stage.'}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Brand Journey Section */}
+      <section className="bg-white py-20 md:py-32 px-6 max-w-7xl mx-auto">
+        {/* Section Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16 md:mb-24"
+        >
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-black tracking-tight leading-tight mb-6 break-keep">
+            {language === 'ko'
+              ? 'KOLLAB의 브랜드 여정'
+              : 'KOLLAB Brand Journey'}
+          </h2>
+          <p className="text-lg md:text-xl text-black/70 font-semibold max-w-3xl mx-auto break-keep">
+            {language === 'ko'
+              ? '성수에서 시작해 LA로, 브랜드의 글로벌 확장을 위한 5단계 프로세스'
+              : 'From Seongsu to LA, a 5-step process for global brand expansion'}
+          </p>
+        </motion.div>
 
         {/* Roadmap Visualization - Arc Design */}
         <motion.div
@@ -81,7 +229,7 @@ const Platform: React.FC = () => {
               }}
             >
               <StageCard data={ROADMAP_DATA[0]} isEven={false} />
-            </div>
+          </div>
 
             {/* Node 2 - 콘텐츠 제작 */}
             <div 
@@ -107,7 +255,7 @@ const Platform: React.FC = () => {
               }}
             >
               <StageCard data={ROADMAP_DATA[2]} isEven={false} />
-            </div>
+                      </div>
 
             {/* Node 4 - PR */}
             <div 
@@ -120,7 +268,7 @@ const Platform: React.FC = () => {
               }}
             >
               <StageCard data={ROADMAP_DATA[3]} isEven={true} />
-            </div>
+                    </div>
 
             {/* Node 5 - 미국 수출 연결 기회 (Node 1과 정확히 동일한 높이) */}
             <div 
@@ -131,7 +279,7 @@ const Platform: React.FC = () => {
                 transform: 'translate(-50%, -50%)',
                 opacity: mounted ? 1 : 0 
               }}
-            >
+                        >
               <StageCard data={ROADMAP_DATA[4]} isEven={false} />
             </div>
           </div>
@@ -166,10 +314,10 @@ const Platform: React.FC = () => {
             PARTICIPATION NOTICE
           </p>
           <p className="text-lg font-semibold opacity-80 max-w-2xl mx-auto tracking-wide">
-            {language === 'ko' 
+            {content.sections[1]?.notice?.[language] || (language === 'ko' 
               ? '미국 팝업은 내부 심사 및 파트너 승인에 따라 진행됩니다.'
               : 'U.S. pop-up participation is subject to internal review and partner approval.'
-            }
+            )}
           </p>
         </motion.div>
       </section>

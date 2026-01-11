@@ -19,6 +19,15 @@ export interface PlatformSection extends ContentSection {
   notice?: { en: string; ko: string };
 }
 
+export interface RoadmapStage {
+  id: number;
+  title: string;
+  subtitle: string;
+  description: string[];
+  icon: string;
+  color: string;
+}
+
 export interface PlatformContent {
   topPrelude?: {
     label: string;
@@ -32,6 +41,7 @@ export interface PlatformContent {
     image: { src: string; alt: string };
     intro: ContentBlock[];
   };
+  roadmap: RoadmapStage[];
   sections: PlatformSection[];
 }
 
@@ -53,6 +63,70 @@ export const platformContentEn: PlatformContent = {
       alt: 'KOLLAB Korea cross-border platform structure diagram'
     }
   },
+  roadmap: [
+    {
+      id: 1,
+      title: 'Brand Activation',
+      subtitle: 'Brand Activation',
+      description: [
+        'Offline experience by zone',
+        'Product sales',
+        'Pop-up & influencer marketing',
+        'Sales data sharing'
+      ],
+      icon: 'Store',
+      color: 'from-kollab-red to-red-600'
+    },
+    {
+      id: 2,
+      title: 'Content Creation',
+      subtitle: 'Content Creation',
+      description: [
+        'Brand product content',
+        'Short-form reels',
+        'Real usage-based stories'
+      ],
+      icon: 'Video',
+      color: 'from-zinc-700 to-kollab-dark'
+    },
+    {
+      id: 3,
+      title: 'Influencer Marketing',
+      subtitle: 'Influencer Marketing',
+      description: [
+        'Influencer marketing',
+        'Brand collaboration',
+        'Organic UGC generation'
+      ],
+      icon: 'Users',
+      color: 'from-kollab-black to-zinc-900'
+    },
+    {
+      id: 4,
+      title: 'Public Relations',
+      subtitle: 'Public Relations',
+      description: [
+        'Offline PR assets',
+        'Media/retail references'
+      ],
+      icon: 'Megaphone',
+      color: 'from-zinc-800 to-kollab-dark'
+    },
+    {
+      id: 5,
+      title: 'US Export Opportunity',
+      subtitle: 'US Export Opportunity',
+      description: [
+        'U.S. export opportunities',
+        'LA pop-up store connection',
+        'LA retail entry',
+        'Major retail opportunities',
+        '(Ulta, Sephora, etc.)'
+      ],
+      icon: 'Plane',
+      color: 'from-kollab-red to-red-700'
+    }
+  ],
   hero: {
     title: 'PLATFORM',
     image: {

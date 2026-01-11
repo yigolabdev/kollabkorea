@@ -50,14 +50,47 @@ const Platform: React.FC = () => {
   useEffect(() => {
     setMounted(true);
     
-    // 페이지 진입 시 최상단으로 스크롤
+    // 최상단으로 즉시 이동
     window.scrollTo({ top: 0, behavior: 'auto' });
     
-    // 헤더를 완전히 숨기기 위해 충분히 스크롤 다운 (헤더 높이보다 많이)
+    // 1단계: 헤더 즉시 숨김
+    setHideHeader(true);
+    
+    // 2단계: 350ms 후 스크롤 애니메이션 시작 (헤더 완전히 사라진 후)
     setTimeout(() => {
-      window.scrollTo({ top: 200, behavior: 'auto' });
-      setHideHeader(true);
-    }, 100);
+      const targetScroll = 150;
+      const duration = 1000; // 1초 (부드럽지만 빠르게)
+      const startTime = performance.now();
+      
+      // Ease-in-out cubic - 매우 부드러운 가속/감속
+      const easeInOutCubic = (t: number) => 
+        t < 0.5 
+          ? 4 * t * t * t 
+          : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      
+      const animateScroll = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeInOutCubic(progress);
+        
+        window.scrollTo({
+          top: targetScroll * easedProgress,
+          behavior: 'auto'
+        });
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        }
+      };
+      
+      // 스크롤 애니메이션 시작
+      requestAnimationFrame(animateScroll);
+    }, 350); // 50ms → 350ms (헤더 완전히 사라진 후 + 여유)
+    
+    // 클린업 함수
+    return () => {
+      setHideHeader(false);
+    };
   }, []);
 
   return (
@@ -220,7 +253,7 @@ const Platform: React.FC = () => {
             
             {/* Node 1 - 브랜드 액티베이션 */}
             <div 
-              className="absolute transition-all duration-700 delay-[0ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[0ms] hover:z-50 z-10"
               style={{ 
                 left: '10%',
                 top: curveYPositions.node1,
@@ -233,7 +266,7 @@ const Platform: React.FC = () => {
 
             {/* Node 2 - 콘텐츠 제작 */}
             <div 
-              className="absolute transition-all duration-700 delay-[200ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[200ms] hover:z-50 z-10"
               style={{ 
                 left: '30%',
                 top: curveYPositions.node2,
@@ -246,7 +279,7 @@ const Platform: React.FC = () => {
 
             {/* Node 3 (Peak) - 인플루언서 마케팅 */}
             <div 
-              className="absolute transition-all duration-700 delay-[400ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[400ms] hover:z-50 z-10"
               style={{ 
                 left: '50%',
                 top: curveYPositions.node3,
@@ -259,7 +292,7 @@ const Platform: React.FC = () => {
 
             {/* Node 4 - PR */}
             <div 
-              className="absolute transition-all duration-700 delay-[600ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[600ms] hover:z-50 z-10"
               style={{ 
                 left: '70%',
                 top: curveYPositions.node4,
@@ -272,7 +305,7 @@ const Platform: React.FC = () => {
 
             {/* Node 5 - 미국 수출 연결 기회 (Node 1과 정확히 동일한 높이) */}
             <div 
-              className="absolute transition-all duration-700 delay-[800ms] hover:z-50"
+              className="absolute transition-all duration-700 delay-[800ms] hover:z-50 z-10"
               style={{ 
                 left: '90%',
                 top: curveYPositions.node5,

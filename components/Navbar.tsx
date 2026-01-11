@@ -133,8 +133,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
           }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ 
-            duration: 0.7, 
-            ease: [0.22, 1, 0.36, 1],
+            duration: 0.3,  // 0.7초 → 0.3초 (빠르고 부드럽게)
+            ease: 'easeOut',
             backgroundColor: { duration: 0.3 },
             backdropFilter: { duration: 0.3 }
           }}

@@ -15,7 +15,7 @@ import React from 'react';
  */
 const CurvedPath: React.FC = () => {
   return (
-    <div className="absolute inset-0 pointer-events-none z-20 hidden md:block">
+    <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
       <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
         <defs>
           <filter id="glow-kollab-red" x="-50%" y="-50%" width="200%" height="200%">

@@ -55,7 +55,7 @@ const ImageSlider: React.FC = () => {
 
   return (
     <section 
-      className="w-full overflow-hidden bg-white py-48 md:py-64"
+      className="w-full overflow-hidden bg-white py-0 md:py-0"
     >
       <div className="relative h-[35.7vh] md:h-[40.95vh]">
         {/* 슬라이드 컨테이너 */}

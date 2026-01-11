@@ -61,6 +61,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           loop
           muted
           playsInline
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover -z-10"
           aria-hidden="true"
         >
@@ -70,24 +71,37 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
         <div className="absolute inset-0 bg-white/60 -z-10" />
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
           className="z-10 max-w-6xl w-full mx-auto px-6 text-center flex flex-col items-center py-20 md:py-24 -mt-28 md:-mt-40"
         >
-          <div className="bg-black text-[#EDEBE4] px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.05, ease: 'easeOut' }}
+            className="bg-black text-[#EDEBE4] px-2 py-0.5 font-semibold tracking-[0.42em] uppercase text-sm mb-4 md:mb-6"
+          >
             {content.badge}
-          </div>
-          <h1 className="font-brand text-[7vw] md:text-[5.5vw] leading-[1.1] font-extrabold tracking-tight text-kollab-red mb-4 uppercase">
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1, ease: 'easeOut' }}
+            className="font-brand text-[7vw] md:text-[5.5vw] leading-[1.1] font-extrabold tracking-tight text-kollab-red mb-4 uppercase"
+          >
             {content.hero.title.split('\n').map((l, i) => (<span key={i}>{l}{i === 0 ? <br /> : null}</span>))}
-          </h1>
-          <p
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.15, ease: 'easeOut' }}
             className={`text-[3.6vw] md:text-[2vw] font-semibold text-kollab-red opacity-80 whitespace-nowrap ${
               heroDeckHasKo ? 'tracking-[0.008em] break-keep' : 'tracking-[0.015em]'
             }`}
           >
             {content.hero.deck}
-          </p>
+          </motion.p>
         </motion.div>
       </section>
 

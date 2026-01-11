@@ -7,6 +7,7 @@ Allow: /
 
 # 특정 파일/폴더 제외
 Disallow: /admin/
+Disallow: /guide
 Disallow: /*.json$
 
 # Sitemap 위치
@@ -15,10 +16,12 @@ Sitemap: https://kollabkorea.com/sitemap.xml
 # 네이버 검색 로봇
 User-agent: Yeti
 Allow: /
+Disallow: /guide
 
 # 구글 검색 로봇
 User-agent: Googlebot
 Allow: /
+Disallow: /guide
 
 # 크롤링 속도 (초 단위)
 Crawl-delay: 1

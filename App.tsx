@@ -13,6 +13,7 @@ import Platform from './pages/Platform';
 import Brands from './pages/Brands';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
+import Guide from './pages/Guide';
 import LanguageToggle from './components/LanguageToggle';
 import { getPathFromUrl, navigateToPage } from './utils/navigation';
 import { scrollToTop, isScrollable, getScrollableParent } from './utils/scroll';
@@ -91,16 +92,20 @@ const App: React.FC = () => {
       case 'brands': return <Brands navigateTo={navigateTo} />;
       case 'contact': return <Contact />;
       case 'faq': return <FAQ />;
+      case 'guide': return <Guide />; // SEO 등록 가이드 (임시 페이지)
       default: return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;
     }
   };
 
+  // Guide 페이지는 헤더/푸터 숨김
+  const isGuidePage = currentPage === 'guide';
+
   return (
     <div style={{ display: 'contents' }}>
-      <LanguageToggle />
+      {!isGuidePage && <LanguageToggle />}
       
-      <Navbar currentPage={currentPage} onNavigate={navigateTo} isVisible={showNavbar} />
-      {showNavbar && (
+      {!isGuidePage && <Navbar currentPage={currentPage} onNavigate={navigateTo} isVisible={showNavbar} />}
+      {!isGuidePage && showNavbar && (
         currentPage === 'home' ? (
           <div aria-hidden className="h-[120px] md:h-[144px]" />
         ) : (
@@ -112,7 +117,7 @@ const App: React.FC = () => {
         {renderPage()}
       </main>
 
-      <Footer onNavigate={navigateTo} />
+      {!isGuidePage && <Footer onNavigate={navigateTo} />}
     </div>
   );
 };

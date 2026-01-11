@@ -42,6 +42,12 @@ jobs:
           echo "Deploying to S3 bucket: $S3_BUCKET"
           aws s3 sync dist/ s3://$S3_BUCKET --delete --acl public-read
           echo "✅ Files uploaded to S3"
+          
+          echo "Configuring S3 website for SPA routing..."
+          aws s3 website s3://$S3_BUCKET \
+            --index-document index.html \
+            --error-document index.html
+          echo "✅ S3 website configuration updated for SPA routing"
 
       - name: Invalidate CloudFront cache (optional)
         continue-on-error: true

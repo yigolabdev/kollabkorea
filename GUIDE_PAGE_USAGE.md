@@ -50,12 +50,14 @@ http://localhost:3000/guide
 #### Step 3: 소유권 확인
 1. "HTML 태그" 선택
 2. `content="..."` 부분만 복사
-3. 코드 에디터에서 `index.html` 열기:
-   ```html
-   <meta name="google-site-verification" content="여기에_복사한_코드_붙여넣기" />
+3. **와이고 개발팀에 전달**:
    ```
-4. GitHub 푸시 → 2-3분 대기
-5. "확인" 클릭
+   📧 Google verification 코드: abc123XYZ456...
+   📧 작업 요청: index.html의 google-site-verification 메타 태그에 코드 입력
+   📧 배포 완료 후 알림 요청
+   ```
+4. 개발팀 작업 완료 및 배포 대기 (2-3분)
+5. 배포 완료 알림 받은 후 "확인" 클릭
 
 #### Step 4: Sitemap 제출
 1. 좌측 "Sitemaps" 메뉴
@@ -82,12 +84,14 @@ http://localhost:3000/guide
 #### Step 3: 소유 확인
 1. "HTML 태그" 선택
 2. `content="..."` 부분만 복사
-3. 코드 에디터에서 `index.html` 열기:
-   ```html
-   <meta name="naver-site-verification" content="여기에_복사한_코드_붙여넣기" />
+3. **와이고 개발팀에 전달**:
    ```
-4. GitHub 푸시 → 2-3분 대기
-5. "소유확인" 클릭
+   📧 Naver verification 코드: xyz789ABC123...
+   📧 작업 요청: index.html의 naver-site-verification 메타 태그에 코드 입력
+   📧 배포 완료 후 알림 요청
+   ```
+4. 개발팀 작업 완료 및 배포 대기 (2-3분)
+5. 배포 완료 알림 받은 후 "소유확인" 클릭
 
 #### Step 4: Sitemap 제출
 1. "요청" → "사이트맵 제출"
@@ -117,7 +121,7 @@ http://localhost:3000/guide
 
 ### ✅ 페이지 삭제 절차
 
-등록이 모두 완료되면 가이드 페이지를 삭제해야 합니다:
+등록이 모두 완료되면 가이드 페이지를 삭제해야 합니다 (개발팀 작업):
 
 ```bash
 # 1. Guide.tsx 파일 삭제
@@ -142,15 +146,62 @@ git push origin main
 
 ---
 
+## 📧 개발팀 전달 템플릿
+
+### Google Search Console
+```
+제목: [KOLLAB KOREA] Google Search Console 소유권 확인 요청
+
+내용:
+안녕하세요,
+
+Google Search Console 등록을 위한 소유권 확인 코드를 전달드립니다.
+
+📌 Google verification 코드: [여기에_복사한_코드_붙여넣기]
+
+📌 작업 요청:
+index.html 파일의 <head> 태그 내에 아래 메타 태그를 추가해주세요.
+
+<meta name="google-site-verification" content="[여기에_복사한_코드_붙여넣기]" />
+
+📌 배포 완료 후 알림 부탁드립니다.
+
+감사합니다.
+```
+
+### Naver Search Advisor
+```
+제목: [KOLLAB KOREA] Naver Search Advisor 소유 확인 요청
+
+내용:
+안녕하세요,
+
+Naver Search Advisor 등록을 위한 소유 확인 코드를 전달드립니다.
+
+📌 Naver verification 코드: [여기에_복사한_코드_붙여넣기]
+
+📌 작업 요청:
+index.html 파일의 <head> 태그 내에 아래 메타 태그를 추가해주세요.
+
+<meta name="naver-site-verification" content="[여기에_복사한_코드_붙여넣기]" />
+
+📌 배포 완료 후 알림 부탁드립니다.
+
+감사합니다.
+```
+
+---
+
 ## 📞 문제 발생 시
 
 ### 소유권 확인 실패
 ```
 원인: verification 코드가 잘못 입력되었거나 배포가 안됨
 해결: 
-1. index.html에서 코드 재확인
+1. 개발팀에 전달한 코드 재확인
 2. GitHub Actions에서 배포 상태 확인
 3. 브라우저에서 페이지 소스 보기로 meta 태그 확인
+4. 개발팀에 재배포 요청
 ```
 
 ### Sitemap 제출 실패
@@ -197,18 +248,22 @@ KOLLAB KOREA
 ## 📝 체크리스트 (완료 여부)
 
 ### Google Search Console
+- [ ] 소유권 확인 코드 복사 완료
+- [ ] 와이고 개발팀에 코드 전달
+- [ ] 개발팀 배포 완료 알림 확인
 - [ ] 소유권 확인 완료
 - [ ] Sitemap 제출 완료
-- [ ] URL 검사 완료
 - [ ] 색인 상태 확인 (1-2주 후)
 
 ### Naver Search Advisor
+- [ ] 소유 확인 코드 복사 완료
+- [ ] 와이고 개발팀에 코드 전달
+- [ ] 개발팀 배포 완료 알림 확인
 - [ ] 소유 확인 완료
 - [ ] Sitemap 제출 완료
-- [ ] 수집 요청 완료
 - [ ] 색인 상태 확인 (3-7일 후)
 
-### 정리 작업
+### 정리 작업 (개발팀)
 - [ ] 가이드 페이지 삭제
 - [ ] App.tsx 라우팅 제거
 - [ ] types.ts 타입 제거

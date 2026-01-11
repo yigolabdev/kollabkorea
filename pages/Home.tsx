@@ -106,12 +106,14 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
       </section>
 
       {/* IMAGE SLIDER - LA 팝업 이미지 */}
-      <ImageSlider />
+      <div className="mt-[200px]">
+        <ImageSlider />
+      </div>
 
       {/* INTRO SECTION - 일반 스크롤 */}
       <section
         id="intro-section"
-        className="relative overflow-hidden bg-black min-h-[100vh] mt-[500px] flex items-center justify-center"
+        className="relative overflow-hidden bg-black min-h-[100vh] mt-[400px] flex items-center justify-center"
       >
         {/* 배경 이미지 */}
         <div 

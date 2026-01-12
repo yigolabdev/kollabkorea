@@ -166,9 +166,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
       <section
         id="hero-section"
         ref={heroRef}
-        className={`relative overflow-hidden z-0 min-h-[80vh] md:min-h-[88vh] flex items-center ${
-          isGrayBg ? 'bg-zinc-700' : 'bg-white'
-        }`}
+        className="relative overflow-hidden z-0 min-h-[80vh] md:min-h-[88vh] flex items-center bg-white"
         aria-label="KOLLAB hero section"
       >
         <video
@@ -183,17 +181,8 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           <source src="/assets/mega-node-network-earth.mp4" type="video/mp4" />
         </video>
 
-        {/* Hero tone overlay — make dark state visibly dark over the bright video */}
-        <div className="absolute inset-0 -z-10">
-          <div
-            className="absolute inset-0 bg-white/60 transition-opacity duration-1000 ease-in-out"
-            style={{ opacity: isGrayBg ? 0 : 1 }}
-          />
-          <div
-            className="absolute inset-0 bg-zinc-700/85 transition-opacity duration-1000 ease-in-out"
-            style={{ opacity: isGrayBg ? 1 : 0 }}
-          />
-        </div>
+        {/* Hero tone overlay - 항상 밝은 오버레이 */}
+        <div className="absolute inset-0 -z-10 bg-white/60" />
         
         <motion.div 
           initial={{ opacity: 0 }}

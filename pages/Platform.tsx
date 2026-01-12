@@ -103,9 +103,10 @@ const Platform: React.FC = () => {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="https://s3.ap-northeast-2.amazonaws.com/kollabkorea.com/assets/images/hero/platform_Hero3.png"
+            src="/assets/images/hero/platform_hero3.png"
             alt="KOLLAB Seongsu Space"
             className="w-full h-full object-cover"
+            loading="eager"
           />
           {/* Dark Overlay for better text readability */}
           <div className="absolute inset-0 bg-black/30" />

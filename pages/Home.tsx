@@ -256,7 +256,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
             ref={curatedBgRef}
             style={{
               backgroundImage:
-                'url(https://s3.ap-northeast-2.amazonaws.com/kollabkorea.com/assets/images/hero/kollab-hero-bg-01.png)',
+                'url(/assets/images/hero/kollab-hero-bg-01.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat'

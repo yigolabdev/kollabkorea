@@ -30,3 +30,14 @@ dist-ssr
 
 # Build files
 *.tsbuildinfo
+
+# FTP and hosting deployment files (temporary, will be used when hosting changes)
+deploy-ftp*.sh
+*-ftp*.sh
+HOSTING_*.md
+*_MIGRATION_*.md
+DEPLOYMENT_READY.md
+DEPLOY_FROM_TERMINAL.md
+
+# Temporary upload files
+*.zip

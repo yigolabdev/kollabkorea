@@ -26,7 +26,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             className="cursor-pointer flex items-center bg-transparent border-none p-0"
           >
             <img 
-              src="/assets/brands/kollab_logo_korea_white.png" 
+              src="/assets/brands/kollab_logo_korea_white01.png" 
               alt="KOLLAB KOREA" 
               className="h-14 md:h-16 w-auto object-contain"
             />

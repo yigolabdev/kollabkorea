@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
@@ -19,6 +19,47 @@ const Contact: React.FC = () => {
   const content = language === 'en' ? contactContentEn : contactContentKo;
   const [emailCopied, setEmailCopied] = useState(false);
   const emailJsConfig = useMemo(() => loadEmailJsConfigFromEnv(), []);
+  const premiumPanelRef = useRef<HTMLDivElement | null>(null);
+  const [premiumPanelHeightPx, setPremiumPanelHeightPx] = useState<number | null>(null);
+
+  // Tier card background images (reuse existing LA popup assets)
+  // Requested mapping:
+  // - STANDARD: portrait-02
+  // - BASIC: portrait-04
+  // PREMIUM: keep current (portrait-03 for consistency)
+  const TIER_BG_BY_NAME = useMemo<Record<string, string>>(
+    () => ({
+      STANDARD: '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-02.jpeg',
+      PREMIUM: '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-03.jpeg',
+      BASIC: '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-04.jpeg',
+    }),
+    []
+  );
+
+  // Match all tier panels' height to the PREMIUM panel height (desktop intent)
+  useEffect(() => {
+    const el = premiumPanelRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      // Use offsetHeight (layout px). Premium is the tallest; others will adopt as minHeight.
+      const next = Math.max(0, Math.round(el.offsetHeight));
+      setPremiumPanelHeightPx((prev) => (prev === next ? prev : next));
+    };
+
+    measure();
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => measure());
+      ro.observe(el);
+    }
+    window.addEventListener('resize', measure);
+    return () => {
+      window.removeEventListener('resize', measure);
+      ro?.disconnect();
+    };
+  }, []);
 
   const [form, setForm] = useState<BrandApplicationForm>({
     brandName: '',
@@ -97,7 +138,6 @@ const Contact: React.FC = () => {
       page_url: typeof window !== 'undefined' ? window.location.href : undefined,
       language,
       reply_to: form.email.trim(),
-      to_email: 'info@kollabkorea.com', // 관리자 이메일
     };
 
     try {
@@ -131,19 +171,9 @@ const Contact: React.FC = () => {
         website: '',
         message: '',
       });
-      
-      // Auto-hide success message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus('idle');
-      }, 5000);
     } catch (err) {
       console.error('EmailJS submit error:', err);
       setSubmitStatus('error');
-      
-      // Auto-hide error message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus('idle');
-      }, 5000);
     } finally {
       setIsSubmitting(false);
     }
@@ -195,50 +225,64 @@ const Contact: React.FC = () => {
               const lines = language === 'ko' ? tier.linesKo : tier.linesEn;
               const firstLine = lines[0];
               const rest = lines.slice(1);
-              const tierLabel = tier.name ? tier.name.toLowerCase().replace(/^\w/, (c) => c.toUpperCase()) : '';
+              const tierLabel = tier.name ? tier.name.toUpperCase() : '';
+              const bgSrc = TIER_BG_BY_NAME[tier.name] ?? '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-01.jpeg';
+              const isPremiumTier = tier.name === 'PREMIUM';
               return (
                 <motion.div
                   key={`${tier.name}-${idx}`}
                   variants={itemVariants}
-                  className={`group relative bg-[#f5f5f5] p-8 md:p-10 w-full transition-colors duration-300 ${
-                    isPremium ? 'hover:bg-kollab-red' : 'hover:bg-black'
-                  }`}
+                  className="group relative w-full min-h-[520px] md:min-h-[560px] overflow-hidden bg-black"
                 >
-                  <div className="absolute left-8 top-6 md:left-10 md:top-7 space-y-1">
+                  {/* Background photo */}
+                  <img
+                    src={bgSrc}
+                    alt={`${tierLabel} background`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+
+                  {/* Information panel (like attached layout) */}
+                  <div className="absolute top-2 left-2 md:top-4 md:left-4 w-[52%] max-w-[280px]">
+                    {/* Semi-opaque mask panel + white text */}
                     <div
-                      className={`text-4xl md:text-5xl font-thin leading-none tracking-tight transition-colors duration-300 ${
-                        isPremium ? 'text-kollab-red' : 'text-black'
-                      } group-hover:text-white`}
+                      ref={isPremiumTier ? premiumPanelRef : undefined}
+                      className="bg-black/70 text-white p-4 md:p-5 backdrop-blur-[2px] text-left flex flex-col items-start"
+                      style={{
+                        minHeight: !isPremiumTier && premiumPanelHeightPx ? `${premiumPanelHeightPx}px` : undefined
+                      }}
                     >
-                      {tierLabel}
-                    </div>
-
-                    {firstLine ? (
-                      <p
-                        className={`text-xl md:text-2xl font-semibold text-black leading-[1.05] tracking-normal transition-colors duration-300 group-hover:text-white ${
-                          language === 'ko' ? 'break-keep' : ''
-                        }`}
-                      >
-                        {firstLine}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <div className="pt-20 md:pt-24">
-
-                    {rest.length ? (
                       <div
-                        className={`mt-3 space-y-2 text-lg md:text-xl font-medium text-black leading-relaxed tracking-normal transition-colors duration-300 group-hover:text-white ${
-                          language === 'ko' ? 'break-keep' : ''
-                        }`}
+                        className="text-2xl md:text-3xl font-black tracking-tight leading-none underline underline-offset-8 decoration-white decoration-[1px]"
                       >
-                        {rest.map((l, i) => (
-                          <p key={i} className="whitespace-pre-line">
-                            {l}
-                          </p>
-                        ))}
+                        {tierLabel}
                       </div>
-                    ) : null}
+
+                      {firstLine ? (
+                        <div
+                          className={`mt-4 text-base md:text-lg font-semibold leading-relaxed tracking-normal ${
+                            language === 'ko' ? 'break-keep' : ''
+                          }`}
+                        >
+                          {firstLine}
+                        </div>
+                      ) : null}
+
+                      {rest.length ? (
+                        <div
+                          className={`mt-2 space-y-1 text-sm md:text-base font-semibold leading-relaxed tracking-normal ${
+                            language === 'ko' ? 'break-keep' : ''
+                          }`}
+                        >
+                          {rest.map((l, i) => (
+                            <div key={i} className="whitespace-pre-line">
+                              {l}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </motion.div>
               );
@@ -252,6 +296,7 @@ const Contact: React.FC = () => {
 
       {/* Apply Section */}
       <motion.section
+        id="apply-section"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -332,6 +377,13 @@ const Contact: React.FC = () => {
         {/* Form */}
         <motion.div variants={itemVariants} className="bg-[#f5f5f5] p-10 md:p-12 border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
           <h3 className="text-2xl md:text-4xl font-extrabold text-black mb-8 tracking-tight">{content.form.title}</h3>
+          {!emailJsConfig ? (
+            <div className={`mb-6 text-sm font-semibold text-black/70 leading-relaxed ${language === 'ko' ? 'break-keep' : ''}`}>
+              {language === 'ko'
+                ? '현재 폼 전송 설정이 완료되지 않았습니다. 로컬에서 `.env.local`에 VITE_EMAILJS_* 값을 설정해 주세요.'
+                : 'Form sending is not configured. Please set VITE_EMAILJS_* in your `.env.local`.'}
+            </div>
+          ) : null}
 
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div className="space-y-2">
@@ -494,24 +546,9 @@ const Contact: React.FC = () => {
               ) : null}
             </div>
 
-            {/* Status Messages Above Button */}
-            {!emailJsConfig && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={`text-sm font-semibold text-black/70 leading-relaxed ${language === 'ko' ? 'break-keep' : ''}`}
-              >
-                {language === 'ko'
-                  ? '현재 폼 전송 설정이 완료되지 않았습니다. 로컬에서 `.env.local`에 VITE_EMAILJS_* 값을 설정해 주세요.'
-                  : 'Form sending is not configured. Please set VITE_EMAILJS_* in your `.env.local`.'}
-              </motion.div>
-            )}
-
-            {submitStatus !== 'idle' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
+            {/* Submit feedback (moved above the button) */}
+            {submitStatus !== 'idle' ? (
+              <div
                 role="status"
                 aria-live="polite"
                 className={`border-2 ${submitStatus === 'success' ? 'border-black' : 'border-kollab-red'} bg-white p-4`}
@@ -522,8 +559,8 @@ const Contact: React.FC = () => {
                 <div className={`mt-1 text-sm font-semibold text-black/70 leading-relaxed ${language === 'ko' ? 'break-keep' : ''}`}>
                   {submitStatus === 'success' ? content.form.successBody : content.form.errorBody}
                 </div>
-              </motion.div>
-            )}
+              </div>
+            ) : null}
 
             <button
               type="submit"

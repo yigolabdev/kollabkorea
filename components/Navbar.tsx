@@ -175,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
             onClick={() => handleNav('home')}
           >
             <img 
-              src="/assets/brands/kollab_logo_korea_primary.png" 
+              src="/assets/brands/kollab_logo_korea_primary01.png" 
               alt="KOLLAB KOREA" 
               className="h-14 md:h-16 lg:h-18 w-auto object-contain"
             />
@@ -223,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
               {/* 로고 */}
               <div className="cursor-pointer flex items-center" onClick={() => handleNav('home')}>
                 <img 
-                  src="/assets/brands/kollab_logo_korea_primary.png" 
+                  src="/assets/brands/kollab_logo_korea_primary01.png" 
                   alt="KOLLAB KOREA" 
                   className="h-14 w-auto object-contain"
                 />

@@ -15,7 +15,7 @@ export const faqContentEn = {
     },
     {
       q: 'What is the contract period and the process to move in?',
-      a: 'Basic is available for 2 weeks or 1 month. Standard and Premium are available in 1 month units.'
+      a: 'Basic is available for 2 weeks. Standard / Premium can be contracted in 1–3 month units.'
     },
     {
       q: 'How do marketing support and LA expansion opportunities work?',

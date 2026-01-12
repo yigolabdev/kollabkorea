@@ -12,6 +12,30 @@ import type { NavbarProps } from '../types';
 
 const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'CONTACT', 'FAQ'] as const;
 
+const MOBILE_MENU_LIST_VARIANTS = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: 'easeOut',
+      when: 'beforeChildren',
+      staggerChildren: 0.06,
+      delayChildren: 0.04,
+    },
+  },
+} as const;
+
+const MOBILE_MENU_ITEM_VARIANTS = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+} as const;
+
 const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -89,17 +113,34 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
   }, []);
 
   const handleNav = useCallback((page: string) => {
-    setMobileMenuOpen(false);
-    
+    // 현재 페이지와 같은 메뉴를 클릭한 경우
     if (currentPage.toLowerCase() === page.toLowerCase()) {
-      // 같은 페이지 재클릭 시: 최상단으로 부드럽게 스크롤
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setHidden(false);
-    } else {
-      // 다른 페이지로 이동
-      onNavigate(page);
-      setHidden(false);
+      // Platform 페이지인 경우 헤더를 숨기면서 최상단으로
+      if (page.toLowerCase() === 'platform') {
+        // 최상단으로 이동
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // 헤더 즉시 숨김
+        setHidden(true);
+      } else {
+        // 다른 페이지는 최상단으로 스크롤하고 헤더 보이기
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setHidden(false);
+      }
+      
+      setMobileMenuOpen(false);
+      return;
     }
+    
+    // 다른 페이지로 이동 시
+    onNavigate(page);
+    setMobileMenuOpen(false);
+    setHidden(false);
+    
+    // 페이지 이동 후 최상단으로 스크롤
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }, 100);
   }, [onNavigate, currentPage]);
 
   return (
@@ -116,7 +157,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
           }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ 
-            duration: 0.3,  // 0.7초 → 0.3초 (빠르고 부드럽게)
+            duration: 0.3,
             ease: 'easeOut',
             backgroundColor: { duration: 0.3 },
             backdropFilter: { duration: 0.3 }
@@ -175,62 +216,44 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
       </AnimatePresence>
 
       {/* 모바일 전용 풀스크린 메뉴 */}
-          <AnimatePresence>
-            {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[99999] bg-white lg:hidden"
-          >
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[99999] bg-white lg:hidden">
             {/* 상단 헤더 영역 - 고정 */}
-            <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-8 bg-white border-b border-zinc-200">
+            <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-10 bg-white border-b border-zinc-200">
               {/* 로고 */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className="cursor-pointer flex items-center"
-                onClick={() => handleNav('home')}
-              >
+              <div className="cursor-pointer flex items-center" onClick={() => handleNav('home')}>
                 <img 
                   src="/assets/brands/kollab_logo_korea_primary.png" 
                   alt="KOLLAB KOREA" 
-                  className="h-10 w-auto object-contain"
+                  className="h-14 w-auto object-contain"
                 />
-              </motion.div>
+              </div>
 
               {/* 닫기 버튼 */}
-              <motion.button
-                initial={{ opacity: 0, rotate: -90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                transition={{ delay: 0.15 }}
+              <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2 touch-manipulation active:scale-95 transition-transform"
                 aria-label="Close mobile menu"
               >
                 <X size={32} strokeWidth={2.5} className="text-black" />
-              </motion.button>
+              </button>
             </div>
 
             {/* 메뉴 콘텐츠 영역 - 스크롤 가능 */}
-            <div className="h-full pt-24 pb-8 px-6 overflow-y-auto flex flex-col items-center justify-center gap-6">
-              {SECTIONS.map((item, index) => (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={MOBILE_MENU_LIST_VARIANTS}
+              className="h-full pt-24 pb-8 px-6 overflow-y-auto flex flex-col items-center justify-center gap-3"
+            >
+              {SECTIONS.map((item) => (
                 <motion.button
-                    key={item}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    delay: 0.2 + (index * 0.08),
-                    type: 'spring',
-                    damping: 20,
-                    stiffness: 200
-                  }}
-                    onClick={() => handleNav(item)}
-                  className={`text-4xl font-extrabold uppercase tracking-tight touch-manipulation py-4 px-8 transition-all active:scale-95 ${
+                  key={item}
+                  variants={MOBILE_MENU_ITEM_VARIANTS}
+                  onClick={() => handleNav(item)}
+                  className={`text-4xl font-extrabold uppercase tracking-tight touch-manipulation py-2 px-8 transition-all active:scale-95 ${
                     currentPage === item.toLowerCase() 
-                      ? 'text-kollab-red scale-110' 
+                      ? 'text-kollab-red' 
                       : 'text-black active:text-kollab-red'
                   }`}
                   >
@@ -239,24 +262,16 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, isVisible }) =
                 ))}
 
               {/* Apply Now 버튼 */}
-              <motion.button 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  delay: 0.2 + (SECTIONS.length * 0.08),
-                  type: 'spring',
-                  damping: 20,
-                  stiffness: 200
-                }}
-                  onClick={() => handleNav('CONTACT')}
-                className="mt-8 bg-kollab-red text-white px-12 py-5 text-lg font-extrabold uppercase tracking-[0.22em] touch-manipulation shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
+              <motion.button
+                variants={MOBILE_MENU_ITEM_VARIANTS}
+                onClick={() => handleNav('CONTACT')}
+                className="mt-6 bg-kollab-red text-white px-12 py-5 text-lg font-extrabold uppercase tracking-[0.22em] touch-manipulation shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
                 >
                   APPLY NOW
               </motion.button>
-            </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            </motion.div>
+        </div>
+      )}
     </>
   );
 };

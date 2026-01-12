@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { brandsContentEn } from '../content/brands.en';
 import { brandsContentKo } from '../content/brands.ko';
@@ -34,10 +34,14 @@ const renderBrandNameBold = (text: string): React.ReactNode => {
 const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   const { language } = useLanguage();
   const content = language === 'ko' ? brandsContentKo : brandsContentEn;
-  
-  // 애니메이션 컨트롤러
-  const firstRowControls = useAnimation();
-  const secondRowControls = useAnimation();
+  const marqueeDurationSec = 80;
+
+  // 퍼센트 기반 이동은 뷰포트/갭/이미지 로딩에 따라 루프가 끊겨 보일 수 있어,
+  // 실제 트랙 폭(px)을 측정해서 정확히 1사이클만큼 이동하는 방식으로 고정.
+  const firstRowTrackRef = useRef<HTMLDivElement | null>(null);
+  const secondRowTrackRef = useRef<HTMLDivElement | null>(null);
+  const [firstCyclePx, setFirstCyclePx] = useState<number>(0);
+  const [secondCyclePx, setSecondCyclePx] = useState<number>(0);
   
   // LA Partner logos - 40개 이미지
   const laPartners: BrandPartner[] = Array.from({ length: 40 }, (_, i) => ({
@@ -53,35 +57,24 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   // 무한 루프를 위해 각 줄을 3번 복제 (완벽한 공백 제거)
   const firstRowDuplicated = [...firstRow, ...firstRow, ...firstRow];
   const secondRowDuplicated = [...secondRow, ...secondRow, ...secondRow];
-  
-  // 첫 번째 줄 애니메이션 - 좌로 무한 이동 (0% → -33.333%)
+
+  // 1사이클(px) 측정: 3번 복제했으므로 scrollWidth / 3
   useEffect(() => {
-    firstRowControls.start({
-      x: [0, '-33.333%'],
-      transition: {
-        duration: 20,
-        repeat: Infinity,
-        repeatType: 'loop',
-        ease: 'linear',
-      },
-    });
-  }, [firstRowControls]);
-  
-  // 두 번째 줄 애니메이션 - 우로 무한 이동 (-33.333% → 0%)
-  useEffect(() => {
-    // 초기 위치 설정
-    secondRowControls.set({ x: '-33.333%' });
-    
-    secondRowControls.start({
-      x: ['-33.333%', 0],
-      transition: {
-        duration: 20,
-        repeat: Infinity,
-        repeatType: 'loop',
-        ease: 'linear',
-      },
-    });
-  }, [secondRowControls]);
+    const measure = () => {
+      const firstEl = firstRowTrackRef.current;
+      const secondEl = secondRowTrackRef.current;
+      if (firstEl) setFirstCyclePx(firstEl.scrollWidth / 3);
+      if (secondEl) setSecondCyclePx(secondEl.scrollWidth / 3);
+    };
+
+    // 이미지 로딩 이후 폭이 바뀔 수 있어 1회 지연 측정
+    const t = window.setTimeout(measure, 0);
+    window.addEventListener('resize', measure);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener('resize', measure);
+    };
+  }, [firstRowDuplicated.length, secondRowDuplicated.length]);
   
   
   return (
@@ -134,19 +127,6 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
 
       {/* KOLLAB KOREA partners - Coming Soon Grid */}
       <div>
-        {/* Section Title */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8 }}
-          className={`mb-10 md:mb-12 text-center text-xl md:text-3xl font-semibold text-black ${
-            language === 'ko' ? 'tracking-[0.01em] break-keep' : 'tracking-[0.02em]'
-          }`}
-        >
-          {renderBrandNameBold(language === 'ko' ? 'KOLLAB KOREA 협력사' : 'KOLLAB KOREA Partners')}
-        </motion.p>
-        
         {/* Grid Container with Text Overlay */}
         <div className="relative">
           {/* Grid as background */}
@@ -198,7 +178,16 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         >
           <motion.div
             className="flex gap-2"
-            animate={firstRowControls}
+            ref={firstRowTrackRef}
+            animate={firstCyclePx > 0 ? { x: [0, -firstCyclePx] } : { x: 0 }}
+            transition={{
+              x: {
+                duration: marqueeDurationSec,
+                repeat: Infinity,
+                repeatType: 'loop',
+                ease: 'linear',
+              },
+            }}
           >
             {firstRowDuplicated.map((item, index) => (
               <div
@@ -227,7 +216,16 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
         >
           <motion.div
             className="flex gap-2"
-            animate={secondRowControls}
+            ref={secondRowTrackRef}
+            animate={secondCyclePx > 0 ? { x: [-secondCyclePx, 0] } : { x: 0 }}
+            transition={{
+              x: {
+                duration: marqueeDurationSec,
+                repeat: Infinity,
+                repeatType: 'loop',
+                ease: 'linear',
+              },
+            }}
           >
             {secondRowDuplicated.map((item, index) => (
               <div

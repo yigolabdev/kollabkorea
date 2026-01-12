@@ -73,7 +73,16 @@ export const contactContentKo = {
       website: '웹사이트 / SNS',
       message: '브랜드 소개'
     },
-    submit: 'SUBMIT APPLICATION'
+    submit: 'SUBMIT APPLICATION',
+    submitting: 'SENDING...',
+    successTitle: '접수가 완료되었습니다.',
+    successBody: '입점 문의가 정상적으로 접수되었습니다. 검토 후 가능한 한 빠르게 회신드리겠습니다.',
+    errorTitle: '전송에 실패했습니다.',
+    errorBody: '잠시 후 다시 시도해 주세요. 문제가 지속되면 이메일로 문의해 주세요.',
+    validation: {
+      required: '필수 입력 항목입니다.',
+      invalidEmail: '이메일 형식이 올바르지 않습니다.'
+    }
   },
   applyLeft: {
     copy:

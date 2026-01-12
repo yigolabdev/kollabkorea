@@ -15,7 +15,7 @@ export const faqContentKo = {
     },
     {
       q: '계약 기간과 입점까지 소요되는 절차는?',
-      a: 'Basic은 2주 or 1개월, Standard / Premium은 1~3개월 단위로 계약이 가능합니다.'
+      a: 'Basic은 2주 or 1개월, Standard와 Premium은 1개월 단위로 계약이 가능합니다.'
     },
     {
       q: '마케팅 지원 및 LA 진출 기회는 어떻게 주어지나요?',

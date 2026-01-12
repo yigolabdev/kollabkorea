@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../LanguageContext';
 import { homeContentEn } from '../content/home.en';
@@ -18,13 +18,58 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
   const lastVisibilityState = useRef<boolean>(false);
   const vhRef = useRef(window.innerHeight);
   const heroRef = useRef<HTMLDivElement | null>(null);
+  const sliderTriggerMarkerRef = useRef<HTMLDivElement | null>(null);
+  const bgToneRafRef = useRef<number | null>(null);
+  const [isGrayBg, setIsGrayBg] = useState(false);
+  const curatedSectionRef = useRef<HTMLElement | null>(null);
+  const curatedBgRef = useRef<HTMLDivElement | null>(null);
+  const curatedBgRafRef = useRef<number | null>(null);
+  const curatedBgLastYPxRef = useRef<number>(Number.NaN);
   const heroDeckHasKo = hasKorean(content.hero.deck);
+
+  const CURATED_BG_MOTION = {
+    // 기존 “공간감” 구조 복구: 스크롤에 따라 배경이 아래로 이동
+    // (보이는 레이아웃은 유지하고 background-position만 변경)
+    // baseOffsetYPx: 초기 배경 위치를 위로 당기는 값(음수일수록 위로)
+    baseOffsetYPx: -60,
+    maxTranslateYPx: 160,
+  } as const;
   
   // Viewport height 업데이트
   useEffect(() => {
     const updateVh = () => { vhRef.current = window.innerHeight; };
     window.addEventListener('resize', updateVh);
     return () => window.removeEventListener('resize', updateVh);
+  }, []);
+
+  // 인덱스 하단 다크 배경 전환 (white ↔ zinc-700)
+  // - 트리거: ImageSlider 섹션 내부 마커(25% 지점, 모바일은 상단)
+  // - 전환: fixed 배경 레이어 opacity cross-fade (1000ms)
+  useEffect(() => {
+    const markerEl = sliderTriggerMarkerRef.current;
+    if (!markerEl) return;
+
+    const apply = () => {
+      bgToneRafRef.current = null;
+      const rect = markerEl.getBoundingClientRect();
+      const shouldGray = rect.top <= 0;
+      setIsGrayBg((prev) => (prev === shouldGray ? prev : shouldGray));
+    };
+
+    const schedule = () => {
+      if (bgToneRafRef.current != null) return;
+      bgToneRafRef.current = window.requestAnimationFrame(apply);
+    };
+
+    schedule();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      if (bgToneRafRef.current != null) window.cancelAnimationFrame(bgToneRafRef.current);
+      bgToneRafRef.current = null;
+      window.removeEventListener('scroll', schedule as EventListener);
+      window.removeEventListener('resize', schedule as EventListener);
+    };
   }, []);
 
   // 헤더 가시성 제어
@@ -47,13 +92,83 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [onHeaderVisibilityChange]);
 
+  // A CURATED 공간감: 섹션 스크롤 진행도에 따라 배경 이미지를 "아래로" 이동
+  // - 요소 자체를 translate하면 gap/패턴 노출 위험이 커서, background-position만 안전하게 조정
+  // - prefers-reduced-motion에서는 이동 0px
+  useEffect(() => {
+    const sectionEl = curatedSectionRef.current;
+    const bgEl = curatedBgRef.current;
+    if (!sectionEl || !bgEl) return;
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+    const isMobile = window.matchMedia?.('(max-width: 767px)')?.matches ?? false;
+    const bgPosX = isMobile ? '15%' : '50%';
+    if (prefersReducedMotion) {
+      bgEl.style.backgroundPosition = `${bgPosX} calc(50% + ${CURATED_BG_MOTION.baseOffsetYPx}px)`;
+      return;
+    }
+
+    const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+    const apply = () => {
+      curatedBgRafRef.current = null;
+
+      const rect = sectionEl.getBoundingClientRect();
+      const vh = window.innerHeight || vhRef.current || 0;
+
+      // progress: 섹션 top이 뷰포트 bottom에 닿는 순간 0 → 섹션이 완전히 지나가면 1
+      const start = vh;
+      const end = -rect.height;
+      const denom = start - end || 1;
+      const progress = clamp01((start - rect.top) / denom);
+
+      const yPx = Math.round(CURATED_BG_MOTION.baseOffsetYPx + progress * CURATED_BG_MOTION.maxTranslateYPx);
+      if (curatedBgLastYPxRef.current === yPx) return;
+      curatedBgLastYPxRef.current = yPx;
+
+      // 기존 기본값(center center)을 유지하되 Y만 px로 이동
+      bgEl.style.backgroundPosition = `${bgPosX} calc(50% + ${yPx}px)`;
+    };
+
+    const schedule = () => {
+      if (curatedBgRafRef.current != null) return;
+      curatedBgRafRef.current = window.requestAnimationFrame(apply);
+    };
+
+    // 초기 1회 적용
+    schedule();
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      if (curatedBgRafRef.current != null) window.cancelAnimationFrame(curatedBgRafRef.current);
+      curatedBgRafRef.current = null;
+      window.removeEventListener('scroll', schedule as EventListener);
+      window.removeEventListener('resize', schedule as EventListener);
+    };
+  }, []);
+
   return (
-    <>
+    <div className="relative">
+      {/* Global background tone (fixed) — opacity cross-fade */}
+      <div aria-hidden className="fixed inset-0 pointer-events-none" style={{ zIndex: -20 }}>
+        <div
+          className="absolute inset-0 bg-white transition-opacity duration-1000 ease-in-out"
+          style={{ opacity: isGrayBg ? 0 : 1 }}
+        />
+        <div
+          className="absolute inset-0 bg-zinc-700 transition-opacity duration-1000 ease-in-out"
+          style={{ opacity: isGrayBg ? 1 : 0 }}
+        />
+      </div>
+
       {/* HERO SECTION - 배경 비디오 */}
       <section
         id="hero-section"
         ref={heroRef}
-        className="relative overflow-hidden bg-white z-0 min-h-[80vh] md:min-h-[88vh] flex items-center"
+        className={`relative overflow-hidden z-0 min-h-[80vh] md:min-h-[88vh] flex items-center ${
+          isGrayBg ? 'bg-zinc-700' : 'bg-white'
+        }`}
         aria-label="KOLLAB hero section"
       >
         <video
@@ -62,13 +177,23 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover -z-10"
+          className="absolute inset-0 w-full h-full object-cover -z-20"
           aria-hidden="true"
         >
           <source src="/assets/mega-node-network-earth.mp4" type="video/mp4" />
         </video>
 
-        <div className="absolute inset-0 bg-white/60 -z-10" />
+        {/* Hero tone overlay — make dark state visibly dark over the bright video */}
+        <div className="absolute inset-0 -z-10">
+          <div
+            className="absolute inset-0 bg-white/60 transition-opacity duration-1000 ease-in-out"
+            style={{ opacity: isGrayBg ? 0 : 1 }}
+          />
+          <div
+            className="absolute inset-0 bg-zinc-700/85 transition-opacity duration-1000 ease-in-out"
+            style={{ opacity: isGrayBg ? 1 : 0 }}
+          />
+        </div>
         
         <motion.div 
           initial={{ opacity: 0 }}
@@ -106,14 +231,20 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
       </section>
 
       {/* IMAGE SLIDER - LA 팝업 이미지 */}
-      <div className="mt-[200px]">
-        <ImageSlider />
-      </div>
+      <ImageSlider triggerMarkerRef={sliderTriggerMarkerRef} />
+
+      {/* Spacer between ImageSlider ↔ A CURATED (VISUAL_BASELINE.md) */}
+      {/* - mobile: 200px, desktop: 350px */}
+      {/* - background tone should follow the global (fixed) bg cross-fade */}
+      <div aria-hidden className="h-[200px] md:h-[350px] bg-transparent" />
 
       {/* INTRO SECTION - 일반 스크롤 */}
       <section
         id="intro-section"
-        className="relative overflow-hidden bg-black min-h-[100vh] mt-[400px] flex items-center justify-center"
+        ref={curatedSectionRef as unknown as React.RefObject<HTMLElement>}
+        className={`relative overflow-hidden min-h-[100vh] flex items-center justify-center pt-[100px] md:pt-0 ${
+          isGrayBg ? 'bg-zinc-700' : 'bg-black'
+        }`}
       >
         {/* 배경 이미지 */}
         <div 
@@ -121,16 +252,24 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           aria-hidden="true"
         >
           <div
-            className="w-full h-full opacity-40"
+            className="w-full h-full"
+            ref={curatedBgRef}
             style={{
-              backgroundImage: 'url(/assets/images/hero/kollab-hero-bg-02.png)',
+              backgroundImage:
+                'url(https://s3.ap-northeast-2.amazonaws.com/kollabkorea.com/assets/images/hero/kollab-hero-bg-01.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat'
             }}
           />
-          {/* 어두운 오버레이 */}
-          <div className="absolute inset-0 bg-black/40" />
+
+          {/* A CURATED overlay:
+              - before dark trigger: solid white (100%)
+              - after dark trigger: overlay fades out (reveals the image directly) */}
+          <div
+            className="absolute inset-0 bg-white transition-opacity duration-1000 ease-in-out"
+            style={{ opacity: isGrayBg ? 0 : 1 }}
+          />
         </div>
 
         {/* 메인 콘텐츠 */}
@@ -139,9 +278,9 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 w-full max-w-4xl mx-auto text-center px-6 py-16 md:py-24"
+          className="relative z-10 w-full max-w-4xl mx-auto text-left md:text-center px-6 py-0"
         >
-          <div className="space-y-6">
+          <div className="space-y-20 md:space-y-16">
             <p 
               className={`text-2xl md:text-4xl font-semibold leading-tight tracking-normal text-white ${language === 'ko' ? 'break-keep' : ''}`}
             >
@@ -159,7 +298,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center gap-6 mt-16 md:mt-20">
+          <div className="flex flex-col md:flex-row justify-center gap-6 mt-36 md:mt-32">
             <motion.button 
               onClick={() => onNavigate('CONTACT')}
               className="px-14 py-6 text-base font-extrabold tracking-[0.22em] bg-kollab-red text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
@@ -189,7 +328,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           </div>
         </motion.div>
       </section>
-    </>
+    </div>
   );
 };
 

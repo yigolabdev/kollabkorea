@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
+
+interface ImageSliderProps {
+  triggerMarkerRef?: React.Ref<HTMLDivElement>;
+}
 
 /**
  * ImageSlider Component
@@ -24,51 +28,37 @@ const LA_POPUP_LANDSCAPE = [
   '/assets/photos/la-popup/landscape/kollab-la-popup-landscape-08.jpeg',
 ];
 
-const LA_POPUP_PORTRAIT = [
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-01.jpeg',
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-02.jpeg',
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-03.jpeg',
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-04.jpeg',
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-05.jpeg',
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-06.jpeg',
-  '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-07.jpeg',
-];
-
-const ImageSlider: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // 모바일: portrait, PC: landscape
-  const images = isMobile ? LA_POPUP_PORTRAIT : LA_POPUP_LANDSCAPE;
+const ImageSlider: React.FC<ImageSliderProps> = ({ triggerMarkerRef }) => {
+  // 모바일도 데스크탑과 동일하게 landscape 슬라이드를 사용
+  const images = useMemo(() => LA_POPUP_LANDSCAPE, []);
   
   // 이미지를 20번 복제하여 검정 배경이 절대 안 보이도록 완벽한 무한 루프
-  const duplicatedImages = Array(20).fill(images).flat();
+  const duplicatedImages = useMemo(() => Array(20).fill(images).flat(), [images]);
+  const targetX = useMemo(() => `-${100 * images.length}%`, [images.length]);
 
   return (
     <section 
-      className="w-full overflow-hidden bg-white py-0 md:py-0"
+      className="w-full overflow-hidden py-0 md:py-0 bg-transparent"
     >
-      <div className="relative h-[35.7vh] md:h-[40.95vh]">
+      <div className="relative h-[35.7vh] md:h-[40.95vh] bg-transparent">
+        {/* Background transition marker aligned to the slider 25% position */}
+        <div
+          ref={triggerMarkerRef}
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px w-full pointer-events-none"
+        />
+
         {/* 슬라이드 컨테이너 */}
         <motion.div
-          className="flex absolute left-0 top-0 h-full gap-4"
+          className="flex absolute left-0 top-0 h-full gap-4 bg-transparent"
           animate={{
-            x: [0, -100 * images.length + '%'],
+            x: [0, targetX],
           }}
           transition={{
             x: {
               repeat: Infinity,
               repeatType: 'loop',
-              duration: 1200, // 1200초 (20분) - 기존 1680초에서 약 28% 빠르게
+              duration: 800, // 더 빠르게(기존 1050초 대비 약 24% faster)
               ease: 'linear',
             },
           }}
@@ -76,37 +66,25 @@ const ImageSlider: React.FC = () => {
           {duplicatedImages.map((src, index) => (
             <div
               key={`slide-${index}`}
-              className="flex-shrink-0 h-full px-2"
+              className="flex-shrink-0 h-full px-2 bg-transparent"
             >
               <img
                 src={src}
                 alt={`KOLLAB LA popup moment ${(index % images.length) + 1}`}
-                className="w-auto h-full rounded-2xl shadow-lg object-cover"
+                className="w-auto h-full rounded-2xl object-cover bg-transparent"
                 loading={index < 6 ? 'eager' : 'lazy'}
+                decoding="async"
+                fetchPriority={index < 2 ? 'high' : 'auto'}
               />
             </div>
           ))}
         </motion.div>
-
-        {/* 좌측 그라데이션 오버레이 */}
-        <div 
-          className="absolute left-0 top-0 h-full w-32 pointer-events-none z-10"
-          style={{
-            background: 'linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0))'
-          }}
-        />
-        
-        {/* 우측 그라데이션 오버레이 */}
-        <div 
-          className="absolute right-0 top-0 h-full w-32 pointer-events-none z-10"
-          style={{
-            background: 'linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0))'
-          }}
-        />
       </div>
     </section>
   );
 };
 
-export default ImageSlider;
+const MemoizedImageSlider = memo(ImageSlider);
+MemoizedImageSlider.displayName = 'ImageSlider';
+export default MemoizedImageSlider;
 

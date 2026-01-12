@@ -1,0 +1,8 @@
+## EmailJS (Vite)
+## 로컬에서는 아래 값을 `.env.local`에 넣어 사용하세요. (.gitignore로 커밋되지 않음)
+## 이 파일은 예시용입니다.
+VITE_EMAILJS_SERVICE_ID=service_mx8eivq
+VITE_EMAILJS_PUBLIC_KEY=Sjolne7iV4zOC5MJo
+VITE_EMAILJS_TEMPLATE_CONTACT_ID=template_piyxukd
+VITE_EMAILJS_TEMPLATE_AUTOREPLY_ID=template_7rtlbh9
+

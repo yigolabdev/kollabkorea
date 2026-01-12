@@ -13,10 +13,9 @@ import Platform from './pages/Platform';
 import Brands from './pages/Brands';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
-import Guide from './pages/Guide';
 import LanguageToggle from './components/LanguageToggle';
 import { getPathFromUrl, navigateToPage } from './utils/navigation';
-import { scrollToTop, isScrollable, getScrollableParent } from './utils/scroll';
+import { scrollToTop, getScrollableParent } from './utils/scroll';
 import type { PageId } from './types';
 
 const App: React.FC = () => {
@@ -86,26 +85,23 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home': return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;
+      // 홈에서는 헤더 가시성 콜백을 사용하지 않으므로 전달하지 않음(불필요한 scroll/raf 리스너 방지)
+      case 'home': return <Home onNavigate={navigateTo} />;
       case 'about': return <About onNavigate={navigateTo} />;
       case 'platform': return <Platform />;
       case 'brands': return <Brands navigateTo={navigateTo} />;
       case 'contact': return <Contact />;
       case 'faq': return <FAQ />;
-      case 'guide': return <Guide />; // SEO 등록 가이드 (임시 페이지)
       default: return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;
     }
   };
 
-  // Guide 페이지는 헤더/푸터 숨김
-  const isGuidePage = currentPage === 'guide';
-
   return (
     <div style={{ display: 'contents' }}>
-      {!isGuidePage && <LanguageToggle />}
+      <LanguageToggle />
       
-      {!isGuidePage && <Navbar currentPage={currentPage} onNavigate={navigateTo} isVisible={showNavbar} />}
-      {!isGuidePage && showNavbar && (
+      <Navbar currentPage={currentPage} onNavigate={navigateTo} isVisible={showNavbar} />
+      {showNavbar && (
         currentPage === 'home' ? (
           <div aria-hidden className="h-[120px] md:h-[144px]" />
         ) : (
@@ -117,7 +113,7 @@ const App: React.FC = () => {
         {renderPage()}
       </main>
 
-      {!isGuidePage && <Footer onNavigate={navigateTo} />}
+      <Footer onNavigate={navigateTo} />
     </div>
   );
 };

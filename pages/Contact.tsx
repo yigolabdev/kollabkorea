@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
@@ -11,11 +11,143 @@ import { contactContentEn } from '../content/contact.en';
 import { contactContentKo } from '../content/contact.ko';
 import ScrollIndicator from '../components/ScrollIndicator';
 import { containerVariants, itemVariants } from '../utils/animations';
+import type { BrandApplicationForm, Language } from '../types';
+import { loadEmailJsConfigFromEnv, sendAutoReplyEmail, sendContactUsEmail } from '../services/emailjsService';
 
 const Contact: React.FC = () => {
   const { language } = useLanguage();
   const content = language === 'en' ? contactContentEn : contactContentKo;
   const [emailCopied, setEmailCopied] = useState(false);
+  const emailJsConfig = useMemo(() => loadEmailJsConfigFromEnv(), []);
+
+  const [form, setForm] = useState<BrandApplicationForm>({
+    brandName: '',
+    contactPerson: '',
+    phone: '',
+    email: '',
+    category: 'Beauty',
+    website: '',
+    message: '',
+  });
+  const [errors, setErrors] = useState<Partial<Record<keyof BrandApplicationForm, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const categoryDisplay = (value: string) => value;
+
+  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  const buildRequiredMessage = () => content.form.validation.required;
+  const buildInvalidEmailMessage = () => content.form.validation.invalidEmail;
+
+  const validateForm = (lang: Language, data: BrandApplicationForm) => {
+    const next: Partial<Record<keyof BrandApplicationForm, string>> = {};
+
+    const requiredFields: Array<keyof BrandApplicationForm> = ['brandName', 'contactPerson', 'phone', 'email', 'category', 'message'];
+    requiredFields.forEach((k) => {
+      const v = String(data[k] ?? '').trim();
+      if (!v) next[k] = buildRequiredMessage();
+    });
+
+    if (data.email && !validateEmail(data.email)) {
+      next.email = buildInvalidEmailMessage();
+    }
+
+    // website is optional; if provided, keep as-is (no strict URL validation)
+    // language is used only for error copy
+    void lang;
+    return next;
+  };
+
+  const onChangeField = <K extends keyof BrandApplicationForm>(key: K, value: BrandApplicationForm[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => {
+      const { [key]: _removed, ...rest } = prev;
+      return rest;
+    });
+    if (submitStatus !== 'idle') setSubmitStatus('idle');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    const nextErrors = validateForm(language, form);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    if (!emailJsConfig) {
+      console.error('EmailJS config missing: set VITE_EMAILJS_* env vars');
+      setSubmitStatus('error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    const timestamp = new Date().toISOString();
+    const paramsAdmin = {
+      brand_name: form.brandName.trim(),
+      contact_name: form.contactPerson.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      category_display: categoryDisplay(form.category),
+      brand_intro: form.message.trim(),
+      timestamp,
+      page_url: typeof window !== 'undefined' ? window.location.href : undefined,
+      language,
+      reply_to: form.email.trim(),
+      to_email: 'info@kollabkorea.com', // 관리자 이메일
+    };
+
+    try {
+      const adminRes = await sendContactUsEmail(emailJsConfig, paramsAdmin);
+      if (!adminRes.ok) {
+        console.error('EmailJS Contact Us failed:', adminRes.status, adminRes.responseText);
+        setSubmitStatus('error');
+        return;
+      }
+
+      // Auto-reply is best-effort (do not fail whole submission if it errors)
+      if (emailJsConfig.templateAutoReplyId) {
+        const autoRes = await sendAutoReplyEmail(emailJsConfig, {
+          name: form.contactPerson.trim(),
+          email: form.email.trim(),
+          to_email: form.email.trim(),
+          timestamp,
+        });
+        if (!autoRes.ok) {
+          console.warn('EmailJS Auto-Reply failed:', autoRes.status, autoRes.responseText);
+        }
+      }
+
+      setSubmitStatus('success');
+      setForm({
+        brandName: '',
+        contactPerson: '',
+        phone: '',
+        email: '',
+        category: 'Beauty',
+        website: '',
+        message: '',
+      });
+      
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle');
+      }, 5000);
+    } catch (err) {
+      console.error('EmailJS submit error:', err);
+      setSubmitStatus('error');
+      
+      // Auto-hide error message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle');
+      }, 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleCopyEmail = async () => {
     try {
@@ -200,50 +332,206 @@ const Contact: React.FC = () => {
         {/* Form */}
         <motion.div variants={itemVariants} className="bg-[#f5f5f5] p-10 md:p-12 border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
           <h3 className="text-2xl md:text-4xl font-extrabold text-black mb-8 tracking-tight">{content.form.title}</h3>
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+
+          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div className="space-y-2">
-              <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.brandName}</label>
-              <input type="text" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="Kollab Beauty" />
+              <label htmlFor="brandName" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                {content.form.fields.brandName}
+              </label>
+              <input
+                id="brandName"
+                name="brandName"
+                type="text"
+                value={form.brandName}
+                onChange={(ev) => onChangeField('brandName', ev.target.value)}
+                className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent"
+                placeholder="Kollab Beauty"
+                autoComplete="organization"
+                aria-invalid={Boolean(errors.brandName)}
+                aria-describedby={errors.brandName ? 'brandName-error' : undefined}
+              />
+              {errors.brandName ? (
+                <p id="brandName-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                  {errors.brandName}
+                </p>
+              ) : null}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.contactPerson}</label>
-                <input type="text" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" />
+                <label htmlFor="contactPerson" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                  {content.form.fields.contactPerson}
+                </label>
+                <input
+                  id="contactPerson"
+                  name="contactPerson"
+                  type="text"
+                  value={form.contactPerson}
+                  onChange={(ev) => onChangeField('contactPerson', ev.target.value)}
+                  className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent"
+                  autoComplete="name"
+                  aria-invalid={Boolean(errors.contactPerson)}
+                  aria-describedby={errors.contactPerson ? 'contactPerson-error' : undefined}
+                />
+                {errors.contactPerson ? (
+                  <p id="contactPerson-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                    {errors.contactPerson}
+                  </p>
+                ) : null}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.phone}</label>
-                <input type="tel" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="010-0000-0000" />
+                <label htmlFor="phone" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                  {content.form.fields.phone}
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={(ev) => onChangeField('phone', ev.target.value)}
+                  className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent"
+                  placeholder="010-0000-0000"
+                  autoComplete="tel"
+                  aria-invalid={Boolean(errors.phone)}
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+                />
+                {errors.phone ? (
+                  <p id="phone-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                    {errors.phone}
+                  </p>
+                ) : null}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.email}</label>
-                <input type="email" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="brand@example.com" />
+                <label htmlFor="email" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                  {content.form.fields.email}
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={(ev) => onChangeField('email', ev.target.value)}
+                  className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent"
+                  placeholder="brand@example.com"
+                  autoComplete="email"
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                />
+                {errors.email ? (
+                  <p id="email-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                    {errors.email}
+                  </p>
+                ) : null}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.category}</label>
-                <select className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold bg-transparent tracking-normal">
-                  <option>Beauty</option>
-                  <option>Fashion</option>
-                  <option>Goods</option>
-                  <option>F&B</option>
-                  <option>Life</option>
+                <label htmlFor="category" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                  {content.form.fields.category}
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  value={form.category}
+                  onChange={(ev) => onChangeField('category', ev.target.value)}
+                  className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold bg-transparent tracking-normal"
+                  aria-invalid={Boolean(errors.category)}
+                  aria-describedby={errors.category ? 'category-error' : undefined}
+                >
+                  <option value="Beauty">Beauty</option>
+                  <option value="Fashion">Fashion</option>
+                  <option value="Goods">Goods</option>
+                  <option value="F&B">F&amp;B</option>
+                  <option value="Life">Life</option>
                 </select>
+                {errors.category ? (
+                  <p id="category-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                    {errors.category}
+                  </p>
+                ) : null}
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.website}</label>
-              <input type="text" className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent" placeholder="https://..." />
+              <label htmlFor="website" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                {content.form.fields.website}
+              </label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                value={form.website}
+                onChange={(ev) => onChangeField('website', ev.target.value)}
+                className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-semibold tracking-normal bg-transparent"
+                placeholder="https://..."
+                autoComplete="url"
+                aria-invalid={Boolean(errors.website)}
+                aria-describedby={errors.website ? 'website-error' : undefined}
+              />
+              {errors.website ? (
+                <p id="website-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                  {errors.website}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-extrabold text-black tracking-[0.12em]">{content.form.fields.message}</label>
+              <label htmlFor="message" className="text-sm font-extrabold text-black tracking-[0.12em]">
+                {content.form.fields.message}
+              </label>
               <textarea
+                id="message"
+                name="message"
                 rows={3}
+                value={form.message}
+                onChange={(ev) => onChangeField('message', ev.target.value)}
                 className="w-full border-b-2 border-black/20 py-2.5 focus:outline-none focus:border-black text-lg font-medium tracking-normal bg-transparent resize-none"
                 placeholder={language === 'ko' ? '브랜드를 간단히 소개해 주세요' : 'Brief intro...'}
+                aria-invalid={Boolean(errors.message)}
+                aria-describedby={errors.message ? 'message-error' : undefined}
               />
+              {errors.message ? (
+                <p id="message-error" className={`text-sm font-semibold text-kollab-red ${language === 'ko' ? 'break-keep' : ''}`}>
+                  {errors.message}
+                </p>
+              ) : null}
             </div>
-            <button className="w-full bg-black text-[#EDEBE4] py-6 text-xl md:text-2xl font-extrabold tracking-[0.42em] hover:bg-[#1A1A1A] transition-all">{content.form.submit}</button>
+
+            {/* Status Messages Above Button */}
+            {!emailJsConfig && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className={`text-sm font-semibold text-black/70 leading-relaxed ${language === 'ko' ? 'break-keep' : ''}`}
+              >
+                {language === 'ko'
+                  ? '현재 폼 전송 설정이 완료되지 않았습니다. 로컬에서 `.env.local`에 VITE_EMAILJS_* 값을 설정해 주세요.'
+                  : 'Form sending is not configured. Please set VITE_EMAILJS_* in your `.env.local`.'}
+              </motion.div>
+            )}
+
+            {submitStatus !== 'idle' && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                role="status"
+                aria-live="polite"
+                className={`border-2 ${submitStatus === 'success' ? 'border-black' : 'border-kollab-red'} bg-white p-4`}
+              >
+                <div className="text-base font-extrabold text-black tracking-tight">
+                  {submitStatus === 'success' ? content.form.successTitle : content.form.errorTitle}
+                </div>
+                <div className={`mt-1 text-sm font-semibold text-black/70 leading-relaxed ${language === 'ko' ? 'break-keep' : ''}`}>
+                  {submitStatus === 'success' ? content.form.successBody : content.form.errorBody}
+                </div>
+              </motion.div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isSubmitting || !emailJsConfig}
+              className="w-full bg-black text-[#EDEBE4] py-6 text-xl md:text-2xl font-extrabold tracking-[0.42em] hover:bg-[#1A1A1A] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? content.form.submitting : content.form.submit}
+            </button>
           </form>
         </motion.div>
       </motion.section>

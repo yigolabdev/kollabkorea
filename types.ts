@@ -22,7 +22,7 @@ export interface LanguageContextValue {
 
 // ==================== NAVIGATION ====================
 
-export type PageId = 'home' | 'about' | 'platform' | 'brands' | 'contact' | 'faq' | 'guide';
+export type PageId = 'home' | 'about' | 'platform' | 'brands' | 'contact' | 'faq';
 
 export interface NavigationProps {
   onNavigate: (page: string) => void;

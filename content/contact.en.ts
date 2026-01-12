@@ -73,7 +73,16 @@ export const contactContentEn = {
       website: 'Website / SNS',
       message: 'Message'
     },
-    submit: 'SUBMIT APPLICATION'
+    submit: 'SUBMIT APPLICATION',
+    submitting: 'SENDING...',
+    successTitle: 'Submission received.',
+    successBody: 'Your inquiry has been received. We will get back to you as soon as possible.',
+    errorTitle: 'Failed to send.',
+    errorBody: 'Please try again shortly. If the issue persists, contact us via email.',
+    validation: {
+      required: 'This field is required.',
+      invalidEmail: 'Please enter a valid email.'
+    }
   },
   applyLeft: {
     copy:

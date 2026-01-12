@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Store, Video, Users, Megaphone, Plane } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
@@ -27,6 +27,8 @@ const Platform: React.FC = () => {
   const { language } = useLanguage();
   const content = language === 'ko' ? platformContentKo : platformContentEn;
   const [mounted, setMounted] = useState(false);
+  const journeyWrapRef = useRef<HTMLDivElement | null>(null);
+  const [journeyAnchorPx, setJourneyAnchorPx] = useState<Array<{ x: number; y: number }>>([]);
   
   // Convert content roadmap to StageData format
   const ROADMAP_DATA: StageData[] = content.roadmap.map((stage) => ({
@@ -35,29 +37,73 @@ const Platform: React.FC = () => {
     position: { top: 60 } // Default position, will be overridden by curveYPositions
   }));
   
-  // SVG 곡선의 정확한 Y좌표 (2차 베지어 곡선 계산)
-  // 새로운 곡선: M 10,40 Q 50,10 90,40
-  // viewBox: 0 0 100 50 (비율 2:1로 원형에 가깝게)
-  const curveYPositions = {
-    node1: '40%',    // X=10%, t=0 - baseline
-    node2: '26.25%', // X=30%, t=0.25 - 대칭!
-    node3: '20%',    // X=50%, t=0.5 - 정점
-    node4: '26.25%', // X=70%, t=0.75 - 대칭!
-    node5: '43%'     // X=90%, t=1 - baseline (조정됨)
-  };
+  // strict(noUncheckedIndexedAccess) 대응: roadmap은 5단계로 고정이므로 non-null assertion으로 타입만 확정
+  const getStage = (index: number): StageData => ROADMAP_DATA[index]!;
+  // 점(원형)과 아이콘 박스(검정 사각) 사이 간격: "진짜 4px"을 보장하기 위해 SVG의 실제 렌더 좌표를 기준으로 계산
+  const DOT_TO_ICON_GAP_PX = 50;
+
+  // CurvedPath.tsx와 동일한 2차 베지어(Q) 라인/점 정의 (SVG viewBox 좌표)
+  const journeyCurve = useMemo(() => {
+    const P0 = { x: 10, y: 35 };
+    const P1 = { x: 50, y: 25 };
+    const P2 = { x: 90, y: 35 };
+    const pointAtT = (t: number) => {
+      const mt = 1 - t;
+      const x = mt * mt * P0.x + 2 * mt * t * P1.x + t * t * P2.x;
+      const y = mt * mt * P0.y + 2 * mt * t * P1.y + t * t * P2.y;
+      return { x, y };
+    };
+    const T = [0, 0.25, 0.5, 0.75, 1] as const;
+    return { pointAtT, T };
+  }, []);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // SVG의 실제 렌더 좌표(CTM)를 사용해 5개 점의 픽셀 좌표를 계산 → 아이콘을 점 바로 아래(4px)에 배치
+  useEffect(() => {
+    const compute = () => {
+      const wrapEl = journeyWrapRef.current;
+      if (!wrapEl) return;
+
+      const svgEl = wrapEl.querySelector('svg[data-journey-svg="true"]') as SVGSVGElement | null;
+      if (!svgEl) return;
+
+      const ctm = svgEl.getScreenCTM();
+      if (!ctm) return;
+
+      const wrapRect = wrapEl.getBoundingClientRect();
+      const next: Array<{ x: number; y: number }> = [];
+
+      journeyCurve.T.forEach((t) => {
+        const { x, y } = journeyCurve.pointAtT(t);
+        const p = svgEl.createSVGPoint();
+        p.x = x;
+        p.y = y;
+        const sp = p.matrixTransform(ctm);
+        next.push({ x: sp.x - wrapRect.left, y: sp.y - wrapRect.top });
+      });
+
+      setJourneyAnchorPx(next);
+    };
+
+    const raf = window.requestAnimationFrame(compute);
+    window.addEventListener('resize', compute);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener('resize', compute);
+    };
+  }, [journeyCurve]);
+
   return (
     <div className="bg-white">
       {/* Hero Section - KOLLAB SEONGSU */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative min-h-[80vh] md:min-h-[88vh] w-full overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="/assets/images/hero/platform_Hero2.png"
+            src="https://s3.ap-northeast-2.amazonaws.com/kollabkorea.com/assets/images/hero/platform_Hero3.png"
             alt="KOLLAB Seongsu Space"
             className="w-full h-full object-cover"
           />
@@ -66,7 +112,7 @@ const Platform: React.FC = () => {
         </div>
 
         {/* Hero Text */}
-        <div className="relative z-10 h-full flex items-center justify-center">
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -187,8 +233,7 @@ const Platform: React.FC = () => {
           className="py-4 md:py-6 relative bg-gradient-to-b from-white via-zinc-50/30 to-white rounded-2xl"
         >
           {/* Desktop View: The Arc */}
-          <div className="hidden md:block relative w-full h-[450px] px-8">
-            
+          <div ref={journeyWrapRef} className="hidden md:block relative w-full h-[450px] px-8">
             {/* SVG Connector Layer */}
             <div className="absolute inset-0 w-full h-full pointer-events-none">
               <CurvedPath />
@@ -212,65 +257,65 @@ const Platform: React.FC = () => {
             <div 
               className="absolute transition-all duration-700 delay-[0ms] hover:z-50 z-10"
               style={{ 
-                left: '10%',
-                top: curveYPositions.node1,
-                transform: 'translate(-50%, -50%)',
+                left: journeyAnchorPx[0]?.x != null ? `${journeyAnchorPx[0].x}px` : '10%',
+                top: journeyAnchorPx[0]?.y != null ? `${journeyAnchorPx[0].y + DOT_TO_ICON_GAP_PX}px` : '35%',
+                transform: 'translateX(-50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
-              <StageCard data={ROADMAP_DATA[0]} isEven={false} />
+              <StageCard data={getStage(0)} isEven={false} />
           </div>
 
             {/* Node 2 - 콘텐츠 제작 */}
             <div 
               className="absolute transition-all duration-700 delay-[200ms] hover:z-50 z-10"
               style={{ 
-                left: '30%',
-                top: curveYPositions.node2,
-                transform: 'translate(-50%, -50%)',
+                left: journeyAnchorPx[1]?.x != null ? `${journeyAnchorPx[1].x}px` : '30%',
+                top: journeyAnchorPx[1]?.y != null ? `${journeyAnchorPx[1].y + DOT_TO_ICON_GAP_PX}px` : '31.25%',
+                transform: 'translateX(-50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
-              <StageCard data={ROADMAP_DATA[1]} isEven={true} />
+              <StageCard data={getStage(1)} isEven={true} />
             </div>
 
             {/* Node 3 (Peak) - 인플루언서 마케팅 */}
             <div 
               className="absolute transition-all duration-700 delay-[400ms] hover:z-50 z-10"
               style={{ 
-                left: '50%',
-                top: curveYPositions.node3,
-                transform: 'translate(-50%, -50%)',
+                left: journeyAnchorPx[2]?.x != null ? `${journeyAnchorPx[2].x}px` : '50%',
+                top: journeyAnchorPx[2]?.y != null ? `${journeyAnchorPx[2].y + DOT_TO_ICON_GAP_PX}px` : '30%',
+                transform: 'translateX(-50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
-              <StageCard data={ROADMAP_DATA[2]} isEven={false} />
+              <StageCard data={getStage(2)} isEven={false} />
                       </div>
 
             {/* Node 4 - PR */}
             <div 
               className="absolute transition-all duration-700 delay-[600ms] hover:z-50 z-10"
               style={{ 
-                left: '70%',
-                top: curveYPositions.node4,
-                transform: 'translate(-50%, -50%)',
+                left: journeyAnchorPx[3]?.x != null ? `${journeyAnchorPx[3].x}px` : '70%',
+                top: journeyAnchorPx[3]?.y != null ? `${journeyAnchorPx[3].y + DOT_TO_ICON_GAP_PX}px` : '31.25%',
+                transform: 'translateX(-50%)',
                 opacity: mounted ? 1 : 0 
               }}
             >
-              <StageCard data={ROADMAP_DATA[3]} isEven={true} />
+              <StageCard data={getStage(3)} isEven={true} />
                     </div>
 
             {/* Node 5 - 미국 수출 연결 기회 (Node 1과 정확히 동일한 높이) */}
             <div 
               className="absolute transition-all duration-700 delay-[800ms] hover:z-50 z-10"
               style={{ 
-                left: '90%',
-                top: curveYPositions.node5,
-                transform: 'translate(-50%, -50%)',
+                left: journeyAnchorPx[4]?.x != null ? `${journeyAnchorPx[4].x}px` : '90%',
+                top: journeyAnchorPx[4]?.y != null ? `${journeyAnchorPx[4].y + DOT_TO_ICON_GAP_PX}px` : '35%',
+                transform: 'translateX(-50%)',
                 opacity: mounted ? 1 : 0 
               }}
                         >
-              <StageCard data={ROADMAP_DATA[4]} isEven={false} />
+              <StageCard data={getStage(4)} isEven={false} />
             </div>
           </div>
 

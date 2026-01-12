@@ -21,6 +21,7 @@ interface StageCardProps {
  */
 const StageCard: React.FC<StageCardProps> = ({ data }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const hasKoreanText = (text: string) => /[가-힣]/.test(text);
 
   return (
     <div 
@@ -80,7 +81,12 @@ const StageCard: React.FC<StageCardProps> = ({ data }) => {
         {/* Description - Inter Semi-Bold */}
         <ul className="space-y-1 mt-2">
           {data.description.map((item, idx) => (
-            <li key={idx} className="text-xs md:text-sm font-semibold text-zinc-700/90 whitespace-nowrap break-keep">
+            <li
+              key={idx}
+              className={`text-xs md:text-sm font-semibold text-zinc-700/90 whitespace-nowrap break-keep ${
+                hasKoreanText(item) ? 'tracking-[-0.01em]' : ''
+              }`}
+            >
               {item}
             </li>
           ))}

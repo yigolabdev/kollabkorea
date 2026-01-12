@@ -410,7 +410,14 @@ const About: React.FC<NavigationProps> = ({ onNavigate }) => {
               </motion.div>
 
               {/* Left Hub (빨간색 원 - 모바일에서 상단) */}
-              <motion.div variants={scaleInVariants} className="z-20 order-1">
+              {/* NOTE: circles should appear simultaneously (avoid parent staggerChildren 영향) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="z-20 order-1"
+              >
                 {(() => {
                   const { a, b } = splitTwoLines(content.structureSection.leftNode.subtitle);
                   return (
@@ -475,7 +482,14 @@ const About: React.FC<NavigationProps> = ({ onNavigate }) => {
               </div>
 
               {/* Right Hub (검은색 원 - 모바일에서 하단) */}
-              <motion.div variants={scaleInVariants} className="z-20 order-3">
+              {/* NOTE: circles should appear simultaneously (avoid parent staggerChildren 영향) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="z-20 order-3"
+              >
                 {(() => {
                   const { a, b } = splitTwoLines(content.structureSection.rightNode.subtitle);
                   return (

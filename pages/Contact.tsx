@@ -9,7 +9,6 @@ import { Copy, Check, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { contactContentEn } from '../content/contact.en';
 import { contactContentKo } from '../content/contact.ko';
-import ScrollIndicator from '../components/ScrollIndicator';
 import { containerVariants, itemVariants } from '../utils/animations';
 import type { BrandApplicationForm, Language } from '../types';
 import { loadEmailJsConfigFromEnv, sendAutoReplyEmail, sendContactUsEmail } from '../services/emailjsService';
@@ -19,47 +18,6 @@ const Contact: React.FC = () => {
   const content = language === 'en' ? contactContentEn : contactContentKo;
   const [emailCopied, setEmailCopied] = useState(false);
   const emailJsConfig = useMemo(() => loadEmailJsConfigFromEnv(), []);
-  const premiumPanelRef = useRef<HTMLDivElement | null>(null);
-  const [premiumPanelHeightPx, setPremiumPanelHeightPx] = useState<number | null>(null);
-
-  // Tier card background images (reuse existing LA popup assets)
-  // Requested mapping:
-  // - STANDARD: portrait-02
-  // - BASIC: portrait-04
-  // PREMIUM: keep current (portrait-03 for consistency)
-  const TIER_BG_BY_NAME = useMemo<Record<string, string>>(
-    () => ({
-      STANDARD: '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-02.jpeg',
-      PREMIUM: '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-03.jpeg',
-      BASIC: '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-04.jpeg',
-    }),
-    []
-  );
-
-  // Match all tier panels' height to the PREMIUM panel height (desktop intent)
-  useEffect(() => {
-    const el = premiumPanelRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      // Use offsetHeight (layout px). Premium is the tallest; others will adopt as minHeight.
-      const next = Math.max(0, Math.round(el.offsetHeight));
-      setPremiumPanelHeightPx((prev) => (prev === next ? prev : next));
-    };
-
-    measure();
-
-    let ro: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver(() => measure());
-      ro.observe(el);
-    }
-    window.addEventListener('resize', measure);
-    return () => {
-      window.removeEventListener('resize', measure);
-      ro?.disconnect();
-    };
-  }, []);
 
   const [form, setForm] = useState<BrandApplicationForm>({
     brandName: '',
@@ -191,108 +149,33 @@ const Contact: React.FC = () => {
 
   return (
     <div className="bg-white">
-      {/* Intro Banner */}
-      <section className="bg-white pt-12 md:pt-18 pb-24 px-6 max-w-7xl mx-auto text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-3xl md:text-6xl font-bold text-black leading-[0.95] mb-6 tracking-normal"
-        >
-          {content.hero.title}
-        </motion.h1>
+      {/* Hero Section - Brands Style */}
+      <div className="px-6 max-w-7xl mx-auto pt-12 md:pt-18 pb-12 md:pb-16">
+        {/* Hero title block (centered text + full-width line aligned to grid edges) */}
+        <div className="bg-white text-center">
+          <motion.h2 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="inline-block text-left text-3xl md:text-6xl font-bold text-black leading-[0.95] tracking-normal"
+          >
+            {content.hero.title}
+          </motion.h2>
+          <div className="mt-12 h-px w-full bg-black" />
+        </div>
+
+        {/* Hero deck (below the line, centered) */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className={`max-w-3xl mx-auto text-xl md:text-2xl font-semibold text-black/70 leading-[1.25] tracking-normal ${
-            language === 'ko' ? 'break-keep' : ''
+          className={`mt-12 md:mt-16 mb-0 text-center text-xl md:text-3xl font-semibold text-black ${
+            language === 'ko' ? 'tracking-[0.01em] break-keep' : 'tracking-[0.02em]'
           }`}
         >
           {content.hero.deck}
         </motion.p>
-
-        {/* Tier cards (STANDARD / PREMIUM / BASIC) */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="mt-14 md:mt-16 text-left w-full"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 bg-white p-0.5">
-            {content.spaceStructure.tiers.map((tier, idx) => {
-              const isPremium = tier.accent === 'premium';
-              const lines = language === 'ko' ? tier.linesKo : tier.linesEn;
-              const firstLine = lines[0];
-              const rest = lines.slice(1);
-              const tierLabel = tier.name ? tier.name.toUpperCase() : '';
-              const bgSrc = TIER_BG_BY_NAME[tier.name] ?? '/assets/photos/la-popup/portrait/kollab-la-popup-portrait-01.jpeg';
-              const isPremiumTier = tier.name === 'PREMIUM';
-              return (
-                <motion.div
-                  key={`${tier.name}-${idx}`}
-                  variants={itemVariants}
-                  className="group relative w-full min-h-[520px] md:min-h-[560px] overflow-hidden bg-black"
-                >
-                  {/* Background photo */}
-                  <img
-                    src={bgSrc}
-                    alt={`${tierLabel} background`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading={idx === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                  />
-
-                  {/* Information panel (like attached layout) */}
-                  <div className="absolute top-2 left-2 md:top-4 md:left-4 w-[52%] max-w-[280px]">
-                    {/* Semi-opaque mask panel + white text */}
-                    <div
-                      ref={isPremiumTier ? premiumPanelRef : undefined}
-                      className="bg-black/70 text-white p-4 md:p-5 backdrop-blur-[2px] text-left flex flex-col items-start"
-                      style={{
-                        minHeight: !isPremiumTier && premiumPanelHeightPx ? `${premiumPanelHeightPx}px` : undefined
-                      }}
-                    >
-                      <div
-                        className="text-2xl md:text-3xl font-black tracking-tight leading-none underline underline-offset-8 decoration-white decoration-[1px]"
-                      >
-                        {tierLabel}
-                      </div>
-
-                      {firstLine ? (
-                        <div
-                          className={`mt-4 text-base md:text-lg font-semibold leading-relaxed tracking-normal ${
-                            language === 'ko' ? 'break-keep' : ''
-                          }`}
-                        >
-                          {firstLine}
-                        </div>
-                      ) : null}
-
-                      {rest.length ? (
-                        <div
-                          className={`mt-2 space-y-1 text-sm md:text-base font-semibold leading-relaxed tracking-normal ${
-                            language === 'ko' ? 'break-keep' : ''
-                          }`}
-                        >
-                          {rest.map((l, i) => (
-                            <div key={i} className="whitespace-pre-line">
-                              {l}
-                            </div>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Scroll Indicator - About 스타일 */}
-        <ScrollIndicator className="mt-16 md:mt-20" delay={1.0} />
-      </section>
+      </div>
 
       {/* Apply Section */}
       <motion.section

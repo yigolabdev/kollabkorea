@@ -1,7 +1,7 @@
 export const contactContentKo = {
   hero: {
-    title: 'SPACE STRUCTURE',
-    deck: '브랜드 목표에 맞춘 유연한 공간 구조'
+    title: 'JOIN\nKOLLAB',
+    deck: '콜랩과 함께 글로벌 시장으로 진출하세요'
   },
   mechanismSection: {
     title: '',
@@ -24,26 +24,48 @@ export const contactContentKo = {
     title: 'SPACE STRUCTURE',
     subtitleEn: 'FLEXIBLE SPACES BASED ON BRAND GOALS',
     subtitleKo: '브랜드 목표에 맞춘 유연한 공간 구조',
+    rowLabels: ['전업 위치 /\n미디어 플레이', '제품 판매 운영', '콘텐츠 제공', '인플루언서 노출', 'Kollab SNS 노출', 'Monthly 콜랩 인플루언서 이벤트 노출', '미국 팝업 & 리테일샵 동시 입점 신청'],
     tiers: [
       {
-        name: 'STANDARD',
+        name: 'BASIC',
+        subtitle: '20 브랜드',
         accent: 'default',
-        linesEn: ['Central module zone', '1 month', 'On-site photo / short-form content', 'Sales report', 'U.S. pop-up application eligible'],
-        linesKo: ['중앙 모듈 존', '1개월', '현장 사진, 숏폼컨텐츠', '판매 리포트', '미국 팝업 신청가능']
+        linesEn: ['Designated zone', 'O', 'Basic content support', 'X', 'IG Story (brand tag)', 'X', 'O'],
+        linesKo: ['뒤쪽 전업 존', 'O', '기본 컨텐츠 서포트', 'X', 'IG Story (브랜드 태그)', 'X', 'O']
       },
       {
         name: 'PREMIUM',
+        subtitle: '4 브랜드',
         accent: 'premium',
-        linesEn: ['Highest visibility', 'Main zone', '1 month or 3 months', 'On-site photo / short-form content', 'Sales report', 'Korea & U.S. pop-ups concurrently'],
-        linesKo: ['가장 높은 노출', '메인 존', '1개월 또는 3개월', '현장 사진, 숏폼컨텐츠', '판매 리포트', '한국&미국 팝업 동시진행']
+        linesEn: ['Main zone', 'O', 'Short-form video + Product/Store photos + Brand content', '5 people', 'IG Post + Story + TikTok', 'O', 'O'],
+        linesKo: ['메인 존', 'O', '숏폼 영상 + 제품/매장 사진 + 브랜드 콘텐츠 제공', '월 5명', 'IG Post + Story + TikTok', 'O', 'O']
       },
       {
-        name: 'BASIC',
+        name: 'STANDARD',
+        subtitle: '6 브랜드',
         accent: 'default',
-        linesEn: ['Wall display zone', '2 weeks or 1 month', 'On-site photo provided', 'Sales report', 'U.S. pop-up application eligible'],
-        linesKo: ['벽면 선반형 존', '2주 또는 1개월', '현장 사진 제공', '판매 리포트', '미국 팝업 신청가능']
+        linesEn: ['Central module zone', 'O', 'Short-form video + Product/Store photos', '2 people', 'IG Post + Story', 'X', 'O'],
+        linesKo: ['중앙 모듈존', 'O', '숏폼 영상 + 제품/매장 사진', '월 2명', 'IG Post + Story', 'X', 'O']
       }
-    ]
+    ],
+    additionalInfo: {
+      titleKo: '입점 프로세스',
+      titleEn: 'Application Process',
+      stepsKo: [
+        '1. 브랜드 신청서 제출 및 검토',
+        '2. 공간 구조 및 플랜 선택',
+        '3. 계약 체결 및 입점 준비',
+        '4. 브랜드 론칭 및 마케팅 시작'
+      ],
+      stepsEn: [
+        '1. Submit brand application and review',
+        '2. Select space structure and plan',
+        '3. Contract signing and preparation',
+        '4. Brand launch and marketing start'
+      ],
+      noteKo: '※ BASIC 플랜은 2주 또는 1개월 단위로, STANDARD와 PREMIUM 플랜은 1개월 단위로 운영됩니다. 제품 판매 및 재고 관리는 브랜드에서 직접 진행합니다.',
+      noteEn: '※ BASIC plan operates on a 2-week or 1-month basis, while STANDARD and PREMIUM plans operate monthly. Product sales and inventory management are handled directly by the brand.'
+    }
   },
   whoShouldApply: {
     title: 'Who Should Apply',
@@ -63,7 +85,7 @@ export const contactContentKo = {
     instagramUrl: 'https://instagram.com/kollab_korea'
   },
   form: {
-    title: '입점 문의',
+    title: '입점 문의 작성하기',
     fields: {
       brandName: '브랜드명',
       contactPerson: '담당자명',

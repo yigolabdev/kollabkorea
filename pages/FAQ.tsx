@@ -43,7 +43,19 @@ const FAQ: React.FC = () => {
   
   return (
     <div className="bg-white pt-12 md:pt-18 pb-24 px-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl md:text-6xl font-bold mb-24 text-center text-black tracking-normal leading-[0.95]">{content.heroTitle}</h1>
+      {/* Hero title block with line */}
+      <div className="text-center mb-24">
+        <motion.h1
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-3xl md:text-6xl font-bold text-black tracking-normal leading-[0.95] mb-12"
+        >
+          {content.heroTitle}
+        </motion.h1>
+        <div className="h-px w-full bg-black" />
+      </div>
+      
       <motion.div
         variants={containerVariants}
         initial="hidden"

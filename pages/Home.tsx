@@ -180,7 +180,7 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           className="absolute inset-0 w-full h-full object-cover -z-20"
           aria-hidden="true"
         >
-          <source src="/assets/mega-node-network-earth.mp4" type="video/mp4" />
+          <source src="/assets/mega-node-network-earth (1).mp4" type="video/mp4" />
         </video>
 
         {/* Hero tone overlay — make dark state visibly dark over the bright video */}
@@ -227,6 +227,21 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
           >
             {content.hero.deck}
           </motion.p>
+
+          {/* GRAND OPEN 날짜 */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
+            className="mt-12 md:mt-16"
+          >
+            <p className="text-xs md:text-sm font-black tracking-[0.3em] text-kollab-red uppercase mb-2 md:mb-3">
+              GRAND OPEN
+            </p>
+            <p className="text-2xl md:text-4xl font-black tracking-tight text-kollab-red">
+              2026.03.13
+            </p>
+          </motion.div>
         </motion.div>
       </section>
 
@@ -326,24 +341,6 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
               {language === 'ko' ? 'LEARN MORE' : 'LEARN MORE'}
             </motion.button>
           </div>
-
-          {/* GRAND OPEN 날짜 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-32 md:mt-40 text-center"
-          >
-            <div className="inline-block">
-              <p className="text-sm md:text-base font-black tracking-[0.3em] text-white/60 uppercase mb-3">
-                GRAND OPEN
-              </p>
-              <p className="text-5xl md:text-7xl font-black tracking-tighter text-kollab-red uppercase">
-                2026.03.13
-              </p>
-            </div>
-          </motion.div>
         </motion.div>
       </section>
     </div>

@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Platform from './pages/Platform';
 import Brands from './pages/Brands';
+import Space from './pages/Space';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import LanguageToggle from './components/LanguageToggle';
@@ -90,6 +91,7 @@ const App: React.FC = () => {
       case 'about': return <About onNavigate={navigateTo} />;
       case 'platform': return <Platform />;
       case 'brands': return <Brands navigateTo={navigateTo} />;
+      case 'space': return <Space />;
       case 'contact': return <Contact />;
       case 'faq': return <FAQ />;
       default: return <Home onNavigate={navigateTo} onHeaderVisibilityChange={handleHeaderVisibility} />;

@@ -10,7 +10,7 @@ import { Menu, X } from 'lucide-react';
 import { lockBodyScroll, unlockBodyScroll } from '../utils/scroll';
 import type { NavbarProps } from '../types';
 
-const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'CONTACT', 'FAQ'] as const;
+const SECTIONS = ['ABOUT', 'PLATFORM', 'BRANDS', 'SPACE', 'CONTACT', 'FAQ'] as const;
 
 const MOBILE_MENU_LIST_VARIANTS = {
   hidden: { opacity: 0, y: 12 },

@@ -35,7 +35,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="space-y-6 md:text-right flex flex-col md:items-end">
           <p className="text-sm font-extrabold text-white uppercase tracking-[0.1em]">CONTACT INFORMATION</p>
           <div className="space-y-2 text-base font-semibold text-white uppercase leading-relaxed tracking-wide flex flex-col md:items-end">
-            <p>AM 10:00 - PM 08:00</p>
+            <p>AM 11:00 - PM 08:00</p>
             <p>info@kollabkorea.com</p>
             <a 
               href="https://www.instagram.com/kollab_korea" 

@@ -19,7 +19,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       style={{ scrollSnapAlign: 'start' }}
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 mb-20">
-        <div className="space-y-6">
+        <div className="space-y-8">
           <button
             type="button"
             onClick={() => onNavigate?.('home')}
@@ -31,6 +31,22 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               className="h-14 md:h-16 w-auto object-contain"
             />
           </button>
+          
+          {/* Company Information */}
+          <div className="space-y-2 text-left">
+            <p className="text-sm font-bold text-white/90">
+              주식회사 미뮤즈 <span className="text-white/60 mx-2">|</span> 대표 김수정
+            </p>
+            <p className="text-sm font-medium text-white/70">
+              사업자등록번호 661-86-02321
+            </p>
+            <p className="text-sm font-medium text-white/70">
+              전화 1670-1908
+            </p>
+            <p className="text-sm font-medium text-white/70">
+              서울특별시 송파구 삼학사로 30, 3층
+            </p>
+          </div>
         </div>
         <div className="space-y-6 md:text-right flex flex-col md:items-end">
           <p className="text-sm font-extrabold text-white uppercase tracking-[0.1em]">CONTACT INFORMATION</p>

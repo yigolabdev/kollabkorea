@@ -326,6 +326,24 @@ const Home: React.FC<PageProps> = ({ onNavigate, onHeaderVisibilityChange }) => 
               {language === 'ko' ? 'LEARN MORE' : 'LEARN MORE'}
             </motion.button>
           </div>
+
+          {/* GRAND OPEN 날짜 */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-32 md:mt-40 text-center"
+          >
+            <div className="inline-block">
+              <p className="text-sm md:text-base font-black tracking-[0.3em] text-white/60 uppercase mb-3">
+                GRAND OPEN
+              </p>
+              <p className="text-5xl md:text-7xl font-black tracking-tighter text-kollab-red uppercase">
+                2026.03.13
+              </p>
+            </div>
+          </motion.div>
         </motion.div>
       </section>
     </div>

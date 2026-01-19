@@ -43,16 +43,18 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   const [firstCyclePx, setFirstCyclePx] = useState<number>(0);
   const [secondCyclePx, setSecondCyclePx] = useState<number>(0);
   
-  // LA Partner logos - 40개 이미지
+  // LA Partner logos - 40개 중 3개 제외 (풀무원, 시디즈, 농심)
+  const excludedLogos = [21, 23, 29]; // 농심(21), 풀무원(23), 시디즈(29)
   const laPartners: BrandPartner[] = Array.from({ length: 40 }, (_, i) => ({
     logo: `/BrandLogo/la-popup-logo${String(i + 1).padStart(2, '0')}.png`,
     name: `Brand ${i + 1}`
-  }));
+  })).filter((_, i) => !excludedLogos.includes(i + 1));
   
-  // 첫 번째 줄: 20개 (좌로 이동)
-  const firstRow = laPartners.slice(0, 20);
-  // 두 번째 줄: 20개를 역순으로 (logo40→logo21 순서, 우로 이동)
-  const secondRow = [...laPartners.slice(20, 40)].reverse();
+  // 첫 번째 줄과 두 번째 줄 분배
+  const midPoint = Math.ceil(laPartners.length / 2);
+  const firstRow = laPartners.slice(0, midPoint);
+  // 두 번째 줄을 역순으로 (우로 이동 효과)
+  const secondRow = [...laPartners.slice(midPoint)].reverse();
   
   // 무한 루프를 위해 각 줄을 3번 복제 (완벽한 공백 제거)
   const firstRowDuplicated = [...firstRow, ...firstRow, ...firstRow];

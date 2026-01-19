@@ -17,16 +17,23 @@ import FAQ from './pages/FAQ';
 import LanguageToggle from './components/LanguageToggle';
 import { getPathFromUrl, navigateToPage } from './utils/navigation';
 import { scrollToTop, getScrollableParent } from './utils/scroll';
+import { useFacebookPixel } from './hooks/useFacebookPixel';
 import type { PageId } from './types';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageId>(getPathFromUrl());
   const [showNavbar, setShowNavbar] = useState(true);
 
+  // Facebook Pixel 초기화 및 이벤트 트래킹
+  const { events } = useFacebookPixel();
+
   useEffect(() => {
     setShowNavbar(true);
     scrollToTop('auto');
-  }, [currentPage]);
+
+    // 페이지 조회 트래킹
+    events.viewPage(currentPage);
+  }, [currentPage, events]);
 
   // Prevent overscroll "escape" at top/bottom (wheel input)
   useEffect(() => {

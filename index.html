@@ -40,40 +40,9 @@
     <link rel="icon" type="image/jpeg" href="/assets/brands/kollab_squar_logo-07.jpg" />
     <link rel="apple-touch-icon" href="/assets/brands/kollab_squar_logo-07.jpg" />
     
-    <script>
-      // Tailwind CDN config (ensures brand tokens like `bg-kollab-red` work)
-      // Brand colors (from .cursorrules)
-      window.tailwind = window.tailwind || {};
-      window.tailwind.config = {
-        safelist: [
-          // Ensure brand red utilities are always generated (React runtime + CDN edge cases)
-          'bg-kollab-red',
-          'text-kollab-red',
-          'border-kollab-red',
-          'hover:bg-kollab-red',
-          // Ensure brand silver utility is always generated
-          'bg-kollab-silver',
-          // Ensure brand beige utility is always generated
-          'bg-kollab-beige'
-        ],
-        theme: {
-          extend: {
-            colors: {
-              'kollab-red': '#dc0000',
-              'kollab-beige': '#e4e0db',
-              'kollab-silver': '#c0c0c0',
-              'kollab-black': '#000000',
-              'kollab-dark': '#111111'
-            }
-          }
-        }
-      };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://use.typekit.net" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link rel="preconnect" href="https://s3.ap-northeast-2.amazonaws.com" crossorigin />
-    <link rel="dns-prefetch" href="https://s3.ap-northeast-2.amazonaws.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
@@ -81,8 +50,7 @@
     <link
       rel="preload"
       as="image"
-      href="https://s3.ap-northeast-2.amazonaws.com/kollabkorea.com/assets/images/hero/kollab-hero-bg-01.png"
-      crossorigin
+      href="/assets/images/hero/kollab-hero-bg-01.png"
     />
     <script>
       (function(d) {
@@ -113,13 +81,12 @@
       }
 
       /* Hard fallback: ensure brand-red utilities always work */
-      .bg-kollab-red { background-color: rgb(220 0 0 / var(--tw-bg-opacity, 1)) !important; }
-      /* Avoid !important here so hover (e.g. group-hover:text-white) can override safely */
-      .text-kollab-red { color: rgb(220 0 0 / var(--tw-text-opacity, 1)); }
+      .bg-kollab-red { background-color: #dc0000 !important; }
+      .text-kollab-red { color: #dc0000; }
       .border-kollab-red { border-color: #dc0000 !important; }
       .hover\:bg-kollab-red:hover { background-color: #dc0000 !important; }
-      .bg-kollab-silver { background-color: rgb(192 192 192 / var(--tw-bg-opacity, 1)) !important; }
-      .bg-kollab-beige { background-color: rgb(228 224 219 / var(--tw-bg-opacity, 1)) !important; }
+      .bg-kollab-silver { background-color: #c0c0c0 !important; }
+      .bg-kollab-beige { background-color: #e4e0db !important; }
 
       /* React 루트 및 앱 래퍼가 레이아웃을 방해하지 않도록 설정 */
       #root {

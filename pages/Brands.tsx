@@ -11,6 +11,7 @@ import { brandsContentEn } from '../content/brands.en';
 import { brandsContentKo } from '../content/brands.ko';
 import { containerVariants, itemVariants } from '../utils/animations';
 import { highlightBrandName } from '../utils/text';
+import { useFacebookPixel } from '../hooks/useFacebookPixel';
 import type { BrandPartner } from '../types';
 
 interface BrandsProps {
@@ -35,6 +36,9 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
   const { language } = useLanguage();
   const content = language === 'ko' ? brandsContentKo : brandsContentEn;
   const marqueeDurationSec = 80;
+  
+  // Facebook Pixel for conversion tracking
+  const { events } = useFacebookPixel();
 
   // 퍼센트 기반 이동은 뷰포트/갭/이미지 로딩에 따라 루프가 끊겨 보일 수 있어,
   // 실제 트랙 폭(px)을 측정해서 정확히 1사이클만큼 이동하는 방식으로 고정.
@@ -120,7 +124,11 @@ const Brands: React.FC<BrandsProps> = ({ navigateTo }) => {
             : 'From Seoul to LA, connecting your brand to the global stage.'}
         </p>
         <motion.button
-          onClick={() => navigateTo('CONTACT')}
+          onClick={() => {
+            // Track brand application start
+            events.brandApplicationStart();
+            navigateTo('CONTACT');
+          }}
           className="mt-6 px-10 py-3 text-sm font-extrabold tracking-[0.2em] bg-transparent text-black border-2 border-black/20 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
         >
           {language === 'ko' ? 'APPLY NOW' : 'APPLY NOW'}

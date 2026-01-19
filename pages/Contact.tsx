@@ -12,12 +12,16 @@ import { contactContentKo } from '../content/contact.ko';
 import { containerVariants, itemVariants } from '../utils/animations';
 import type { BrandApplicationForm, Language } from '../types';
 import { loadEmailJsConfigFromEnv, sendAutoReplyEmail, sendContactUsEmail } from '../services/emailjsService';
+import { useFacebookPixel } from '../hooks/useFacebookPixel';
 
 const Contact: React.FC = () => {
   const { language } = useLanguage();
   const content = language === 'en' ? contactContentEn : contactContentKo;
   const [emailCopied, setEmailCopied] = useState(false);
   const emailJsConfig = useMemo(() => loadEmailJsConfigFromEnv(), []);
+  
+  // Facebook Pixel for conversion tracking
+  const { events } = useFacebookPixel();
 
   const [form, setForm] = useState<BrandApplicationForm>({
     brandName: '',
@@ -120,6 +124,10 @@ const Contact: React.FC = () => {
       }
 
       setSubmitStatus('success');
+      
+      // Track successful brand application completion
+      events.brandApplicationComplete(form.brandName.trim());
+      
       setForm({
         brandName: '',
         contactPerson: '',

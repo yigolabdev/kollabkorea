@@ -24,7 +24,7 @@
     font-weight: 600;
     line-height: 1.6;
     color: var(--kollab-black);
-    background-color: var(--kollab-beige);
+    background-color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

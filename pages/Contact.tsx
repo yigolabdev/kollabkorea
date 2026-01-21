@@ -18,7 +18,14 @@ const Contact: React.FC = () => {
   const { language } = useLanguage();
   const content = language === 'en' ? contactContentEn : contactContentKo;
   const [emailCopied, setEmailCopied] = useState(false);
-  const emailJsConfig = useMemo(() => loadEmailJsConfigFromEnv(), []);
+  const emailJsConfig = useMemo(() => {
+    const config = loadEmailJsConfigFromEnv();
+    console.log('📧 EmailJS Config Loaded:', config ? '✅ Success' : '❌ Failed');
+    if (!config) {
+      console.error('❌ EmailJS environment variables are missing! Check .env.local file.');
+    }
+    return config;
+  }, []);
   
   // Facebook Pixel for conversion tracking
   const { events } = useFacebookPixel();

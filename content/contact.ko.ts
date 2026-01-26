@@ -63,7 +63,7 @@ export const contactContentKo = {
         '3. Contract signing and preparation',
         '4. Brand launch and marketing start'
       ],
-      noteKo: '※ BASIC 플랜은 2주 또는 1개월 단위로, STANDARD와 PREMIUM 플랜은 1개월 단위로 운영됩니다. 제품 판매 및 재고 관리는 브랜드에서 직접 진행합니다.',
+      noteKo: '※ BASIC 플랜은 2주 또는 1개월 단위로, STANDARD와 PREMIUM 플랜은 1개월 단위로 운영됩니다. 제품 판매 및 재고 관리는 콜랩코리아에서 진행합니다.',
       noteEn: '※ BASIC plan operates on a 2-week or 1-month basis, while STANDARD and PREMIUM plans operate monthly. Product sales and inventory management are handled directly by the brand.'
     }
   },
